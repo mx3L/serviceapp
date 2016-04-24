@@ -4,6 +4,8 @@ from Components.ActionMap import ActionMap
 from Components.ConfigList import ConfigListScreen
 from Components.config import config, ConfigSubsection, ConfigSelection, ConfigBoolean, \
 	getConfigListEntry, ConfigSubDict, ConfigInteger, ConfigNothing
+from Components.Label import Label
+from Components.Sources.StaticText import StaticText
 from Plugins.Plugin import PluginDescriptor
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
@@ -77,22 +79,28 @@ initServiceAppSettings()
 
 
 class ServiceAppSettings(Screen, ConfigListScreen):
-	skin = """
-		<screen position="center,center" size="400,400" title="ServiceApp Settings" backgroundColor="#48080808">
-			<widget name="config" position="10,10" size="380,380" />
-		</screen> """
-
 	def __init__(self, session):
 		Screen.__init__(self, session)
+		self.skinName = ["ServiceAppSettings", "Setup"]
 		ConfigListScreen.__init__(self, [], session)
 		self.onLayoutFinish.append(self.initConfigList)
 		self.onClose.append(self.deInitConfig)
-		self["actions"] = ActionMap(["SetupActions"], {"ok": self.keyOk, "cancel": self.keyCancel}, -2)
+		self["key_red"] = StaticText(_("Cancel"))
+		self["key_green"] = StaticText(_("Ok"))
+		self["description"] = Label("")
+		self["setupActions"] = ActionMap(["SetupActions", "ColorActions"],
+			{
+				"cancel": self.keyCancel,
+				"red": self.keyCancel,
+				"ok": self.keyOk,
+				"green": self.keyOk,
+			}, -2)
 
 	def initConfigList(self):
 		configServiceApp.servicemp3.player.addNotifier(self.serviceMP3PlayerChanged, initial_call=False)
 		configServiceApp.servicemp3.replace.addNotifier(self.serviceMP3ReplacedChanged, initial_call=False)
 		self["config"].setList(self.buildConfigList())
+		self.setTitle(_("ServiceApp"))
 
 	def gstPlayerOptions(self, gstPlayerOptionsCfg):
 		configList = [getConfigListEntry("  " + _("Sink"), gstPlayerOptionsCfg.sink)]
