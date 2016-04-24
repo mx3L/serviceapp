@@ -94,28 +94,26 @@ class ServiceAppSettings(Screen, ConfigListScreen):
 		configServiceApp.servicemp3.replace.addNotifier(self.serviceMP3ReplacedChanged, initial_call=False)
 		self["config"].setList(self.buildConfigList())
 
+	def gstPlayerOptions(self, gstPlayerOptionsCfg):
+		configList = [getConfigListEntry("  " + _("Sink"), gstPlayerOptionsCfg.sink)]
+		configList.append(getConfigListEntry("  " + _("Subtitles"), gstPlayerOptionsCfg.subtitleEnabled))
+		configList.append(getConfigListEntry("  " + _("Buffer size"), gstPlayerOptionsCfg.bufferSize))
+		configList.append(getConfigListEntry("  " + _("Buffer duration"), gstPlayerOptionsCfg.bufferDuration))
+		return configList
+
 	def buildConfigList(self):
 		configList = [getConfigListEntry(_("Enigma2 playback system"), configServiceApp.servicemp3.replace)]
 		if configServiceApp.servicemp3.replace.value:
 			configList.append(getConfigListEntry(_("Player"), configServiceApp.servicemp3.player))
+			configListServiceMp3 = [getConfigListEntry("", ConfigNothing())]
+			configListServiceMp3.append(getConfigListEntry(_("ServiceMp3 (%s)" % str(serviceapp_client.ID_SERVICEMP3)), ConfigNothing()))
 			if configServiceApp.servicemp3.player.value == "gstplayer":
-				gstPlayerOptionsCfg = configServiceApp.gstplayer["servicemp3"]
-				configList.append(getConfigListEntry("", ConfigNothing()))
-				configList.append(getConfigListEntry(_("ServiceMp3 (%s)" % str(serviceapp_client.ID_SERVICEMP3)), ConfigNothing()))
-				configList.append(getConfigListEntry("  " + _("Sink"), gstPlayerOptionsCfg.sink))
-				configList.append(getConfigListEntry("  " + _("Subtitles"), gstPlayerOptionsCfg.subtitleEnabled))
-				configList.append(getConfigListEntry("  " + _("Buffer size"), gstPlayerOptionsCfg.bufferSize))
-				configList.append(getConfigListEntry("  " + _("Buffer duration"), gstPlayerOptionsCfg.bufferDuration))
+				configList += configListServiceMp3 + self.gstPlayerOptions(configServiceApp.gstplayer["servicemp3"])
 			else:
-				configList.append(getConfigListEntry("", ConfigNothing()))
-				configList.append(getConfigListEntry(_("ServiceMp3 (%s)" % str(serviceapp_client.ID_SERVICEMP3)), ConfigNothing()))
-		gstPlayerOptionsCfg = configServiceApp.gstplayer["servicegstplayer"]
+				configList += configListServiceMp3
 		configList.append(getConfigListEntry("", ConfigNothing()))
 		configList.append(getConfigListEntry(_("ServiceGstPlayer (%s)" % str(serviceapp_client.ID_SERVICEGSTPLAYER)), ConfigNothing()))
-		configList.append(getConfigListEntry("  " + _("Sink"), gstPlayerOptionsCfg.sink))
-		configList.append(getConfigListEntry("  " + _("Subtitles"), gstPlayerOptionsCfg.subtitleEnabled))
-		configList.append(getConfigListEntry("  " + _("Buffer size"), gstPlayerOptionsCfg.bufferSize))
-		configList.append(getConfigListEntry("  " + _("Buffer duration"), gstPlayerOptionsCfg.bufferDuration))
+		configList += self.gstPlayerOptions(configServiceApp.gstplayer["servicegstplayer"])
 		configList.append(getConfigListEntry("", ConfigNothing()))
 		configList.append(getConfigListEntry(_("ServiceExtEplayer3 (%s)" % str(serviceapp_client.ID_SERVICEEXTEPLAYER3)), ConfigNothing()))
 		return configList
