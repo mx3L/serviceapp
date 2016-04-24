@@ -19,5 +19,9 @@ EXTRA_OECONF = "\
 	STAGING_LIBDIR=${STAGING_LIBDIR} \
 	"
 
-FILES_${PN} = "${libdir}/enigma2/python/Plugins/Extensions/ServiceApp/"
+do_install_append() {
+	rm ${D}/usr/lib/enigma2/python/Plugins/Extensions/ServiceApp/*.pyc
+}
 
+FILES_${PN} = "${libdir}/enigma2/python/Plugins/Extensions/ServiceApp/"
+FILES_${PN}-dev = "${libdir}/enigma2/python/Plugins/Extensions/ServiceApp/serviceapp.la"
