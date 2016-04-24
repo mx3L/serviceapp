@@ -78,7 +78,7 @@ def initServiceAppSettings():
 initServiceAppSettings()
 
 
-class ServiceAppSettings(Screen, ConfigListScreen):
+class ServiceAppSettings(ConfigListScreen, Screen):
 	def __init__(self, session):
 		Screen.__init__(self, session)
 		self.skinName = ["ServiceAppSettings", "Setup"]
@@ -99,20 +99,20 @@ class ServiceAppSettings(Screen, ConfigListScreen):
 	def initConfigList(self):
 		configServiceApp.servicemp3.player.addNotifier(self.serviceMP3PlayerChanged, initial_call=False)
 		configServiceApp.servicemp3.replace.addNotifier(self.serviceMP3ReplacedChanged, initial_call=False)
-		self["config"].setList(self.buildConfigList())
+		self.buildConfigList()
 		self.setTitle(_("ServiceApp"))
 
 	def gstPlayerOptions(self, gstPlayerOptionsCfg):
-		configList = [getConfigListEntry("  " + _("Sink"), gstPlayerOptionsCfg.sink)]
-		configList.append(getConfigListEntry("  " + _("Subtitles"), gstPlayerOptionsCfg.subtitleEnabled))
-		configList.append(getConfigListEntry("  " + _("Buffer size"), gstPlayerOptionsCfg.bufferSize))
-		configList.append(getConfigListEntry("  " + _("Buffer duration"), gstPlayerOptionsCfg.bufferDuration))
+		configList = [getConfigListEntry("  " + _("Sink"), gstPlayerOptionsCfg.sink, _("Select sink that you want to use."))]
+		configList.append(getConfigListEntry("  " + _("Subtitles"), gstPlayerOptionsCfg.subtitleEnabled, _("Turn on the subtitles.")))
+		configList.append(getConfigListEntry("  " + _("Buffer size"), gstPlayerOptionsCfg.bufferSize, _("Set buffer size in kilobytes.")))
+		configList.append(getConfigListEntry("  " + _("Buffer duration"), gstPlayerOptionsCfg.bufferDuration, _("Set buffer duration in seconds.")))
 		return configList
 
 	def buildConfigList(self):
-		configList = [getConfigListEntry(_("Enigma2 playback system"), configServiceApp.servicemp3.replace)]
+		configList = [getConfigListEntry(_("Enigma2 playback system"), configServiceApp.servicemp3.replace, _("Select the player who will be used for Enigma2 playback."))]
 		if configServiceApp.servicemp3.replace.value:
-			configList.append(getConfigListEntry(_("Player"), configServiceApp.servicemp3.player))
+			configList.append(getConfigListEntry(_("Player"), configServiceApp.servicemp3.player, _("Select the player who will be used in serviceapp for Enigma2 playback.")))
 			configListServiceMp3 = [getConfigListEntry("", ConfigNothing())]
 			configListServiceMp3.append(getConfigListEntry(_("ServiceMp3 (%s)" % str(serviceapp_client.ID_SERVICEMP3)), ConfigNothing()))
 			if configServiceApp.servicemp3.player.value == "gstplayer":
@@ -124,13 +124,14 @@ class ServiceAppSettings(Screen, ConfigListScreen):
 		configList += self.gstPlayerOptions(configServiceApp.gstplayer["servicegstplayer"])
 		configList.append(getConfigListEntry("", ConfigNothing()))
 		configList.append(getConfigListEntry(_("ServiceExtEplayer3 (%s)" % str(serviceapp_client.ID_SERVICEEXTEPLAYER3)), ConfigNothing()))
-		return configList
+		self["config"].list = configList
+		self["config"].l.setList(configList)
 
 	def serviceMP3ReplacedChanged(self, configElement):
-		self["config"].setList(self.buildConfigList())
+		self.buildConfigList()
 
 	def serviceMP3PlayerChanged(self, configElement):
-		self["config"].setList(self.buildConfigList())
+		self.buildConfigList()
 
 	def deInitConfig(self):
 		configServiceApp.servicemp3.player.removeNotifier(self.serviceMP3PlayerChanged)
