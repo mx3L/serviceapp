@@ -7,9 +7,10 @@ from Components.config import config, ConfigSubsection, ConfigSelection, ConfigB
 from Components.Label import Label
 from Components.Sources.StaticText import StaticText
 from Plugins.Plugin import PluginDescriptor
+from Screens.InfoBar import InfoBar, MoviePlayer
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
-from enigma import eEnv
+from enigma import eEnv, eServiceReference
 
 import serviceapp_client
 
@@ -153,6 +154,24 @@ class ServiceAppSettings(ConfigListScreen, Screen):
 		self.close(callback)
 
 
+class ServiceAppPlayer(MoviePlayer):
+	def __init__(self, session, service):
+		MoviePlayer.__init__(self, session, service)
+		self.skinName = ["ServiceAppPlayer", "MoviePlayer"]
+		self.servicelist = InfoBar.instance and InfoBar.instance.servicelist
+
+	def handleLeave(self, how):
+		if how == "ask":
+			self.session.openWithCallback(self.leavePlayerConfirmed,
+					MessageBox, _("Stop playing this movie?"))
+		else:
+			self.close()
+
+	def leavePlayerConfirmed(self, answer):
+		if answer:
+			self.close()
+
+
 def main(session, **kwargs):
 	def restartE2(restart=False):
 		if restart:
@@ -161,5 +180,22 @@ def main(session, **kwargs):
 	session.openWithCallback(restartE2, ServiceAppSettings)
 
 
+def play_exteplayer3(session, service, **kwargs):
+	ref = eServiceReference(5002, 0, service.getPath())
+	session.open(ServiceAppPlayer, service=ref)
+
+
+def play_gstplayer(session, service, **kwargs):
+	ref = eServiceReference(5001, 0, service.getPath())
+	session.open(ServiceAppPlayer, service=ref)
+
+
 def Plugins(**kwargs):
-	return [PluginDescriptor(name=_("ServiceApp"), description=_("setup player framework"), where=PluginDescriptor.WHERE_PLUGINMENU, needsRestart=False, fnc=main)]
+	return [
+		PluginDescriptor(name=_("ServiceApp"), description=_("setup player framework"),
+				where=PluginDescriptor.WHERE_PLUGINMENU, needsRestart=False, fnc=main),
+		PluginDescriptor(name=_("ServiceApp"), description=_("Play with ServiceExtEplayer3"),
+				where=PluginDescriptor.WHERE_MOVIELIST, needsRestart=False, fnc=play_exteplayer3),
+		PluginDescriptor(name=_("ServiceApp"), description=_("Play with ServiceGstPlayer"),
+				where=PluginDescriptor.WHERE_MOVIELIST, needsRestart=False, fnc=play_gstplayer)
+		]
