@@ -377,7 +377,24 @@ RESULT eServiceApp::seekTo(pts_t to)
 RESULT eServiceApp::seekRelative(int direction, pts_t to)
 {
 	eDebug("eServiceApp::seekRelative - position = %lld", direction*to);
-	player->seekRelative(int(to*direction/90000));
+	int length = 0;
+	int position, seekto;
+	if (player->getPlayPosition(position) < 0)
+	{
+		return -1;
+	}
+	player->getLength(length);
+	seekto = position + (to / 90 * direction);
+	if (length > 0 && seekto > length)
+	{
+		stop();
+		return 0;
+	}
+	else if (seekto < 0)
+	{
+		seekto = 0;
+	}
+	player->seekTo(int(seekto / 1000));
 	return 0;
 }
 
