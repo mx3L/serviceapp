@@ -48,6 +48,12 @@ for key in configServiceApp.gstplayer.keys():
 configServiceApp.exteplayer3 = ConfigSubDict()
 configServiceApp.exteplayer3["servicemp3"] = ConfigSubDict()
 configServiceApp.exteplayer3["serviceexteplayer3"] = ConfigSubDict()
+for key in configServiceApp.exteplayer3.keys():
+	configServiceApp.exteplayer3[key].aacSwDecoding = ConfigBoolean(default=False)
+	configServiceApp.exteplayer3[key].dtsSwDecoding = ConfigBoolean(default=False)
+	configServiceApp.exteplayer3[key].wmaSwDecoding = ConfigBoolean(default=False)
+	configServiceApp.exteplayer3[key].lpcmInjection = ConfigBoolean(default=False)
+	configServiceApp.exteplayer3[key].downmix = ConfigBoolean(default=False)
 
 
 def initServiceAppSettings():
@@ -70,6 +76,22 @@ def initServiceAppSettings():
 		bufferDuration = playerCfg.bufferDuration.value
 
 		serviceapp_client.setGstreamerPlayerSettings(settingId, videoSink, audioSink, subtitleEnabled, bufferSize, bufferDuration)
+
+	for key in configServiceApp.exteplayer3.keys():
+		if key == "servicemp3":
+			settingId = serviceapp_client.OPTIONS_SERVICEMP3_EXTEPLAYER3
+		elif key == "serviceexteplayer3":
+			settingId = serviceapp_client.OPTIONS_SERVICEEXTEPLAYER3
+		else:
+			continue
+		playerCfg = configServiceApp.exteplayer3[key]
+		aacSwDecoding = playerCfg.aacSwDecoding.value
+		dtsSwDecoding = playerCfg.dtsSwDecoding.value
+		wmaSwDecoding = playerCfg.wmaSwDecoding.value
+		lpcmInjection = playerCfg.lpcmInjection.value
+		downmix = playerCfg.downmix.value
+
+		serviceapp_client.setExtEplayer3Settings(settingId, aacSwDecoding, dtsSwDecoding, wmaSwDecoding, lpcmInjection, downmix)
 
 	if configServiceApp.servicemp3.player.value == "gstplayer":
 		serviceapp_client.setServiceMP3GstPlayer()
@@ -110,6 +132,14 @@ class ServiceAppSettings(ConfigListScreen, Screen):
 		configList.append(getConfigListEntry("  " + _("Buffer duration"), gstPlayerOptionsCfg.bufferDuration, _("Set buffer duration in seconds.")))
 		return configList
 
+	def extEplayer3Options(self, extEplayer3OptionsCfg):
+		configList = [getConfigListEntry("  " + _("AAC software decoding"), extEplayer3OptionsCfg.aacSwDecoding, _("Turn on AAC software decoding."))]
+		configList.append(getConfigListEntry("  " + _("DTS software decoding"), extEplayer3OptionsCfg.dtsSwDecoding, _("Turn on DTS software decoding.")))
+		configList.append(getConfigListEntry("  " + _("WMA software decoding"), extEplayer3OptionsCfg.wmaSwDecoding, _("Turn on WMA1, WMA2, WMA/PRO software decoding.")))
+		configList.append(getConfigListEntry("  " + _("Stereo downmix"), extEplayer3OptionsCfg.downmix, _("Turn on downmix to stereo, when software decoding is in use")))
+		configList.append(getConfigListEntry("  " + _("LPCM injection"), extEplayer3OptionsCfg.lpcmInjection, _("Software decoder use LPCM for injection (otherwise wav PCM will be used)")))
+		return configList
+
 	def buildConfigList(self):
 		configList = [getConfigListEntry(_("Enigma2 playback system"), configServiceApp.servicemp3.replace, _("Select the player who will be used for Enigma2 playback."))]
 		if configServiceApp.servicemp3.replace.value:
@@ -118,6 +148,8 @@ class ServiceAppSettings(ConfigListScreen, Screen):
 			configListServiceMp3.append(getConfigListEntry(_("ServiceMp3 (%s)" % str(serviceapp_client.ID_SERVICEMP3)), ConfigNothing()))
 			if configServiceApp.servicemp3.player.value == "gstplayer":
 				configList += configListServiceMp3 + self.gstPlayerOptions(configServiceApp.gstplayer["servicemp3"])
+			elif configServiceApp.servicemp3.player.value == "exteplayer3":
+				configList += configListServiceMp3 + self.extEplayer3Options(configServiceApp.exteplayer3["servicemp3"])
 			else:
 				configList += configListServiceMp3
 		configList.append(getConfigListEntry("", ConfigNothing()))
@@ -125,6 +157,7 @@ class ServiceAppSettings(ConfigListScreen, Screen):
 		configList += self.gstPlayerOptions(configServiceApp.gstplayer["servicegstplayer"])
 		configList.append(getConfigListEntry("", ConfigNothing()))
 		configList.append(getConfigListEntry(_("ServiceExtEplayer3 (%s)" % str(serviceapp_client.ID_SERVICEEXTEPLAYER3)), ConfigNothing()))
+		configList += self.extEplayer3Options(configServiceApp.exteplayer3["serviceexteplayer3"])
 		self["config"].list = configList
 		self["config"].l.setList(configList)
 

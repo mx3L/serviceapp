@@ -36,6 +36,16 @@ std::string ExtEplayer3::buildCommand()
 	}
 	if (addquote)
 		cmd += "\"";
+	if (mPlayerOptions.aacSwDecoding)
+		cmd += " -a ";
+	if (mPlayerOptions.dtsSwDecoding)
+		cmd += " -d ";
+	if (mPlayerOptions.wmaSwDecoding)
+		cmd += " -w ";
+	if (mPlayerOptions.lpcmInjection)
+		cmd += " -l ";
+	if (mPlayerOptions.downmix)
+		cmd += " -s ";
 	return cmd;
 }
 int ExtEplayer3::start(eMainloop *context)

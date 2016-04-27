@@ -33,6 +33,10 @@ static GstPlayerOptions g_GstPlayerOptionsServiceMP3;
 static GstPlayerOptions g_GstPlayerOptionsServiceGst;
 static GstPlayerOptions g_GstPlayerOptionsUser;
 
+static ExtEplayer3Options g_ExtEplayer3OptionsServiceMP3;
+static ExtEplayer3Options g_ExtEplayer3OptionsServiceExt3;
+static ExtEplayer3Options g_ExtEplayer3OptionsUser;
+
 static const std::string gReplaceServiceMP3Path = eEnv::resolve("$sysconfdir/enigma2/serviceapp_replaceservicemp3");
 static const bool gReplaceServiceMP3 = ( access( gReplaceServiceMP3Path.c_str(), F_OK ) != -1 );
 
@@ -40,7 +44,13 @@ static BasePlayer *createPlayer(const eServiceReference& ref)
 {
 	if( ref.type == eServiceFactoryApp::idServiceExtEplayer3)
 	{
-		return new ExtEplayer3;
+		ExtEplayer3Options& options = g_ExtEplayer3OptionsServiceExt3;
+		if (g_useUserSettings)
+		{
+			options = g_ExtEplayer3OptionsUser;
+			g_useUserSettings = false;
+		}
+		return new ExtEplayer3(options);
 	}
 	else if ( ref.type == eServiceFactoryApp::idServiceGstPlayer)
 	{
@@ -57,7 +67,15 @@ static BasePlayer *createPlayer(const eServiceReference& ref)
 		switch(g_playerServiceMP3)
 		{
 			case EXTEPLAYER3:
-				return new ExtEplayer3;
+			{
+				ExtEplayer3Options& options = g_ExtEplayer3OptionsServiceMP3;
+				if (g_useUserSettings)
+				{
+					options = g_ExtEplayer3OptionsUser;
+					g_useUserSettings = false;
+				}
+				return new ExtEplayer3(options);
+			}
 			case GSTPLAYER:
 			default:
 			{
@@ -866,6 +884,52 @@ gstplayer_set_setting(PyObject *self, PyObject *args)
 	return Py_BuildValue("b", ret);
 }
 
+static PyObject *
+exteplayer3_set_setting(PyObject *self, PyObject *args)
+{
+	bool ret = true;
+
+	int settingId;
+	bool aacSwDecoding;
+	bool dtsSwDecoding;
+	bool wmaSwDecoding;
+	bool downmix;
+	bool lpcmInjection;
+
+	if (!PyArg_ParseTuple(args, "ibbbbb", &settingId, &aacSwDecoding, &dtsSwDecoding, &wmaSwDecoding, &lpcmInjection, &downmix))
+		return NULL;
+
+	ExtEplayer3Options *options = NULL;
+	switch (settingId)
+	{
+		case OPTIONS_SERVICEEXTEPLAYER3:
+			options = &g_ExtEplayer3OptionsServiceExt3;
+			eDebug("[exteplayer3_set_setting] setting serviceextplayer3 options");
+			break;
+		case OPTIONS_SERVICEMP3_EXTEPLAYER3:
+			options = &g_ExtEplayer3OptionsServiceMP3;
+			eDebug("[exteplayer3_set_setting] setting servicemp3 options");
+			break;
+		case OPTIONS_USER:
+			options = &g_ExtEplayer3OptionsUser;
+			eDebug("[exteplayer3_set_setting] setting user options");
+			break;
+		default:
+			eWarning("[exteplayer3_set_setting] option '%d' is not known, cannot be set!", settingId);
+			ret = false;
+			break;
+	}
+	if (options != NULL)
+	{
+		options->aacSwDecoding = aacSwDecoding;
+		options->dtsSwDecoding = dtsSwDecoding;
+		options->wmaSwDecoding = wmaSwDecoding;
+		options->lpcmInjection = lpcmInjection;
+		options->downmix = downmix;
+	}
+	return Py_BuildValue("b", ret);
+}
+
 
 static PyMethodDef serviceappMethods[] = {
 	{"use_user_settings", use_user_settings, METH_NOARGS,
@@ -882,6 +946,15 @@ static PyMethodDef serviceappMethods[] = {
 	 " subtitleEnable - (True, False)\n"
 	 " bufferSize - in kilobytes\n"
 	 " bufferDuration - in seconds\n"
+	},
+	{"exteplayer3_set_setting", exteplayer3_set_setting, METH_VARARGS,
+	 "set exteplayer3 settings (setting_id, aacSwDecoding, dtsSwDecoding, wmaSwDecoding, lpcmInjection, downmix\n\n"
+	 " setting_id - (0 - servicemp3_gst, 1 - servicemp3_extep3, 2 - servicegst, 3 - serviceextep3, 4 - user)\n"
+	 " aacSwDecoding - (True, False)\n"
+	 " dtsSwDecoding - (True, False)\n"
+	 " wmaSwDecoding - (True, False)\n"
+	 " lpcmInjection - (True, False)\n"
+	 " downmix - (True, False)\n"
 	},
 	 {NULL,NULL,0,NULL}
 };
