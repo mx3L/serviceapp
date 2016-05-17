@@ -147,6 +147,7 @@ void WaitThread::thread()
 	{
 		eDebug("WaitThread - timed out");
 		waitForUpdate = false;
+		timedOut = true;
 		goto unlock;
 	}
 	eDebug("WaitThread - in time\n");
@@ -199,9 +200,19 @@ int PlayerBackend::start(const std::string& path, const std::map<std::string,std
 }
 int PlayerBackend::stop()
 {
-	if (!playbackStarted)
-		return -1;
-	mMessageThread.send(Message(Message::tStop));
+	if (mThreadRunning)
+	{
+		// wait 10 seconds for normal exit if timed out then kill process
+		mWaitForStop = true;
+		WaitThread t(mWaitForStopMutex, mWaitForStopCond, mWaitForStop, 10000);
+		t.run();
+		mMessageThread.send(Message(Message::tStop));
+		t.kill();
+		if (t.isTimedOut())
+		{
+			mMessageThread.send(Message(Message::tKill));
+		}
+	}
 	kill();
 	return 0;
 }
@@ -399,6 +410,10 @@ void PlayerBackend::gotMessage(const PlayerBackend::Message& message)
 			mTimer->stop();
 			pPlayer->sendStop();
 			break;
+		case Message::tKill:
+			eDebug("PlayerBackend::gotMessage - tKill");
+			pPlayer->sendForceStop();
+			break;
 		case Message::tPause:
 			eDebug("PlayerBackend::gotMessage - tPause");
 			pPlayer->sendPause();
@@ -508,6 +523,13 @@ void PlayerBackend::recvStarted(int status)
 
 void PlayerBackend::recvStopped(int retval)
 {
+	pthread_mutex_lock(&mWaitForStopMutex);
+	if (mWaitForStop)
+	{
+		mWaitForStop = false;
+		pthread_cond_signal(&mWaitForStopCond);
+	}
+	pthread_mutex_unlock(&mWaitForStopMutex);
 	eDebug("PlayerBackend::recvStopped - retval = %d", retval);
 	quit(0);
 	mMessageMain.send(Message(Message::stop));

@@ -45,6 +45,7 @@ int ExtEplayer3::start(eMainloop *context)
 
 
 int ExtEplayer3::sendStop(){ return processSend(std::string("q\n"));}
+int ExtEplayer3::sendForceStop(){ processKill(); return 0;}
 int ExtEplayer3::sendPause(){ return processSend(std::string("p\n"));}
 int ExtEplayer3::sendResume(){ return processSend(std::string("c\n"));}
 int ExtEplayer3::sendUpdateLength(){ return processSend(std::string("l\n"));}

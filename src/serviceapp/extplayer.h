@@ -119,6 +119,7 @@ class iPlayerSend
 {
 public:
 	virtual int sendStop() { return -1;}
+	virtual int sendForceStop() { return -1;}
 	virtual int sendPause(){ return -1;}
 	virtual int sendResume(){ return -1;}
 	virtual int sendUpdateLength(){ return -1;}
@@ -213,6 +214,7 @@ class PlayerBackend: public Object, public eThread, public eMainloop, public iPl
 			tStart,
 			stop,
 			tStop,
+			tKill,
 			pause,
 			tPause,
 			resume,
@@ -267,6 +269,10 @@ class PlayerBackend: public Object, public eThread, public eMainloop, public iPl
 	pthread_cond_t mWaitCond;
 	bool mWaitForUpdate;
 
+	pthread_mutex_t mWaitForStopMutex;
+	pthread_cond_t mWaitForStopCond;
+	bool mWaitForStop;
+
 	void gotMessage(const Message &message);
 	void _updatePosition();
 
@@ -316,14 +322,12 @@ public:
 		CONNECT(mMessageMain.recv_msg, PlayerBackend::gotMessage);
 		pthread_mutex_init(&mWaitMutex, NULL);
 		pthread_cond_init(&mWaitCond, NULL);
+		pthread_mutex_init(&mWaitForStopMutex, NULL);
+		pthread_cond_init(&mWaitForStopCond, NULL);
 	}
 	~PlayerBackend()
 	{
 		eDebug("~PlayerBackend");
-		if (mThreadRunning)
-		{
-			mMessageThread.send(Message(Message::tStop));
-		}
 		if (pErrorMessage != NULL)
 			delete pErrorMessage;
 		if (pCurrentVideo != NULL)
@@ -332,9 +336,11 @@ public:
 			delete pCurrentAudio;
 		if (pCurrentSubtitle != NULL)
 			delete pCurrentSubtitle;
-		kill();
+		stop();
 		pthread_mutex_destroy(&mWaitMutex);
 		pthread_cond_destroy(&mWaitCond);
+		pthread_mutex_destroy(&mWaitForStopMutex);
+		pthread_cond_destroy(&mWaitForStopCond);
 	}
 	int start(const std::string& path, const std::map<std::string,std::string>& headers);
 	int stop();
@@ -366,14 +372,17 @@ class WaitThread: public eThread
 	pthread_cond_t& cond;
 	long timeout;
 	void thread();
+	bool timedOut;
 public:
 	WaitThread(pthread_mutex_t& mutex, pthread_cond_t& cond, bool& waitForUpdate, long timeout):
 		waitForUpdate(waitForUpdate),
 		mutex(mutex),
 		cond(cond),
-		timeout(timeout)
+		timeout(timeout),
+		timedOut(false)
 	{
 	}
+	bool isTimedOut(){return timedOut;}
 };
 
 #endif

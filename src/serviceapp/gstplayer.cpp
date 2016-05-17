@@ -44,6 +44,7 @@ int GstPlayer::start(eMainloop* context)
 }
 
 int GstPlayer::sendStop(){ return processSend(std::string("q\n"));}
+int GstPlayer::sendForceStop(){ processKill(); return 0;}
 int GstPlayer::sendPause(){ return processSend(std::string("p\n"));}
 int GstPlayer::sendResume(){ return processSend(std::string("c\n"));}
 int GstPlayer::sendUpdateLength(){ return processSend(std::string("l\n"));}
