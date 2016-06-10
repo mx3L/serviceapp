@@ -70,6 +70,16 @@ int ExtEplayer3::sendAudioSelectTrack(int trackId)
 	return processSend(sstm.str());
 }
 
+int ExtEplayer3::sendUpdateSubtitleTracksList(){ return processSend(std::string("sl\n"));}
+int ExtEplayer3::sendUpdateSubtitleTrackCurrent(){ return processSend(std::string("sc\n"));}
+
+int ExtEplayer3::sendSubtitleSelectTrack(int trackId)
+{
+	std::stringstream sstm;
+	sstm << "s" << trackId << std::endl;
+	return processSend(sstm.str());
+}
+
 int ExtEplayer3::sendSeekTo(int seconds)
 {
 	std::stringstream sstm;
@@ -145,6 +155,46 @@ void ExtEplayer3::handleJsonOutput(cJSON *json)
 			streams.push_back(a);
 		}
 		recvAudioTracksList(0, streams);
+	}
+	else if (!strcmp(key, "s_s"))
+	{
+		if (!cJSON_GetObjectItem(value, "sts")->valueint)
+		{
+			int s = cJSON_GetObjectItem(value, "id")->valueint;
+			recvSubtitleTrackSelected(0, s);
+			return;
+		}
+		recvSubtitleTrackSelected(1, -1);
+	}
+	else if (!strcmp(key, "s_c"))
+	{
+		subtitleStream s;
+		s.id = cJSON_GetObjectItem(value, "id")->valueint;
+		s.description = cJSON_GetObjectItem(value, "e")->valuestring;
+		s.language_code = cJSON_GetObjectItem(value, "n")->valuestring;
+		recvSubtitleTrackCurrent(0, s);
+	}
+	else if (!strcmp(key, "s_l"))
+	{
+		std::vector<subtitleStream> streams;
+		for (int i=0; i<cJSON_GetArraySize(value); i++)
+		{
+			cJSON *subitem=cJSON_GetArrayItem(value,i);
+			subtitleStream s;
+			s.id = cJSON_GetObjectItem(subitem, "id")->valueint; 
+			s.description = cJSON_GetObjectItem(subitem, "e")->valuestring;
+			s.language_code = cJSON_GetObjectItem(subitem, "n")->valuestring;
+			streams.push_back(s);
+		}
+		recvSubtitleTracksList(0, streams);
+	}
+	else if (!strcmp(key, "s_a"))
+	{
+		subtitleMessage s;
+		s.start = cJSON_GetObjectItem(value, "s")->valueint;
+		s.duration = cJSON_GetObjectItem(value, "e")->valueint - s.start;
+		s.text = cJSON_GetObjectItem(value, "t")->valuestring;
+		recvSubtitleMessage(s);
 	}
 	else if (!strcmp(key, "PLAYBACK_LENGTH"))
 	{

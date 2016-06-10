@@ -45,6 +45,9 @@ public:
 	int sendUpdateAudioTracksList();
 	int sendUpdateAudioTrackCurrent();
 	int sendAudioSelectTrack(int trackId);
+	int sendUpdateSubtitleTracksList();
+	int sendUpdateSubtitleTrackCurrent();
+	int sendSubtitleSelectTrack(int trackId);
 	int sendSeekTo(int seconds);
 	int sendSeekRelative(int seconds);
 };
