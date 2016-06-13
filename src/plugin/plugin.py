@@ -65,7 +65,7 @@ def initServiceAppSettings():
 	for key in configServiceApp.gstplayer.keys():
 		if key == "servicemp3":
 			settingId = serviceapp_client.OPTIONS_SERVICEMP3_GSTPLAYER
-		elif key == "servicegst":
+		elif key == "servicegstplayer":
 			settingId = serviceapp_client.OPTIONS_SERVICEGSTPLAYER
 		else:
 			continue
