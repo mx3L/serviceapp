@@ -10,6 +10,18 @@ AX_PYTHON_DEVEL
 
 PKG_CHECK_MODULES(ENIGMA2, enigma2)
 
+have_mhw=no
+AC_CHECK_HEADER([enigma2/lib/dvb/lowlevel/mhw.h], 
+                 [have_mhw=yes], [])
+if test "x${have_mhw}" = xyes; then
+    AC_DEFINE([HAVE_EPG])
+else
+    echo "-------------------------------------------"
+    echo " Unable to find mhw.h                      "
+    echo " Building a serviceapp without EPG support "
+    echo "-------------------------------------------"
+fi
+
 AC_DEFINE([DEBUG])
 
 AC_CONFIG_FILES([

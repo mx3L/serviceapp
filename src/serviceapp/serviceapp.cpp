@@ -5,6 +5,9 @@
 #include <lib/base/init.h>
 #include <lib/base/eenv.h>
 #include <lib/base/nconfig.h>
+#ifdef HAVE_EPG
+#include <lib/dvb/epgcache.h>
+#endif
 #include <lib/gui/esubtitle.h>
 
 #include "serviceapp.h"
@@ -111,6 +114,11 @@ eServiceApp::eServiceApp(eServiceReference ref):
 	m_subtitle_sync_timer = eTimer::create(eApp);
 	CONNECT(m_subtitle_sync_timer->timeout, eServiceApp::pushSubtitles);
 
+#ifdef HAVE_EPG
+	m_nownext_timer = eTimer::create(eApp);
+	CONNECT(m_nownext_timer->timeout, eServiceApp::updateEpgCacheNowNext);
+#endif
+
 	CONNECT(player->gotPlayerMessage, eServiceApp::gotExtPlayerMessage);
 };
 
@@ -121,9 +129,58 @@ eServiceApp::~eServiceApp()
 
 	if (m_subtitle_widget) m_subtitle_widget->destroy();
 	m_subtitle_widget = 0;
+#ifdef HAVE_EPG
+	m_nownext_timer->stop();
+#endif
 	eDebug("~eServiceApp");
 };
 
+#ifdef HAVE_EPG
+void eServiceApp::updateEpgCacheNowNext()
+{
+	bool update = false;
+	ePtr<eServiceEvent> next = 0;
+	ePtr<eServiceEvent> ptr = 0;
+	eServiceReference ref(m_ref);
+	ref.type = eServiceFactoryApp::idServiceMP3;
+	ref.path.clear();
+	if (eEPGCache::getInstance() && eEPGCache::getInstance()->lookupEventTime(ref, -1, ptr) >= 0)
+	{
+		ePtr<eServiceEvent> current = m_event_now;
+		if (!current || !ptr || current->getEventId() != ptr->getEventId())
+		{
+			update = true;
+			m_event_now = ptr;
+			time_t next_time = ptr->getBeginTime() + ptr->getDuration();
+			if (eEPGCache::getInstance()->lookupEventTime(ref, next_time, ptr) >= 0)
+			{
+				next = ptr;
+				m_event_next = ptr;
+			}
+		}
+	}
+
+	int refreshtime = 60;
+	if (!next)
+	{
+		next = m_event_next;
+	}
+	if (next)
+	{
+		time_t now = eDVBLocalTimeHandler::getInstance()->nowTime();
+		refreshtime = (int)(next->getBeginTime() - now) + 3;
+		if (refreshtime <= 0 || refreshtime > 60)
+		{
+			refreshtime = 60;
+		}
+	}
+	m_nownext_timer->startLongTimer(refreshtime);
+	if (update)
+	{
+		m_event((iPlayableService*)this, evUpdatedEventInfo);
+	}
+}
+#endif
 
 void eServiceApp::pullSubtitles()
 {
@@ -214,6 +271,9 @@ void eServiceApp::gotExtPlayerMessage(int message)
 		case PlayerMessage::start:
 			eDebug("eServiceApp::gotExtPlayerMessage - start");
 			m_event(this, evStart);
+#ifdef HAVE_EPG
+			updateEpgCacheNowNext();
+#endif
 			break;
 		case PlayerMessage::stop:
 			eDebug("eServiceApp::gotExtPlayerMessage - stop");
@@ -557,6 +617,16 @@ RESULT eServiceApp::getName(std::string& name)
 	return 0;
 }
 
+#ifdef HAVE_EPG
+RESULT eServiceApp::getEvent(ePtr<eServiceEvent> &evt, int nownext)
+{
+	evt = nownext ? m_event_next : m_event_now;
+	if (!evt)
+		return -1;
+	return 0;
+}
+#endif
+
 int eServiceApp::getInfo(int w)
 {
 	switch (w)
@@ -744,6 +814,16 @@ long long eStaticServiceAppInfo::getFileSize(const eServiceReference &ref)
 
 RESULT eStaticServiceAppInfo::getEvent(const eServiceReference &ref, ePtr<eServiceEvent> &evt, time_t start_time)
 {
+#ifdef HAVE_EPG
+	if (ref.path.find("://") != std::string::npos)
+	{
+		eServiceReference equivalentref(ref);
+		equivalentref.type = eServiceFactoryApp::idServiceMP3;
+		equivalentref.path.clear();
+		return eEPGCache::getInstance()->lookupEventTime(equivalentref, start_time, evt);
+	}
+	evt = 0;
+#endif
 	return -1;
 }
 

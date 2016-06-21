@@ -44,6 +44,11 @@ class eServiceApp: public Object, public iPlayableService, public iPauseableServ
 	void pullSubtitles();
 	void pushSubtitles();
 
+#ifdef HAVE_EPG
+	ePtr<eTimer> m_nownext_timer;
+	ePtr<eServiceEvent> m_event_now, m_event_next;
+	void updateEpgCacheNowNext();
+#endif
 	void gotExtPlayerMessage(int message);
 
 public:
@@ -103,6 +108,9 @@ public:
 
 	// iServiceInformation
 	RESULT getName(std::string &name);
+#ifdef HAVE_EPG
+	RESULT getEvent(ePtr<eServiceEvent> &evt, int nownext);
+#endif
 	int getInfo(int w);
 	std::string getInfoString(int w);
 };
