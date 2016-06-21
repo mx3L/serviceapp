@@ -10,6 +10,10 @@
 #include "cJSON/cJSON.h"
 #include "myconsole.h"
 
+#ifndef eLog
+ #define eLog(lvl,...) eDebug(__VA_ARGS__)
+#endif
+
 enum
 {
 	STD_OUTPUT,
