@@ -122,6 +122,11 @@ void ExtEplayer3::handleJsonOutput(cJSON *json)
 		v.width = cJSON_GetObjectItem(value, "w")->valueint;
 		v.height = cJSON_GetObjectItem(value, "h")->valueint;
 		v.framerate = cJSON_GetObjectItem(value, "f")->valueint;
+		cJSON *progressive = cJSON_GetObjectItem(value, "p");
+		if (progressive != NULL)
+		{
+			v.progressive = progressive->valueint;
+		}
 		recvVideoTrackCurrent(0, v);
 	}
 	else if (!strcmp(key, "a_s"))
