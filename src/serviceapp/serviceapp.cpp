@@ -44,53 +44,30 @@ static const bool gReplaceServiceMP3 = ( access( gReplaceServiceMP3Path.c_str(),
 
 static BasePlayer *createPlayer(const eServiceReference& ref)
 {
-	if( ref.type == eServiceFactoryApp::idServiceExtEplayer3)
+	BasePlayer *player = NULL;
+	if (ref.type == eServiceFactoryApp::idServiceExtEplayer3 || (ref.type == eServiceFactoryApp::idServiceMP3 && g_playerServiceMP3 == EXTEPLAYER3) )
 	{
-		ExtEplayer3Options& options = g_ExtEplayer3OptionsServiceExt3;
+		ExtEplayer3Options *options = NULL;
 		if (g_useUserSettings)
-		{
-			options = g_ExtEplayer3OptionsUser;
-			g_useUserSettings = false;
-		}
-		return new ExtEplayer3(options);
+			options = &g_ExtEplayer3OptionsUser;
+		else if (ref.type == eServiceFactoryApp::idServiceExtEplayer3)
+			options = &g_ExtEplayer3OptionsServiceExt3;
+		else
+			options = &g_ExtEplayer3OptionsServiceMP3;
+		player = new ExtEplayer3(*options);
 	}
-	else if ( ref.type == eServiceFactoryApp::idServiceGstPlayer)
+	else if (ref.type == eServiceFactoryApp::idServiceGstPlayer || (ref.type == eServiceFactoryApp::idServiceMP3 && g_playerServiceMP3 == GSTPLAYER) )
 	{
-		GstPlayerOptions& options = g_GstPlayerOptionsServiceGst;
+		GstPlayerOptions *options = NULL;
 		if (g_useUserSettings)
-		{
-			options = g_GstPlayerOptionsUser;
-			g_useUserSettings = false;
-		}
-		return new GstPlayer(options);
+			options = &g_GstPlayerOptionsUser;
+		else if (ref.type == eServiceFactoryApp::idServiceGstPlayer)
+			options = &g_GstPlayerOptionsServiceGst;
+		else
+			options = &g_GstPlayerOptionsServiceMP3;
+		player = new GstPlayer(*options);
 	}
-	else
-	{
-		switch(g_playerServiceMP3)
-		{
-			case EXTEPLAYER3:
-			{
-				ExtEplayer3Options& options = g_ExtEplayer3OptionsServiceMP3;
-				if (g_useUserSettings)
-				{
-					options = g_ExtEplayer3OptionsUser;
-					g_useUserSettings = false;
-				}
-				return new ExtEplayer3(options);
-			}
-			case GSTPLAYER:
-			default:
-			{
-				GstPlayerOptions& options = g_GstPlayerOptionsServiceMP3;
-				if (g_useUserSettings)
-				{
-					options = g_GstPlayerOptionsUser;
-					g_useUserSettings = false;
-				}
-				return new GstPlayer(options);
-			}
-		}
-	}
+	return player;
 }
 
 DEFINE_REF(eServiceApp);
@@ -131,6 +108,7 @@ eServiceApp::~eServiceApp()
 #ifdef HAVE_EPG
 	m_nownext_timer->stop();
 #endif
+	g_useUserSettings = false;
 	eDebug("~eServiceApp");
 };
 
