@@ -97,7 +97,9 @@ int PlayerApp::processStart(eMainloop *context)
 	CONNECT(console->appClosed, PlayerApp::appClosed);
 	CONNECT(console->stdoutAvail, PlayerApp::stdoutAvail);
 	CONNECT(console->stderrAvail, PlayerApp::stderrAvail);
-	return console->execute(context, buildCommand().c_str());
+	const std::string cmd = buildCommand();
+	eDebug("PlayerApp::processStart: %s", cmd.c_str());
+	return console->execute(context, cmd.c_str());
 }
 
 int PlayerApp::processSend(const std::string& data)
