@@ -22,8 +22,7 @@ enum
 
 enum
 {
-	OPTIONS_SERVICEMP3_GSTPLAYER,
-	OPTIONS_SERVICEMP3_EXTEPLAYER3,
+	OPTIONS_SERVICEMP3,
 	OPTIONS_SERVICEGSTPLAYER,
 	OPTIONS_SERVICEEXTEPLAYER3,
 	OPTIONS_USER,
@@ -940,7 +939,7 @@ gstplayer_set_setting(PyObject *self, PyObject *args)
 			options = &g_GstPlayerOptionsServiceGst;
 			eDebug("[gstplayer_set_setting] setting servicegstplayer options");
 			break;
-		case OPTIONS_SERVICEMP3_GSTPLAYER:
+		case OPTIONS_SERVICEMP3:
 			options = &g_GstPlayerOptionsServiceMP3;
 			eDebug("[gstplayer_set_setting] setting servicemp3 options");
 			break;
@@ -986,7 +985,7 @@ exteplayer3_set_setting(PyObject *self, PyObject *args)
 			options = &g_ExtEplayer3OptionsServiceExt3;
 			eDebug("[exteplayer3_set_setting] setting serviceextplayer3 options");
 			break;
-		case OPTIONS_SERVICEMP3_EXTEPLAYER3:
+		case OPTIONS_SERVICEMP3:
 			options = &g_ExtEplayer3OptionsServiceMP3;
 			eDebug("[exteplayer3_set_setting] setting servicemp3 options");
 			break;
@@ -1020,7 +1019,7 @@ static PyMethodDef serviceappMethods[] = {
 	 "use gstreamer based player, when servicemp3 is replaced by serviceapp"},
 	{"gstplayer_set_setting", gstplayer_set_setting, METH_VARARGS,
 	 "set gstreamer player settings (setting_id, videoSink, audioSink, subtitlesEnabled, bufferSize, bufferDuration\n\n"
-	 " setting_id - (0 - servicemp3_gst, 1 - servicemp3_extep3, 2 - servicegst, 3 - serviceextep3, 4 - user)\n"
+	 " setting_id - (0 - servicemp3, 1 - servicegst, 2 - serviceextep3, 3 - user)\n"
 	 " videoSink - (dvbvideosink, dvbvideosinkexp, ...)\n"
 	 " audioSink - (dvbaudiosink, dvbaudiosinkexp, ...)\n"
 	 " subtitleEnable - (True, False)\n"
@@ -1029,7 +1028,7 @@ static PyMethodDef serviceappMethods[] = {
 	},
 	{"exteplayer3_set_setting", exteplayer3_set_setting, METH_VARARGS,
 	 "set exteplayer3 settings (setting_id, aacSwDecoding, dtsSwDecoding, wmaSwDecoding, lpcmInjection, downmix\n\n"
-	 " setting_id - (0 - servicemp3_gst, 1 - servicemp3_extep3, 2 - servicegst, 3 - serviceextep3, 4 - user)\n"
+	 " setting_id - (0 - servicemp3, 1 - servicegst, 2 - serviceextep3, 3 - user)\n"
 	 " aacSwDecoding - (True, False)\n"
 	 " dtsSwDecoding - (True, False)\n"
 	 " wmaSwDecoding - (True, False)\n"

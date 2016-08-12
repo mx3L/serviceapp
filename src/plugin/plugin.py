@@ -64,7 +64,7 @@ for key in configServiceApp.exteplayer3.keys():
 def initServiceAppSettings():
 	for key in configServiceApp.gstplayer.keys():
 		if key == "servicemp3":
-			settingId = serviceapp_client.OPTIONS_SERVICEMP3_GSTPLAYER
+			settingId = serviceapp_client.OPTIONS_SERVICEMP3
 		elif key == "servicegstplayer":
 			settingId = serviceapp_client.OPTIONS_SERVICEGSTPLAYER
 		else:
@@ -84,7 +84,7 @@ def initServiceAppSettings():
 
 	for key in configServiceApp.exteplayer3.keys():
 		if key == "servicemp3":
-			settingId = serviceapp_client.OPTIONS_SERVICEMP3_EXTEPLAYER3
+			settingId = serviceapp_client.OPTIONS_SERVICEMP3
 		elif key == "serviceexteplayer3":
 			settingId = serviceapp_client.OPTIONS_SERVICEEXTEPLAYER3
 		else:
