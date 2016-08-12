@@ -11,7 +11,7 @@
 #include "myconsole.h"
 
 #ifndef eLog
- #define eLog(lvl,...) eDebug(__VA_ARGS__)
+ #define eLog(lvl,...)
 #endif
 
 enum
