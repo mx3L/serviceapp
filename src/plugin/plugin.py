@@ -51,8 +51,8 @@ for key in configServiceApp.gstplayer.keys():
 	configServiceApp.gstplayer[key].subtitleEnabled = ConfigBoolean(default=True)
 
 configServiceApp.exteplayer3 = ConfigSubDict()
-configServiceApp.exteplayer3["servicemp3"] = ConfigSubDict()
-configServiceApp.exteplayer3["serviceexteplayer3"] = ConfigSubDict()
+configServiceApp.exteplayer3["servicemp3"] = ConfigSubsection()
+configServiceApp.exteplayer3["serviceexteplayer3"] = ConfigSubsection()
 for key in configServiceApp.exteplayer3.keys():
 	configServiceApp.exteplayer3[key].aacSwDecoding = ConfigBoolean(default=False)
 	configServiceApp.exteplayer3[key].dtsSwDecoding = ConfigBoolean(default=False)
