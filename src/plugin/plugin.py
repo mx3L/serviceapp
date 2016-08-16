@@ -60,15 +60,20 @@ for key in configServiceApp.exteplayer3.keys():
 	configServiceApp.exteplayer3[key].lpcmInjection = ConfigBoolean(default=False)
 	configServiceApp.exteplayer3[key].downmix = ConfigBoolean(default=False)
 
+def keyToSettingId(key):
+	settingId = None
+	if key == "servicemp3":
+		settingId = serviceapp_client.OPTIONS_SERVICEMP3
+	elif key == "serviceexteplayer3":
+		settingId = serviceapp_client.OPTIONS_SERVICEEXTEPLAYER3
+	elif key == "servicegstplayer":
+		settingId = serviceapp_client.OPTIONS_SERVICEGSTPLAYER
+	return settingId
+
 
 def initServiceAppSettings():
 	for key in configServiceApp.gstplayer.keys():
-		if key == "servicemp3":
-			settingId = serviceapp_client.OPTIONS_SERVICEMP3
-		elif key == "servicegstplayer":
-			settingId = serviceapp_client.OPTIONS_SERVICEGSTPLAYER
-		else:
-			continue
+		settingId = keyToSettingId(key)
 		playerCfg = configServiceApp.gstplayer[key]
 		if playerCfg.sink.value == "original":
 			videoSink, audioSink = SINKS_DEFAULT
@@ -83,12 +88,7 @@ def initServiceAppSettings():
 		serviceapp_client.setGstreamerPlayerSettings(settingId, videoSink, audioSink, subtitleEnabled, bufferSize, bufferDuration)
 
 	for key in configServiceApp.exteplayer3.keys():
-		if key == "servicemp3":
-			settingId = serviceapp_client.OPTIONS_SERVICEMP3
-		elif key == "serviceexteplayer3":
-			settingId = serviceapp_client.OPTIONS_SERVICEEXTEPLAYER3
-		else:
-			continue
+		settingId = keyToSettingId(key)
 		playerCfg = configServiceApp.exteplayer3[key]
 		aacSwDecoding = playerCfg.aacSwDecoding.value
 		dtsSwDecoding = playerCfg.dtsSwDecoding.value
@@ -111,6 +111,7 @@ class ServiceAppSettings(ConfigListScreen, Screen):
 		Screen.__init__(self, session)
 		self.skinName = ["ServiceAppSettings", "Setup"]
 		ConfigListScreen.__init__(self, [], session)
+                self.setup_title = _("ServiceApp")
 		self.onLayoutFinish.append(self.initConfigList)
 		self.onClose.append(self.deInitConfig)
 		self["key_red"] = StaticText(_("Cancel"))
@@ -125,10 +126,13 @@ class ServiceAppSettings(ConfigListScreen, Screen):
 			}, -2)
 
 	def initConfigList(self):
-		configServiceApp.servicemp3.player.addNotifier(self.serviceMP3PlayerChanged, initial_call=False)
-		configServiceApp.servicemp3.replace.addNotifier(self.serviceMP3ReplacedChanged, initial_call=False)
+		configServiceApp.servicemp3.player.addNotifier(lambda x: self.buildConfigList(), initial_call=False)
+		configServiceApp.servicemp3.replace.addNotifier(lambda x: self.buildConfigList(), initial_call=False)
 		self.buildConfigList()
-		self.setTitle(_("ServiceApp"))
+
+	def deInitConfig(self):
+		del configServiceApp.servicemp3.player.notifiers[:]
+		del configServiceApp.servicemp3.replace.notifiers[:]
 
 	def gstPlayerOptions(self, gstPlayerOptionsCfg):
 		configList = [getConfigListEntry("  " + _("GstPlayer"), ConfigSelection([GSTPLAYER_VERSION or "not installed"], GSTPLAYER_VERSION or "not installed"))]
@@ -168,15 +172,7 @@ class ServiceAppSettings(ConfigListScreen, Screen):
 		self["config"].list = configList
 		self["config"].l.setList(configList)
 
-	def serviceMP3ReplacedChanged(self, configElement):
-		self.buildConfigList()
 
-	def serviceMP3PlayerChanged(self, configElement):
-		self.buildConfigList()
-
-	def deInitConfig(self):
-		configServiceApp.servicemp3.player.removeNotifier(self.serviceMP3PlayerChanged)
-		configServiceApp.servicemp3.replace.removeNotifier(self.serviceMP3ReplacedChanged)
 
 	def keyOk(self):
 		if configServiceApp.servicemp3.replace.isChanged():
