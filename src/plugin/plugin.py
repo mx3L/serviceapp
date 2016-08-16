@@ -41,6 +41,15 @@ configServiceApp.servicemp3.replace = ConfigBoolean(default=False, descriptions=
 configServiceApp.servicemp3.replace.value = serviceapp_client.isServiceMP3Replaced()
 configServiceApp.servicemp3.player = ConfigSelection(default="gstplayer", choices=playerChoices)
 
+configServiceApp.options = ConfigSubDict()
+configServiceApp.options["servicemp3"] = ConfigSubsection()
+configServiceApp.options["servicegstplayer"] = ConfigSubsection()
+configServiceApp.options["serviceexteplayer3"] = ConfigSubsection()
+for key in configServiceApp.options.keys():
+    configServiceApp.options[key].HLSExplorer = ConfigBoolean(default=True)
+    configServiceApp.options[key].autoSelectStream = ConfigBoolean(default=True)
+    configServiceApp.options[key].connectionSpeedInKb = ConfigInteger(9999999, limits=(0, 9999999))
+
 configServiceApp.gstplayer = ConfigSubDict()
 configServiceApp.gstplayer["servicemp3"] = ConfigSubsection()
 configServiceApp.gstplayer["servicegstplayer"] = ConfigSubsection()
@@ -72,6 +81,14 @@ def keyToSettingId(key):
 
 
 def initServiceAppSettings():
+	for key in configServiceApp.options.keys():
+		settingId = keyToSettingId(key)
+		serviceAppCfg = configServiceApp.options[key]
+		HLSExplorer = serviceAppCfg.HLSExplorer.value
+		autoSelectStream = serviceAppCfg.autoSelectStream.value
+		connectionSpeedInKb = serviceAppCfg.connectionSpeedInKb.value
+		serviceapp_client.setServiceAppSettings(settingId, HLSExplorer, autoSelectStream, connectionSpeedInKb)
+
 	for key in configServiceApp.gstplayer.keys():
 		settingId = keyToSettingId(key)
 		playerCfg = configServiceApp.gstplayer[key]
@@ -151,6 +168,13 @@ class ServiceAppSettings(ConfigListScreen, Screen):
 		configList.append(getConfigListEntry("  " + _("LPCM injection"), extEplayer3OptionsCfg.lpcmInjection, _("Software decoder use LPCM for injection (otherwise wav PCM will be used)")))
 		return configList
 
+	def serviceAppOptions(self, serviceAppOptionsCfg):
+		configList = []
+		configList.append(getConfigListEntry("  " + _("HLS Explorer"), serviceAppOptionsCfg.HLSExplorer, _("Turn on explorer to retrieve different quality streams from HLS variant playlist and select them via subservices.")))
+		configList.append(getConfigListEntry("  " + _("Auto select stream"), serviceAppOptionsCfg.autoSelectStream, _("Turn on auto-selection of streams according to set Connection speed.")))
+		configList.append(getConfigListEntry("  " + _("Connection speed"), serviceAppOptionsCfg.connectionSpeedInKb, _("Set connection speed in kb/s, according to which you want to have streams auto-selected")))
+		return configList
+
 	def buildConfigList(self):
 		configList = [getConfigListEntry(_("Enigma2 playback system"), configServiceApp.servicemp3.replace, _("Select the player who will be used for Enigma2 playback."))]
 		if configServiceApp.servicemp3.replace.value:
@@ -163,12 +187,15 @@ class ServiceAppSettings(ConfigListScreen, Screen):
 				configList += configListServiceMp3 + self.extEplayer3Options(configServiceApp.exteplayer3["servicemp3"])
 			else:
 				configList += configListServiceMp3
+			configList += self.serviceAppOptions(configServiceApp.options["servicemp3"])
 		configList.append(getConfigListEntry("", ConfigNothing()))
 		configList.append(getConfigListEntry(_("ServiceGstPlayer (%s)" % str(serviceapp_client.ID_SERVICEGSTPLAYER)), ConfigNothing()))
 		configList += self.gstPlayerOptions(configServiceApp.gstplayer["servicegstplayer"])
+                configList += self.serviceAppOptions(configServiceApp.options["servicegstplayer"])
 		configList.append(getConfigListEntry("", ConfigNothing()))
 		configList.append(getConfigListEntry(_("ServiceExtEplayer3 (%s)" % str(serviceapp_client.ID_SERVICEEXTEPLAYER3)), ConfigNothing()))
 		configList += self.extEplayer3Options(configServiceApp.exteplayer3["serviceexteplayer3"])
+                configList += self.serviceAppOptions(configServiceApp.options["serviceexteplayer3"])
 		self["config"].list = configList
 		self["config"].l.setList(configList)
 

@@ -1,22 +1,43 @@
 #ifndef __serviceapp_h
 #define __serviceapp_h
 
+#include <limits>
 #include <lib/service/iservice.h>
 #include <lib/base/ebase.h>
 #include <lib/base/message.h>
 #include <lib/base/thread.h>
 #include <lib/dvb/subtitle.h>
 
+#include "common.h"
 #include "extplayer.h"
+#include "m3u8.h"
 
+struct eServiceAppOptions
+{
+	bool HLSExplorer;
+	bool autoSelectStream;
+	unsigned int connectionSpeedInKb;
+	eServiceAppOptions():
+		HLSExplorer(true), 
+		autoSelectStream(true),
+		connectionSpeedInKb(std::numeric_limits<unsigned int>::max())
+	{};
+};
 
 class eServiceApp: public Object, public iPlayableService, public iPauseableService, public iSeekableService, 
-	public iAudioChannelSelection, public iAudioTrackSelection,  public iSubtitleOutput, public iServiceInformation
+	public iAudioChannelSelection, public iAudioTrackSelection,  public iSubtitleOutput, public iSubserviceList, public iServiceInformation
 {
 	DECLARE_REF(eServiceApp);
 
 	eServiceReference m_ref;
+
+	std::vector<eServiceReference> m_subserviceref_vec;
+	std::vector<M3U8StreamInfo> m_subservice_vec;
+	bool m_subservices_checked;
+	void fillSubservices();
+
 	Signal2<void,iPlayableService*,int> m_event;
+	eServiceAppOptions *options;
 	PlayerBackend *player;
 	BasePlayer *extplayer;
 	std::string cmd;
@@ -49,6 +70,8 @@ class eServiceApp: public Object, public iPlayableService, public iPauseableServ
 	ePtr<eServiceEvent> m_event_now, m_event_next;
 	void updateEpgCacheNowNext();
 #endif
+	HeaderMap getHeaders(const std::string& url);
+
 	void gotExtPlayerMessage(int message);
 
 public:
@@ -65,7 +88,7 @@ public:
 	RESULT audioTracks(ePtr<iAudioTrackSelection> &ptr) { ptr=this; return 0;};
 	RESULT audioChannel(ePtr<iAudioChannelSelection> &ptr) { ptr=this; return 0;};
 	RESULT info(ePtr<iServiceInformation> &ptr) { ptr=this; return 0;};
-	RESULT subServices(ePtr<iSubserviceList> &ptr){ ptr=0; return -1;};
+	RESULT subServices(ePtr<iSubserviceList> &ptr){ ptr=this; return 0;};
 	RESULT frontendInfo(ePtr<iFrontendInformation> &ptr){ ptr=0; return -1;};
 	RESULT timeshift(ePtr<iTimeshiftService> &ptr){ ptr=0; return -1;};
 	RESULT cueSheet(ePtr<iCueSheet> &ptr){ ptr=0; return -1;};
@@ -105,6 +128,10 @@ public:
 	RESULT disableSubtitles();
 	RESULT getCachedSubtitle(SubtitleTrack &track);
 	RESULT getSubtitleList(std::vector<SubtitleTrack> &subtitlelist);
+
+	// iSubserviceList
+	int getNumberOfSubservices();
+	RESULT getSubservice(eServiceReference &subservice, unsigned int n);
 
 	// iServiceInformation
 	RESULT getName(std::string &name);

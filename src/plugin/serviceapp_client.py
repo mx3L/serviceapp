@@ -51,6 +51,9 @@ def setUseUserSettings():
 	serviceapp.use_user_settings()
 
 
+def setServiceAppSettings(settingId, HLSExplorer, autoSelectStream, connectionSpeedInKb):
+	return serviceapp.serviceapp_set_setting(settingId, HLSExplorer, autoSelectStream, connectionSpeedInKb)
+
 def setGstreamerPlayerSettings(settingId, videoSink, audioSink, subtitleEnabled, bufferSize, bufferDuration):
 	return serviceapp.gstplayer_set_setting(settingId, videoSink, audioSink, subtitleEnabled, bufferSize, bufferDuration)
 
