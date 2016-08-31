@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
 DEPENDS = "enigma2"
 
-SRCREV = "6be7b41e2f6bbb700d3b0d85c365016b22eaf7d5"
+SRCREV = "761bb5f2048a2e983b7dc9fb1bc31de7e53471df"
 SRC_URI = "git://github.com/mx3L/serviceapp.git;branch=master"
 
 S = "${WORKDIR}/git"
@@ -20,8 +20,14 @@ EXTRA_OECONF = "\
 	"
 
 do_install_append() {
-	rm ${D}/usr/lib/enigma2/python/Plugins/Extensions/ServiceApp/*.pyc
+	rm ${D}${libdir}/enigma2/python/Plugins/Extensions/ServiceApp/*.pyc
 }
 
-FILES_${PN} = "${libdir}/enigma2/python/Plugins/Extensions/ServiceApp/"
-FILES_${PN}-dev = "${libdir}/enigma2/python/Plugins/Extensions/ServiceApp/serviceapp.la"
+FILES_${PN} = "\
+	${libdir}/enigma2/python/Plugins/Extensions/ServiceApp/*.pyo \
+	${libdir}/enigma2/python/Plugins/Extensions/ServiceApp/serviceapp.so"
+
+FILES_${PN}-dev = "\
+	${libdir}/enigma2/python/Plugins/Extensions/ServiceApp/*.py \
+	${libdir}/enigma2/python/Plugins/Extensions/ServiceApp/serviceapp.la"
+
