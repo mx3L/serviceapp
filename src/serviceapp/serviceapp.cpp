@@ -204,7 +204,7 @@ void eServiceApp::fillSubservices()
 	{
 		M3U8VariantsExplorer ve(m_ref.path, getHeaders(m_ref.path));
 		m_subservice_vec = ve.getStreams();
-		if (m_subservice_vec.size() < 0)
+		if (m_subservice_vec.empty())
 		{
 			eDebug("eServiceApp::fillSubservices - failed to retrieve subservices");
 		}
