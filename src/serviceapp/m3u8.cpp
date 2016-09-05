@@ -173,7 +173,7 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, const
         if (!contentTypeParsed)
         {
             char contenttype[33];
-            if (sscanf(lineBuffer, "Content-Type: %32s", contenttype) == 1)
+            if (sscanf(lineBuffer, "Content-Type: %32[a-zA-Z/.-]", contenttype) == 1)
             {
                 contentTypeParsed = true;
                 if (!strcasecmp(contenttype, "application/text")
