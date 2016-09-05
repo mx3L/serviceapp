@@ -212,15 +212,11 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, const
         if (!m3u8HeaderParsed)
         {
             // find M3U8 header
-            if (!result || strncmp(lineBuffer, M3U8_HEADER, strlen(M3U8_HEADER)))
-            {
-                continue;
-            }
-            else
+            if (result && !strncmp(lineBuffer, M3U8_HEADER, strlen(M3U8_HEADER)))
             {
                 m3u8HeaderParsed = true;
-                continue;
             }
+            continue;
         }
 
         if (!strncmp(lineBuffer, M3U8_MEDIA_SEQUENCE, strlen(M3U8_MEDIA_SEQUENCE)))
