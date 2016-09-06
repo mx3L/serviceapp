@@ -197,10 +197,7 @@ void eServiceApp::fillSubservices()
 	m_subservice_vec.clear();
 	m_subserviceref_vec.clear();
 
-	Url purl(m_ref.path);
-	std::string path = purl.path();
-	size_t delim_idx = path.rfind(".");
-	if(!purl.proto().compare("http") && delim_idx != std::string::npos && !path.compare(delim_idx, 5, ".m3u8"))
+        if (isM3U8Url(m_ref.path))
 	{
 		M3U8VariantsExplorer ve(m_ref.path, getHeaders(m_ref.path));
 		m_subservice_vec = ve.getStreams();

@@ -45,5 +45,7 @@ public:
     std::vector<M3U8StreamInfo> getStreams();
 
 };
+
+bool isM3U8Url(const std::string& url);
 #endif
 

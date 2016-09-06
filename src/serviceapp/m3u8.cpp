@@ -7,6 +7,17 @@
 #define M3U8_STREAM_INFO "#EXT-X-STREAM-INF"
 #define M3U8_MEDIA_SEQUENCE "#EXT-X-MEDIA-SEQUENCE"
 
+bool isM3U8Url(const std::string &url)
+{
+    Url purl(url);
+    std::string path = purl.path();
+    size_t delim_idx = path.rfind(".");
+    if(!purl.proto().compare("http") 
+            && delim_idx != std::string::npos
+            && !path.compare(delim_idx, 5, ".m3u8"))
+        return true;
+    return false;
+}
 
 int parse_attribute(char **ptr, char **key, char **value)
 {
