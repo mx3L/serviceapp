@@ -8,7 +8,7 @@
 #ifndef TEST
 #include <lib/base/wrappers.h>
 #else
-#include "test/wrappers.h"
+#include "wrappers.h"
 #endif
 
 #include "common.h"
