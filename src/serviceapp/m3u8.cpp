@@ -2,6 +2,7 @@
 #include <cstring>
 
 #define M3U8_HEADER "#EXTM3U"
+#define M3U8_HEADER_MAX_LINE 5
 
 #define M3U8_STREAM_INFO "#EXT-X-STREAM-INF"
 #define M3U8_MEDIA_SEQUENCE "#EXT-X-MEDIA-SEQUENCE"
@@ -120,6 +121,7 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, const
         return -1;
     }
     int lines = 0;
+    int contentLines = 0;
 
     int contentLength = 0;
     int contentSize = 0;
@@ -208,9 +210,17 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, const
             continue;
         }
 
+        contentLines++;
         contentSize += result + 1; // newline char
         if (!m3u8HeaderParsed)
         {
+            if (contentLines > M3U8_HEADER_MAX_LINE)
+            {
+                fprintf(stderr, "[%s] - invalid M3U8 playlist, '%s' header is not in first %d lines\n",
+                        __func__, M3U8_HEADER, M3U8_HEADER_MAX_LINE);
+                break;
+            }
+
             // find M3U8 header
             if (result && !strncmp(lineBuffer, M3U8_HEADER, strlen(M3U8_HEADER)))
             {
