@@ -178,12 +178,12 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, const
             if (sscanf(lineBuffer, "Content-Type: %32s", contenttype) == 1)
             {
                 contentTypeParsed = true;
-                if (!strcasecmp(contenttype, "application/text")
-                        || !strcasecmp(contenttype, "audio/x-mpegurl")
-                        || !strcasecmp(contenttype, "application/x-mpegurl")
-                        || !strcasecmp(contenttype, "application/vnd.apple.mpegurl")
-                        || !strcasecmp(contenttype, "audio/mpegurl")
-                        || !strcasecmp(contenttype, "application/m3u"))
+                if (!strncasecmp(contenttype, "application/text", 16)
+                        || !strncasecmp(contenttype, "audio/x-mpegurl", 15)
+                        || !strncasecmp(contenttype, "application/x-mpegurl", 21)
+                        || !strncasecmp(contenttype, "application/vnd.apple.mpegurl", 29)
+                        || !strncasecmp(contenttype, "audio/mpegurl", 13)
+                        || !strncasecmp(contenttype, "application/m3u", 15))
                 {
                     continue;
                 }
