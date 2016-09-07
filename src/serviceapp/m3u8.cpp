@@ -184,7 +184,7 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, const
             break;
         }
 
-        if (!contentLength && !m3u8HeaderParsed)
+        if (!contentLength && !contentStarted)
         {
             sscanf(lineBuffer, "Content-Length: %d", &contentLength);
         }
