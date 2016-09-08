@@ -196,8 +196,9 @@ void ExtEplayer3::handleJsonOutput(cJSON *json)
 	else if (!strcmp(key, "s_a"))
 	{
 		subtitleMessage s;
-		s.start = cJSON_GetObjectItem(value, "s")->valueint;
-		s.duration = cJSON_GetObjectItem(value, "e")->valueint - s.start;
+		s.start_ms = cJSON_GetObjectItem(value, "s")->valueint;
+		s.end_ms = cJSON_GetObjectItem(value, "e")->valueint;
+		s.duration_ms = s.end_ms - s.start_ms;
 		s.text = cJSON_GetObjectItem(value, "t")->valuestring;
 		recvSubtitleMessage(s);
 	}

@@ -205,8 +205,9 @@ void GstPlayer::handleJsonOutput(cJSON *json)
 	else if (!strcmp(key, "PLAYBACK_SUBTITLE"))
 	{
 		subtitleMessage s;
-		s.start = cJSON_GetObjectItem(value, "start")->valueint;
-		s.duration = cJSON_GetObjectItem(value, "duration")->valueint;
+		s.start_ms = cJSON_GetObjectItem(value, "start")->valueint;
+		s.duration_ms = cJSON_GetObjectItem(value, "duration")->valueint;
+		s.end_ms = s.start_ms + s.duration_ms;
 		s.text = cJSON_GetObjectItem(value, "text")->valuestring;
 		recvSubtitleMessage(s);
 	}

@@ -45,21 +45,10 @@ class eServiceApp: public Object, public iPlayableService, public iPauseableServ
 	bool m_paused;
 	int m_framerate, m_width, m_height, m_progressive;
 
-	struct subtitle_page_t
-	{
-		uint32_t start_ms;
-		uint32_t end_ms;
-		std::string text;
+	typedef std::map<uint32_t, subtitleMessage> subtitle_pages_map;
+	typedef std::pair<uint32_t, subtitleMessage> subtitle_pages_map_pair;
 
-		subtitle_page_t(uint32_t start_ms_in, uint32_t end_ms_in, const std::string& text_in)
-			: start_ms(start_ms_in), end_ms(end_ms_in), text(text_in)
-		{
-		}
-	};
-
-	typedef std::map<uint32_t, subtitle_page_t> subtitle_pages_map_t;
-	typedef std::pair<uint32_t, subtitle_page_t> subtitle_pages_map_pair_t;
-	subtitle_pages_map_t m_subtitle_pages;
+	subtitle_pages_map m_subtitle_pages;
 	ePtr<eTimer> m_subtitle_sync_timer;
 	iSubtitleUser *m_subtitle_widget;
 	void pullSubtitles();

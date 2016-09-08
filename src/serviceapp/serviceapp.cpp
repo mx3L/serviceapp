@@ -340,10 +340,9 @@ void eServiceApp::pullSubtitles()
 	while (!pulled.empty())
 	{
 		subtitleMessage sub = pulled.front();
-		uint32_t start_ms = sub.start * convert_fps + (delay / 90);
-		uint32_t end_ms = start_ms + sub.duration;
-		std::string line(sub.text);
-		m_subtitle_pages.insert(subtitle_pages_map_pair_t(end_ms, subtitle_page_t(start_ms, end_ms, line)));
+		sub.start_ms = sub.start_ms * convert_fps + (delay / 90);
+		sub.end_ms = sub.start_ms + sub.duration_ms;
+		m_subtitle_pages.insert(subtitle_pages_map_pair(sub.end_ms, sub));
 		pulled.pop();
 	}
 	m_subtitle_sync_timer->start(1, true);
@@ -353,7 +352,7 @@ void eServiceApp::pushSubtitles()
 {
 	pts_t running_pts = 0;
 	int32_t next_timer = 0, decoder_ms, start_ms, end_ms, diff_start_ms, diff_end_ms;
-	subtitle_pages_map_t::iterator current;
+	subtitle_pages_map::iterator current;
 
 	if (getPlayPosition(running_pts) < 0)
 	{

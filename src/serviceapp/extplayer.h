@@ -112,10 +112,11 @@ struct errorMessage
 
 struct subtitleMessage
 {
-	long int start;
-	long int duration;
+	uint32_t start_ms;
+	uint32_t duration_ms;
+	uint32_t end_ms;
 	std::string text;
-	subtitleMessage(): start(0), duration(0){};
+	subtitleMessage(): start_ms(0), duration_ms(0), end_ms(0){};
 };
 
 
