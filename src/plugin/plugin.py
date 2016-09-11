@@ -49,6 +49,7 @@ for key in configServiceApp.options.keys():
     configServiceApp.options[key].HLSExplorer = ConfigBoolean(default=True)
     configServiceApp.options[key].autoSelectStream = ConfigBoolean(default=True)
     configServiceApp.options[key].connectionSpeedInKb = ConfigInteger(9999999, limits=(0, 9999999))
+    configServiceApp.options[key].autoTurnOnSubtitles = ConfigBoolean(True)
 
 configServiceApp.gstplayer = ConfigSubDict()
 configServiceApp.gstplayer["servicemp3"] = ConfigSubsection()
@@ -84,10 +85,11 @@ def initServiceAppSettings():
 	for key in configServiceApp.options.keys():
 		settingId = keyToSettingId(key)
 		serviceAppCfg = configServiceApp.options[key]
+		autoTurnOnSubtitles = serviceAppCfg.autoTurnOnSubtitles.value
 		HLSExplorer = serviceAppCfg.HLSExplorer.value
 		autoSelectStream = serviceAppCfg.autoSelectStream.value
 		connectionSpeedInKb = serviceAppCfg.connectionSpeedInKb.value
-		serviceapp_client.setServiceAppSettings(settingId, HLSExplorer, autoSelectStream, connectionSpeedInKb)
+		serviceapp_client.setServiceAppSettings(settingId, HLSExplorer, autoSelectStream, connectionSpeedInKb, autoTurnOnSubtitles)
 
 	for key in configServiceApp.gstplayer.keys():
 		settingId = keyToSettingId(key)
@@ -170,6 +172,7 @@ class ServiceAppSettings(ConfigListScreen, Screen):
 
 	def serviceAppOptions(self, serviceAppOptionsCfg):
 		configList = []
+		configList.append(getConfigListEntry("  " + _("Auto turn on subtitles"), serviceAppOptionsCfg.autoTurnOnSubtitles, _("Automatically turn on subtitles if available.")))
 		configList.append(getConfigListEntry("  " + _("HLS Explorer"), serviceAppOptionsCfg.HLSExplorer, _("Turn on explorer to retrieve different quality streams from HLS variant playlist and select them via subservices.")))
 		configList.append(getConfigListEntry("  " + _("Auto select stream"), serviceAppOptionsCfg.autoSelectStream, _("Turn on auto-selection of streams according to set Connection speed.")))
 		configList.append(getConfigListEntry("  " + _("Connection speed"), serviceAppOptionsCfg.connectionSpeedInKb, _("Set connection speed in kb/s, according to which you want to have streams auto-selected")))

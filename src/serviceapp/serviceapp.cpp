@@ -750,8 +750,7 @@ RESULT eServiceApp::disableSubtitles()
 
 RESULT eServiceApp::getCachedSubtitle(struct SubtitleTrack &track)
 {
-	bool autoturnon = eConfigManager::getConfigBoolValue("config.subtitles.pango_autoturnon", true);
-	if (!autoturnon)
+	if (!options->autoTurnOnSubtitles)
 	{
 		eDebug("eServiceApp::getCachedSubtitle - auto-turning disabled in config");
 		return -1;
@@ -1225,12 +1224,13 @@ serviceapp_set_setting(PyObject *self, PyObject *args)
 {
 	bool ret = true;
 
+	bool autoTurnOnSubtitles;
 	int settingId;
 	bool HLSExplorer;
 	bool autoSelectStream;
 	int32_t connectionSpeedInKb;
 
-	if (!PyArg_ParseTuple(args, "ibbI", &settingId, &HLSExplorer, &autoSelectStream, &connectionSpeedInKb))
+	if (!PyArg_ParseTuple(args, "ibbIb", &settingId, &HLSExplorer, &autoSelectStream, &connectionSpeedInKb, &autoTurnOnSubtitles))
 		return NULL;
 	
 	eServiceAppOptions *options = NULL;
@@ -1259,10 +1259,11 @@ serviceapp_set_setting(PyObject *self, PyObject *args)
 	}
 	if (options != NULL)
 	{
+		options->autoTurnOnSubtitles = autoTurnOnSubtitles;
 		options->HLSExplorer = HLSExplorer;
 		options->autoSelectStream = autoSelectStream;
 		options->connectionSpeedInKb = connectionSpeedInKb;
-        }
+	}
 	return Py_BuildValue("b", ret);
 }
 
@@ -1296,6 +1297,7 @@ static PyMethodDef serviceappMethods[] = {
 	{"serviceapp_set_setting", serviceapp_set_setting, METH_VARARGS,
 	 "set serviceapp settings (setting_id, processHLSPlaylist, preferredHLSBitrate\n\n"
 	 " setting_id - (0 - servicemp3, 1 - servicegst, 2 - serviceextep3, 3 - user)\n"
+	 " autoTurnOnSubtitles - auto turn on subtitles if available (True, False)\n"
 	 " HLSExplorer - defines if HLS explorer will be used to retrieve streams from HLS master playlist (True, False))\n"
 	 " autoSelectStream - if there are more streams available, it defines if stream will be auto-selected according to connectionSpeedInKb (True, False)\n"
 	 " connectionSpeedInKb - defines bitrate in kilobits/s according to which will be selected stream from playlist <0, max(int32_t)>\n"

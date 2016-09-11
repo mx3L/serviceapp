@@ -14,10 +14,12 @@
 
 struct eServiceAppOptions
 {
+	bool autoTurnOnSubtitles;
 	bool HLSExplorer;
 	bool autoSelectStream;
 	unsigned int connectionSpeedInKb;
 	eServiceAppOptions():
+		autoTurnOnSubtitles(true),
 		HLSExplorer(true), 
 		autoSelectStream(true),
 		connectionSpeedInKb(std::numeric_limits<unsigned int>::max())
