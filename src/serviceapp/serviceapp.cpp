@@ -1295,12 +1295,12 @@ static PyMethodDef serviceappMethods[] = {
 	 " downmix - (True, False)\n"
 	},
 	{"serviceapp_set_setting", serviceapp_set_setting, METH_VARARGS,
-	 "set serviceapp settings (setting_id, processHLSPlaylist, preferredHLSBitrate\n\n"
+	 "set serviceapp settings (setting_id, HLSExplorer, autoSelectStream, connectionSpeedInKb, autoTurnOnSubtitles\n\n"
 	 " setting_id - (0 - servicemp3, 1 - servicegst, 2 - serviceextep3, 3 - user)\n"
-	 " autoTurnOnSubtitles - auto turn on subtitles if available (True, False)\n"
 	 " HLSExplorer - defines if HLS explorer will be used to retrieve streams from HLS master playlist (True, False))\n"
 	 " autoSelectStream - if there are more streams available, it defines if stream will be auto-selected according to connectionSpeedInKb (True, False)\n"
 	 " connectionSpeedInKb - defines bitrate in kilobits/s according to which will be selected stream from playlist <0, max(int32_t)>\n"
+	 " autoTurnOnSubtitles - auto turn on subtitles if available (True, False)\n"
 	},
 	 {NULL,NULL,0,NULL}
 };
