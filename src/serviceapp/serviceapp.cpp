@@ -130,6 +130,8 @@ eServiceApp::eServiceApp(eServiceReference ref):
 	m_subtitle_widget = 0;
 	m_subtitle_sync_timer = eTimer::create(eApp);
 	CONNECT(m_subtitle_sync_timer->timeout, eServiceApp::pushSubtitles);
+	m_event_updated_info_timer = eTimer::create(eApp);
+	CONNECT(m_event_updated_info_timer->timeout, eServiceApp::signalEventUpdatedInfo);
 
 #ifdef HAVE_EPG
 	m_nownext_timer = eTimer::create(eApp);
@@ -406,6 +408,12 @@ exit:
 	m_subtitle_sync_timer->start(next_timer, true);
 }
 
+void eServiceApp::signalEventUpdatedInfo()
+{
+	eDebug("eServiceApp::signalEventUpdatedInfo");
+	m_event(this, evUpdatedInfo);
+}
+
 void eServiceApp::gotExtPlayerMessage(int message)
 {
 	switch (message)
@@ -414,6 +422,7 @@ void eServiceApp::gotExtPlayerMessage(int message)
 			eDebug("eServiceApp::gotExtPlayerMessage - start");
 			m_event(this, evUpdatedEventInfo);
 			m_event(this, evStart);
+			m_event_updated_info_timer->start(1000, true);
 #ifdef HAVE_EPG
 			updateEpgCacheNowNext();
 #endif
@@ -741,8 +750,25 @@ RESULT eServiceApp::disableSubtitles()
 
 RESULT eServiceApp::getCachedSubtitle(struct SubtitleTrack &track)
 {
-	eDebug("eServiceApp::getCachedSubtitle");
-	return -1;
+	bool autoturnon = eConfigManager::getConfigBoolValue("config.subtitles.pango_autoturnon", true);
+	if (!autoturnon)
+	{
+		eDebug("eServiceApp::getCachedSubtitle - auto-turning disabled in config");
+		return -1;
+	}
+	int trackNum = player->subtitleGetNumberOfTracks(500);
+	subtitleStream s;
+	if (trackNum <= 0 || player->subtitleGetTrackInfo(s, 0) < 0)
+	{
+		eDebug("eServiceApp::getCachedSubtitle - no subtitles available");
+		return -1;
+	}
+	track.type = 2;
+	track.pid = 0;
+	track.page_number = 4;
+	track.magazine_number = 0;
+	track.language_code = s.language_code;
+	return 0;
 }
 
 RESULT eServiceApp::getSubtitleList(std::vector<struct SubtitleTrack> &subtitlelist)

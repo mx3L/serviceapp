@@ -51,8 +51,10 @@ class eServiceApp: public Object, public iPlayableService, public iPauseableServ
 	subtitle_pages_map m_subtitle_pages;
 	ePtr<eTimer> m_subtitle_sync_timer;
 	iSubtitleUser *m_subtitle_widget;
+	ePtr<eTimer> m_event_updated_info_timer;
 	void pullSubtitles();
 	void pushSubtitles();
+	void signalEventUpdatedInfo();
 
 #ifdef HAVE_EPG
 	ePtr<eTimer> m_nownext_timer;
