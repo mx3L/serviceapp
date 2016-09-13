@@ -623,6 +623,20 @@ RESULT eServiceApp::getLength(pts_t& pts)
 RESULT eServiceApp::seekTo(pts_t to)
 {
 	eDebug("eServiceApp::seekTo - position = %lld", to);
+	pts_t length;
+	if (to < 0)
+	{
+		to = 0;
+	}
+	else if (getLength(length) < 0)
+	{
+		eWarning("eServiceApp::seekTo - cannot get length");
+	}
+	else if (length > 0 && to > length)
+	{
+		stop();
+		return 0;
+	}
 	player->seekTo(int(to/90000));
 	return 0;
 }
@@ -630,25 +644,13 @@ RESULT eServiceApp::seekTo(pts_t to)
 RESULT eServiceApp::seekRelative(int direction, pts_t to)
 {
 	eDebug("eServiceApp::seekRelative - position = %lld", direction*to);
-	int length = 0;
-	int position, seekto;
-	if (player->getPlayPosition(position) < 0)
+	pts_t position;
+	if (getPlayPosition(position) < 0)
 	{
+		eWarning("eServiceApp::seekRelative - cannot get play position");
 		return -1;
 	}
-	player->getLength(length);
-	seekto = position + (to / 90 * direction);
-	if (length > 0 && seekto > length)
-	{
-		stop();
-		return 0;
-	}
-	else if (seekto < 0)
-	{
-		seekto = 0;
-	}
-	player->seekTo(int(seekto / 1000));
-	return 0;
+	return seekTo(position + (to * direction));
 }
 
 RESULT eServiceApp::getPlayPosition(pts_t& pts)
