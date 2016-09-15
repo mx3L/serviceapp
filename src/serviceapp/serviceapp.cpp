@@ -330,20 +330,11 @@ void eServiceApp::updateEpgCacheNowNext()
 void eServiceApp::pullSubtitles()
 {
 	std::queue<subtitleMessage> pulled;
-	float convert_fps = 1.0;
-	int delay = eConfigManager::getConfigIntValue("config.subtitles.pango_subtitles_delay");
-	int subtitle_fps = eConfigManager::getConfigIntValue("config.subtitles.pango_subtitles_fps");
-	if (subtitle_fps > 1 && m_framerate > 0)
-	{
-		convert_fps = subtitle_fps / (double)m_framerate;
-	}
 	player->getSubtitles(pulled);
 	eDebug("eServiceApp::pullSubtitles - pulling %d subtitles", pulled.size());
 	while (!pulled.empty())
 	{
 		subtitleMessage sub = pulled.front();
-		sub.start_ms = sub.start_ms * convert_fps + (delay / 90);
-		sub.end_ms = sub.start_ms + sub.duration_ms;
 		m_subtitle_pages.insert(subtitle_pages_map_pair(sub.end_ms, sub));
 		pulled.pop();
 	}
