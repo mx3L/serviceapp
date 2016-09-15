@@ -519,7 +519,7 @@ void PlayerBackend::recvStarted(int status)
 	if (playbackStarted || status)
 		return;
 	playbackStarted = true;
-	mTimer->start(200, false);
+	mTimer->start(mTimerDelay, false);
 	mMessageMain.send(Message(Message::start));
 }
 
@@ -552,7 +552,7 @@ void PlayerBackend::recvResumed(int status)
 	eDebug("PlayerBackend::recvResume - status = %d", status);
 	if (!status)
 	{
-		mTimer->start(200, false);
+		mTimer->start(mTimerDelay, false);
 		mMessageMain.send(Message(Message::resume));
 	}
 }

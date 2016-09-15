@@ -267,6 +267,7 @@ class PlayerBackend: public Object, public eThread, public eMainloop, public iPl
 
 	eFixedMessagePump<Message> mMessageMain, mMessageThread;
 	ePtr<eTimer> mTimer;
+	unsigned int mTimerDelay;
 
 	eSingleLock mSubLock;
 	
@@ -319,7 +320,8 @@ public:
 		pCurrentSubtitle(NULL),
 		pErrorMessage(NULL),
 		mMessageMain(eApp, 1),
-		mMessageThread(this, 1)
+		mMessageThread(this, 1),
+		mTimerDelay(100) // updated play position timer
 	{
 		eDebug("PlayerBackend");
 		pPlayer->setCallback(this);
