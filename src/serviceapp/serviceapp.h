@@ -50,7 +50,8 @@ class eServiceApp: public Object, public iPlayableService, public iPauseableServ
 	typedef std::map<uint32_t, subtitleMessage> subtitle_pages_map;
 	typedef std::pair<uint32_t, subtitleMessage> subtitle_pages_map_pair;
 
-	subtitle_pages_map m_subtitle_pages;
+	subtitle_pages_map m_embedded_subtitle_pages;
+	subtitle_pages_map const *m_subtitle_pages;
 	ePtr<eTimer> m_subtitle_sync_timer;
 	iSubtitleUser *m_subtitle_widget;
 	ePtr<eTimer> m_event_updated_info_timer;

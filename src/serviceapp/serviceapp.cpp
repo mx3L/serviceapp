@@ -120,7 +120,8 @@ eServiceApp::eServiceApp(eServiceReference ref):
 	m_framerate(-1),
 	m_width(-1),
 	m_height(-1),
-	m_progressive(-1)
+	m_progressive(-1),
+	m_subtitle_pages(0)
 {
 	eDebug("eServiceApp");
 	options = createOptions(ref);
@@ -335,7 +336,7 @@ void eServiceApp::pullSubtitles()
 	while (!pulled.empty())
 	{
 		subtitleMessage sub = pulled.front();
-		m_subtitle_pages.insert(subtitle_pages_map_pair(sub.end_ms, sub));
+		m_embedded_subtitle_pages.insert(subtitle_pages_map_pair(sub.end_ms, sub));
 		pulled.pop();
 	}
 	m_subtitle_sync_timer->start(1, true);
@@ -345,7 +346,10 @@ void eServiceApp::pushSubtitles()
 {
 	pts_t running_pts = 0;
 	int32_t next_timer = 0, decoder_ms, start_ms, end_ms, diff_start_ms, diff_end_ms;
-	subtitle_pages_map::iterator current;
+	subtitle_pages_map::const_iterator current;
+
+	if (!m_subtitle_pages)
+		return;
 
 	if (getPlayPosition(running_pts) < 0)
 	{
@@ -354,7 +358,7 @@ void eServiceApp::pushSubtitles()
 	}
 	decoder_ms = running_pts / 90;
 
-	for (current = m_subtitle_pages.lower_bound(decoder_ms); current != m_subtitle_pages.end(); current++)
+	for (current = m_subtitle_pages->lower_bound(decoder_ms); current != m_subtitle_pages->end(); current++)
 	{
 		start_ms = current->second.start_ms;
 		end_ms = current->second.end_ms;
@@ -725,7 +729,8 @@ RESULT eServiceApp::enableSubtitles(iSubtitleUser *user, struct SubtitleTrack &t
 {
 	eDebug("eServiceApp::enableSubtitles - track = %d", track.pid);
 	m_subtitle_sync_timer->stop();
-	m_subtitle_pages.clear();
+	m_embedded_subtitle_pages.clear();
+	m_subtitle_pages = &m_embedded_subtitle_pages;
 	player->subtitleSelectTrack(track.pid);
 	m_subtitle_widget = user;
 	return 0;
@@ -735,7 +740,8 @@ RESULT eServiceApp::disableSubtitles()
 {
 	eDebug("eServiceApp::disableSubtitles");
 	m_subtitle_sync_timer->stop();
-	m_subtitle_pages.clear();
+	m_embedded_subtitle_pages.clear();
+	m_subtitle_pages = NULL;
 	if (m_subtitle_widget) m_subtitle_widget->destroy();
 	m_subtitle_widget = 0;
 	return 0;
