@@ -52,6 +52,24 @@ void Url::parseUrl(std::string url)
     m_path = path;
 }
 
+void splitExtension(const std::string &path, std::string &basename, std::string &extension)
+{
+    size_t filename_idx = path.find_last_of('/');
+    size_t extension_idx = path.find_last_of('.');
+    bool has_extension = (extension_idx != std::string::npos
+            && (filename_idx == std::string::npos || extension_idx > filename_idx));
+    if (has_extension)
+    {
+        basename = path.substr(0, extension_idx);
+        extension = path.substr(extension_idx);
+    }
+    else
+    {
+        basename = path;
+        extension = "";
+    }
+}
+
 static const uint8_t iso8859_2_unused_utf8[10][2] = {
     {0xc2,0x8a},{0xc2,0x8c},{0xc2,0x8d},{0xc2,0x8e},{0xc2,0x8f},
     {0xc2,0x9a},{0xc2,0x9c},{0xc2,0x9d},{0xc2,0x9e},{0xc2,0x9f}};

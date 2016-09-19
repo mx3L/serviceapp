@@ -43,6 +43,8 @@ public:
     std::string fragment(){return m_fragment;}
 };
 
+void splitExtension(const std::string &path, std::string &basename, std::string &extension);
+
 #ifndef NO_UCHARDET
 int detectEncoding(const std::string &content, std::string &encoding);
 #endif

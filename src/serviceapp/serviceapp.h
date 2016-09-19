@@ -15,11 +15,13 @@
 struct eServiceAppOptions
 {
 	bool autoTurnOnSubtitles;
+	bool preferEmbeddedSubtitles;
 	bool HLSExplorer;
 	bool autoSelectStream;
 	unsigned int connectionSpeedInKb;
 	eServiceAppOptions():
 		autoTurnOnSubtitles(true),
+		preferEmbeddedSubtitles(true),
 		HLSExplorer(true), 
 		autoSelectStream(true),
 		connectionSpeedInKb(std::numeric_limits<unsigned int>::max())
@@ -49,12 +51,21 @@ class eServiceApp: public Object, public iPlayableService, public iPauseableServ
 
 	typedef std::map<uint32_t, subtitleMessage> subtitle_pages_map;
 	typedef std::pair<uint32_t, subtitleMessage> subtitle_pages_map_pair;
+	typedef std::map<SubtitleTrack, subtitleStream> subtitle_track_stream_map;
+
+	std::vector<SubtitleTrack> m_subtitle_tracks;
+	std::vector<subtitleStream> m_subtitle_streams;
 
 	subtitle_pages_map m_embedded_subtitle_pages;
 	subtitle_pages_map const *m_subtitle_pages;
+	SubtitleTrack const *m_selected_subtitle_track;
 	ePtr<eTimer> m_subtitle_sync_timer;
 	iSubtitleUser *m_subtitle_widget;
+	SubtitleManager m_subtitle_manager;
 	ePtr<eTimer> m_event_updated_info_timer;
+
+	bool isEmbeddedTrack(const SubtitleTrack &track);
+	bool isExternalTrack(const SubtitleTrack &track);
 	void pullSubtitles();
 	void pushSubtitles();
 	void signalEventUpdatedInfo();

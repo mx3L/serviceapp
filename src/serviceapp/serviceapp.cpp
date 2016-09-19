@@ -121,7 +121,8 @@ eServiceApp::eServiceApp(eServiceReference ref):
 	m_width(-1),
 	m_height(-1),
 	m_progressive(-1),
-	m_subtitle_pages(0)
+	m_subtitle_pages(0),
+	m_selected_subtitle_track(0)
 {
 	eDebug("eServiceApp");
 	options = createOptions(ref);
@@ -327,6 +328,15 @@ void eServiceApp::updateEpgCacheNowNext()
 }
 #endif
 
+bool eServiceApp::isEmbeddedTrack(const SubtitleTrack &track)
+{
+	return (track.type == 2 && track.page_number == 1);
+}
+
+bool eServiceApp::isExternalTrack(const SubtitleTrack &track)
+{
+	return (track.type == 2 && track.page_number == 4);
+}
 
 void eServiceApp::pullSubtitles()
 {
@@ -480,7 +490,8 @@ void eServiceApp::gotExtPlayerMessage(int message)
 		}
 		case PlayerMessage::subtitleAvailable:
 			eDebug("eServiceApp::gotExtPlayerMessage - subtitleAvailable");
-			pullSubtitles();
+			if (m_selected_subtitle_track && isEmbeddedTrack(*m_selected_subtitle_track))
+				pullSubtitles();
 			break;
 		default:
 			eDebug("eServiceApp::gotExtPlayerMessage - unhandled message");
@@ -727,11 +738,57 @@ RESULT eServiceApp::selectChannel(int i)
 // __iSubtitleOutput
 RESULT eServiceApp::enableSubtitles(iSubtitleUser *user, struct SubtitleTrack &track)
 {
-	eDebug("eServiceApp::enableSubtitles - track = %d", track.pid);
 	m_subtitle_sync_timer->stop();
-	m_embedded_subtitle_pages.clear();
-	m_subtitle_pages = &m_embedded_subtitle_pages;
-	player->subtitleSelectTrack(track.pid);
+	m_subtitle_pages = NULL;
+	m_selected_subtitle_track = NULL;
+	ssize_t track_pos = -1;
+
+	std::vector<SubtitleTrack>::const_iterator it(m_subtitle_tracks.begin());
+	for (size_t i = 0; it != m_subtitle_tracks.end(); it++,i++)
+	{
+		if (it->pid == track.pid
+				&& it->type == track.type
+				&& it->page_number == track.page_number
+				&& it->magazine_number == track.magazine_number
+				&& it->language_code == track.language_code)
+		{
+			track_pos = i;
+			break;
+		}
+	}
+	if (track_pos == -1)
+	{
+		eWarning("eServiceApp::enableSubtitles - track is not in the map!");
+		return -1;
+	}
+	if (isEmbeddedTrack(track))
+	{
+		eDebug("eServiceApp::enableSubtitles - track = %d (embedded)", track.pid);
+		m_embedded_subtitle_pages.clear();
+		m_subtitle_pages = &m_embedded_subtitle_pages;
+		player->subtitleSelectTrack(track.pid);
+	}
+	else if (isExternalTrack(track))
+	{
+		eDebug("eServiceApp::enableSubtitles - track = %d (external)", track.pid);
+		subtitleStream s = m_subtitle_streams[track_pos];
+		m_subtitle_pages = m_subtitle_manager.load(s.path);
+		if (m_subtitle_pages != NULL)
+		{
+			m_subtitle_sync_timer->start(1, true);
+		}
+		else
+		{
+			eWarning("eServiceApp::enableSubtitles - cannot load external subtitles");
+			return -1;
+		}
+	}
+	else
+	{
+		eWarning("eServiceApp::enableSubtitles - not supported track page_number %d", track.page_number);
+		return -1;
+	}
+	m_selected_subtitle_track = &(m_subtitle_tracks[track_pos]);
 	m_subtitle_widget = user;
 	return 0;
 }
@@ -742,6 +799,7 @@ RESULT eServiceApp::disableSubtitles()
 	m_subtitle_sync_timer->stop();
 	m_embedded_subtitle_pages.clear();
 	m_subtitle_pages = NULL;
+	m_selected_subtitle_track = NULL;
 	if (m_subtitle_widget) m_subtitle_widget->destroy();
 	m_subtitle_widget = 0;
 	return 0;
@@ -754,38 +812,82 @@ RESULT eServiceApp::getCachedSubtitle(struct SubtitleTrack &track)
 		eDebug("eServiceApp::getCachedSubtitle - auto-turning disabled in config");
 		return -1;
 	}
-	int trackNum = player->subtitleGetNumberOfTracks(500);
-	subtitleStream s;
-	if (trackNum <= 0 || player->subtitleGetTrackInfo(s, 0) < 0)
+	std::vector<struct SubtitleTrack> tracks;
+	if (getSubtitleList(tracks) < 0 || tracks.empty())
 	{
 		eDebug("eServiceApp::getCachedSubtitle - no subtitles available");
 		return -1;
 	}
-	track.type = 2;
-	track.pid = 0;
-	track.page_number = 4;
-	track.magazine_number = 0;
-	track.language_code = s.language_code;
+	std::vector<struct SubtitleTrack>::const_iterator it = tracks.begin();
+	// TODO consider language setting
+	track = *it;
+	for (; it!=tracks.end(); it++)
+	{
+		if (options->preferEmbeddedSubtitles && isEmbeddedTrack(*it))
+		{
+			eDebug("eServiceApp::getCachedSubtitle - found preferred embedded subtitle");
+			track = *it;
+			break;
+		}
+		else if(!options->preferEmbeddedSubtitles && isExternalTrack(*it))
+		{
+			eDebug("eServiceApp::getCachedSubtitle - found preferred external subtitle");
+			track = *it;
+			break;
+		}
+	}
 	return 0;
 }
 
 RESULT eServiceApp::getSubtitleList(std::vector<struct SubtitleTrack> &subtitlelist)
 {
-	int trackNum = player->subtitleGetNumberOfTracks(500);
-	eDebug("eServiceApp::getSubtitleList - found %d tracks", trackNum);
-	for (int i = 0; i < trackNum; i++)
+	m_subtitle_tracks.clear();
+	m_subtitle_streams.clear();
+	int track_num = player->subtitleGetNumberOfTracks(500);
+	eDebug("eServiceApp::getSubtitleList - found %d of embedded tracks", track_num);
+	for (int i = 0; i < track_num; i++)
 	{
 		subtitleStream s;
 		if (player->subtitleGetTrackInfo(s, i) < 0)
 			continue;
+		m_subtitle_streams.push_back(s);
+
 		struct SubtitleTrack track;
-		track.type = 2;
+		// look in AudioSelection.py
+		track.type = 2; // non DVB/teletext
 		track.pid = i;
-		// assume SRT, it really doesn't matter
-		track.page_number = 4;
+		track.page_number = 1; // embedded
 		track.magazine_number = 0;
 		track.language_code = s.language_code;
 		subtitlelist.push_back(track);
+		m_subtitle_tracks.push_back(track);
+	}
+	std::string basename, extension;
+	splitExtension(m_ref.path, basename, extension);
+	std::string subtitle_path(basename + ".srt");
+	// TODO 
+	//
+	// - look for more subtitles, i.e look in "Subtitles" directory
+	// look for other subtitles in playpath directory.
+	//
+	// - try to find out language code from filename if possible
+	//
+	// - probably whole thing should be moved to manager
+	if (!access(subtitle_path.c_str(), F_OK))
+	{
+		eDebug("eServiceApp::getSubtitleList - found external track");
+		subtitleStream s;
+		s.path = subtitle_path;
+		m_subtitle_streams.push_back(s);
+
+		struct SubtitleTrack track;
+		track.type = 2;
+		track.pid = subtitlelist.size();
+		track.page_number = 4; // SRT
+		track.magazine_number = 0;
+		track.language_code = "unk";
+		subtitlelist.push_back(track);
+		m_subtitle_tracks.push_back(track);
 	}
 	return 0;
 }
