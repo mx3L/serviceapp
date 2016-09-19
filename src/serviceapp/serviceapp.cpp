@@ -122,7 +122,9 @@ eServiceApp::eServiceApp(eServiceReference ref):
 	m_height(-1),
 	m_progressive(-1),
 	m_subtitle_pages(0),
-	m_selected_subtitle_track(0)
+	m_selected_subtitle_track(0),
+	m_prev_decoder_time(-1),
+	m_decoder_time_valid_state(0)
 {
 	eDebug("eServiceApp");
 	options = createOptions(ref);
@@ -363,8 +365,31 @@ void eServiceApp::pushSubtitles()
 
 	if (getPlayPosition(running_pts) < 0)
 	{
+		m_decoder_time_valid_state = 0;
 		next_timer = 50;
 		goto exit;
+	}
+	if (m_decoder_time_valid_state < 3)
+	{
+		m_decoder_time_valid_state++;
+		// this happens after we start seeking operation
+		// decoder pts is not updated, we have to wait
+		// for seek to finish.
+		if (m_prev_decoder_time == running_pts)
+		{
+			m_decoder_time_valid_state = 0;
+		}
+		if (m_decoder_time_valid_state < 3)
+		{
+			// eDebug("eServiceApp::pushSubtitles - waiting for clock to stabilise: valid=%d, prev=%lld,current=%lld",
+			//		m_decoder_time_valid_state, m_prev_decoder_time, decoder_ms);
+			m_prev_decoder_time = running_pts;
+			// we are updating play position every 100ms in extplayer
+			// so to see any progress in decoder_ms we have to wait a little longer
+			next_timer = 110;
+			goto exit;
+		}
+		// eDebug("eServiceApp::pushSubtitles - push subtitles, clock stable");
 	}
 	decoder_ms = running_pts / 90;
 
@@ -644,6 +669,10 @@ RESULT eServiceApp::seekTo(pts_t to)
 		return 0;
 	}
 	player->seekTo(int(to/90000));
+
+	m_prev_decoder_time = -1;
+	m_decoder_time_valid_state = 0;
+	m_subtitle_sync_timer->start(1, true);
 	return 0;
 }
 
@@ -741,6 +770,10 @@ RESULT eServiceApp::enableSubtitles(iSubtitleUser *user, struct SubtitleTrack &t
 	m_subtitle_sync_timer->stop();
 	m_subtitle_pages = NULL;
 	m_selected_subtitle_track = NULL;
+
+	m_decoder_time_valid_state = 0;
+	m_prev_decoder_time = -1;
+
 	ssize_t track_pos = -1;
 
 	std::vector<SubtitleTrack>::const_iterator it(m_subtitle_tracks.begin());
@@ -802,6 +835,9 @@ RESULT eServiceApp::disableSubtitles()
 	m_selected_subtitle_track = NULL;
 	if (m_subtitle_widget) m_subtitle_widget->destroy();
 	m_subtitle_widget = 0;
+
+	m_decoder_time_valid_state = 0;
+	m_prev_decoder_time = -1;
 	return 0;
 }
 
