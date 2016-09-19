@@ -123,6 +123,7 @@ eServiceApp::eServiceApp(eServiceReference ref):
 	m_progressive(-1),
 	m_subtitle_pages(0),
 	m_selected_subtitle_track(0),
+	m_prev_subtitle_fps(1),
 	m_prev_decoder_time(-1),
 	m_decoder_time_valid_state(0)
 {
@@ -330,6 +331,25 @@ void eServiceApp::updateEpgCacheNowNext()
 }
 #endif
 
+ssize_t eServiceApp::getTrackPosition(const SubtitleTrack &track)
+{
+	ssize_t track_pos = -1;
+	std::vector<SubtitleTrack>::const_iterator it(m_subtitle_tracks.begin());
+	for (size_t i = 0; it != m_subtitle_tracks.end(); it++,i++)
+	{
+		if (it->pid == track.pid
+				&& it->type == track.type
+				&& it->page_number == track.page_number
+				&& it->magazine_number == track.magazine_number
+				&& it->language_code == track.language_code)
+		{
+			track_pos = i;
+			break;
+		}
+	}
+	return track_pos;
+}
+
 bool eServiceApp::isEmbeddedTrack(const SubtitleTrack &track)
 {
 	return (track.type == 2 && track.page_number == 1);
@@ -359,6 +379,23 @@ void eServiceApp::pushSubtitles()
 	pts_t running_pts = 0;
 	int32_t next_timer = 0, decoder_ms, start_ms, end_ms, diff_start_ms, diff_end_ms;
 	subtitle_pages_map::const_iterator current;
+
+	int delay = eConfigManager::getConfigIntValue("config.subtitles.pango_subtitles_delay");
+	if (isExternalTrack(*m_selected_subtitle_track))
+	{
+		int subtitle_fps = eConfigManager::getConfigIntValue("config.subtitles.pango_subtitles_fps");
+		if (subtitle_fps != m_prev_subtitle_fps)
+		{
+			m_prev_subtitle_fps = subtitle_fps;
+			ssize_t track_pos = getTrackPosition(*m_selected_subtitle_track);
+			const subtitleMap *submap = NULL;
+			submap = m_subtitle_manager.load(m_subtitle_streams[track_pos].path, m_framerate, subtitle_fps);
+			if (submap)
+			{
+				m_subtitle_pages = submap;
+			}
+		}
+	}
 
 	if (!m_subtitle_pages)
 		return;
@@ -391,7 +428,7 @@ void eServiceApp::pushSubtitles()
 		}
 		// eDebug("eServiceApp::pushSubtitles - push subtitles, clock stable");
 	}
-	decoder_ms = running_pts / 90;
+	decoder_ms = (running_pts - delay) / 90;
 
 	for (current = m_subtitle_pages->lower_bound(decoder_ms); current != m_subtitle_pages->end(); current++)
 	{
@@ -774,21 +811,7 @@ RESULT eServiceApp::enableSubtitles(iSubtitleUser *user, struct SubtitleTrack &t
 	m_decoder_time_valid_state = 0;
 	m_prev_decoder_time = -1;
 
-	ssize_t track_pos = -1;
-
-	std::vector<SubtitleTrack>::const_iterator it(m_subtitle_tracks.begin());
-	for (size_t i = 0; it != m_subtitle_tracks.end(); it++,i++)
-	{
-		if (it->pid == track.pid
-				&& it->type == track.type
-				&& it->page_number == track.page_number
-				&& it->magazine_number == track.magazine_number
-				&& it->language_code == track.language_code)
-		{
-			track_pos = i;
-			break;
-		}
-	}
+	ssize_t track_pos = getTrackPosition(track);
 	if (track_pos == -1)
 	{
 		eWarning("eServiceApp::enableSubtitles - track is not in the map!");

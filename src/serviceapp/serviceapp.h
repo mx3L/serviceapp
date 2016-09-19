@@ -62,11 +62,13 @@ class eServiceApp: public Object, public iPlayableService, public iPauseableServ
 	ePtr<eTimer> m_subtitle_sync_timer;
 	iSubtitleUser *m_subtitle_widget;
 	SubtitleManager m_subtitle_manager;
+	pts_t m_prev_subtitle_fps;
 	ePtr<eTimer> m_event_updated_info_timer;
 
 	pts_t m_prev_decoder_time;
 	int m_decoder_time_valid_state;
 
+	ssize_t getTrackPosition(const SubtitleTrack &track);
 	bool isEmbeddedTrack(const SubtitleTrack &track);
 	bool isExternalTrack(const SubtitleTrack &track);
 	void pullSubtitles();
