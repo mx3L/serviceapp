@@ -9,6 +9,7 @@
 
 #include "cJSON/cJSON.h"
 #include "myconsole.h"
+#include "subtitles/subtitles.h"
 
 #ifndef eLog
  #define eLog(lvl,...)
@@ -80,15 +81,6 @@ struct audioStream
 };
 
 
-struct subtitleStream
-{
-	int id;
-	std::string language_code; /* iso-639, if available. */
-	std::string description; /* clear text codec description */
-	subtitleStream(): id(-1){};
-};
-
-
 struct videoStream
 {
 	int id;
@@ -107,16 +99,6 @@ struct errorMessage
 	int code;
 	std::string message;
 	errorMessage():code(-1){}
-};
-
-
-struct subtitleMessage
-{
-	uint32_t start_ms;
-	uint32_t duration_ms;
-	uint32_t end_ms;
-	std::string text;
-	subtitleMessage(): start_ms(0), duration_ms(0), end_ms(0){};
 };
 
 
