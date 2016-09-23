@@ -3,9 +3,10 @@ AUTHOR = "Maroš Ondrášek <mx3ldev@gmail.com>"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
-DEPENDS = "enigma2"
+DEPENDS = "enigma2 uchardet"
+RDEPENDS_${PN} = "uchardet"
 
-SRCREV = "761bb5f2048a2e983b7dc9fb1bc31de7e53471df"
+SRCREV = "4c806287a6595a38c8ceced2d7c48b00fb71ed29"
 SRC_URI = "git://github.com/mx3L/serviceapp.git;branch=master"
 
 S = "${WORKDIR}/git"
