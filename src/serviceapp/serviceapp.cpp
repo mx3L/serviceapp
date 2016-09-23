@@ -709,7 +709,10 @@ RESULT eServiceApp::seekTo(pts_t to)
 
 	m_prev_decoder_time = -1;
 	m_decoder_time_valid_state = 0;
-	m_subtitle_sync_timer->start(1, true);
+	if (m_selected_subtitle_track != NULL)
+	{
+		m_subtitle_sync_timer->start(1, true);
+	}
 	return 0;
 }
 
