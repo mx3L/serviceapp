@@ -8,9 +8,18 @@
 #include "subtitles.h"
 #include "subrip.h"
 
+static void skipBOM(std::istream& is)
+{
+    if (is.get() != 0xEF || is.get() != 0xBB || is.get() != 0xBF)
+    {
+        is.seekg(0, std::ios::beg);
+    }
+}
+
 bool BaseSubtitleParser::parse(std::istream &is, int fps, subtitleMap &submap)
 {
     is.seekg(0, std::ios::beg);
+    skipBOM(is);
     bool res = _parse(is, fps, submap);
     fprintf(stderr,"%s::parse, %s\n", name().c_str(), res ? "success":"failed");
     return res;
@@ -19,6 +28,7 @@ bool BaseSubtitleParser::parse(std::istream &is, int fps, subtitleMap &submap)
 unsigned int BaseSubtitleParser::probe(std::istream &is)
 {
     is.seekg(0, std::ios::beg);
+    skipBOM(is);
     unsigned int res = _probe(is);
     fprintf(stderr,"%s::probe, score = %u\n", name().c_str(), res);
     return res;
