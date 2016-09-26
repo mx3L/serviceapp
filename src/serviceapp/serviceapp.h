@@ -21,7 +21,7 @@ struct eServiceAppOptions
 	unsigned int connectionSpeedInKb;
 	eServiceAppOptions():
 		autoTurnOnSubtitles(true),
-		preferEmbeddedSubtitles(true),
+		preferEmbeddedSubtitles(false),
 		HLSExplorer(true), 
 		autoSelectStream(true),
 		connectionSpeedInKb(std::numeric_limits<unsigned int>::max())
