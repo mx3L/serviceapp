@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <cstdio>
+#include <dirent.h>
 #include <string>
 #include <stdint.h>
 
@@ -68,6 +69,67 @@ void splitExtension(const std::string &path, std::string &basename, std::string 
         basename = path;
         extension = "";
     }
+}
+
+void splitPath(const std::string &path, std::string &dirpath, std::string &filename)
+{
+    size_t filename_idx = path.find_last_of('/');
+    if (filename_idx != std::string::npos)
+    {
+        dirpath = path.substr(0, filename_idx);
+        filename = path.substr(filename_idx + 1);
+    }
+    else
+    {
+        dirpath = "";
+        filename = path;
+    }
+}
+
+int listDir(const std::string &dirpath, std::vector<std::string> *files, std::vector<std::string> *directories)
+{
+    DIR *dp;
+    if ((dp = opendir(dirpath.c_str())) == NULL)
+    {
+        fprintf(stderr, "listDir(%s) - error in opendir: %s\n",
+                dirpath.c_str(), strerror(errno));
+        return -1;
+    }
+
+    std::string filepath;
+    struct dirent *entry;
+    struct stat statbuf;
+    while ((entry = readdir(dp)) != NULL)
+    {
+        if (*dirpath.rbegin() == '/')
+            filepath = dirpath + entry->d_name;
+        else
+            filepath = dirpath + "/" + entry->d_name;
+        stat(filepath.c_str(), &statbuf);
+        if (S_ISDIR(statbuf.st_mode))
+        {
+            if (!strcmp("..", entry->d_name) || !strcmp(".", entry->d_name))
+            {
+                continue;
+            }
+            if (directories != NULL)
+            {
+                directories->push_back(entry->d_name);
+            }
+        }
+        else
+        {
+            if (files != NULL)
+            {
+                files->push_back(entry->d_name);
+            }
+        }
+    }
+    if (closedir(dp) == -1)
+    {
+        fprintf(stderr, "listDir(%s) - error in closedir: %s\n", dirpath.c_str(), strerror(errno));
+    }
+    return 0;
 }
 
 static const uint8_t iso8859_2_unused_utf8[10][2] = {

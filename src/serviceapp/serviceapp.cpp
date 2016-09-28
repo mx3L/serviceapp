@@ -1,5 +1,6 @@
 #include "Python.h"
 #include <sstream>
+#include <algorithm>
 
 #include <lib/service/service.h>
 #include <lib/base/init_num.h>
@@ -348,6 +349,37 @@ ssize_t eServiceApp::getTrackPosition(const SubtitleTrack &track)
 		}
 	}
 	return track_pos;
+}
+
+void eServiceApp::addEmbeddedTrack(std::vector<struct SubtitleTrack> &subtitlelist, subtitleStream &s, int pid)
+{
+	m_subtitle_streams.push_back(s);
+	struct SubtitleTrack track;
+	track.type = 2;
+	track.page_number = 1;
+	track.magazine_number = 0;
+	track.pid = pid;
+	track.language_code = s.language_code;
+
+	subtitlelist.push_back(track);
+	m_subtitle_tracks.push_back(track);
+}
+
+void eServiceApp::addExternalTrack(std::vector<struct SubtitleTrack> &subtitlelist, int pid, std::string lang, std::string path)
+{
+	subtitleStream s;
+	s.path = path;
+	m_subtitle_streams.push_back(s);
+
+	struct SubtitleTrack track;
+	track.type = 2;
+	track.page_number = 4;
+	track.magazine_number = 0;
+	track.pid = pid;
+	track.language_code = lang;
+
+	subtitlelist.push_back(track);
+	m_subtitle_tracks.push_back(track);
 }
 
 bool eServiceApp::isEmbeddedTrack(const SubtitleTrack &track)
@@ -880,77 +912,117 @@ RESULT eServiceApp::getCachedSubtitle(struct SubtitleTrack &track)
 		eDebug("eServiceApp::getCachedSubtitle - no subtitles available");
 		return -1;
 	}
-	std::vector<struct SubtitleTrack>::const_iterator it = tracks.begin();
 	// TODO consider language setting
-	track = *it;
-	for (; it!=tracks.end(); it++)
+	int ret = -1;
+	std::vector<struct SubtitleTrack> embedded_tracks;
+	std::vector<struct SubtitleTrack> external_tracks;
+	std::remove_copy_if(tracks.begin(), tracks.end(), std::back_inserter(embedded_tracks), isExternalTrack);
+	std::remove_copy_if(tracks.begin(), tracks.end(), std::back_inserter(external_tracks), isEmbeddedTrack);
+
+	bool select_embedded = (options->preferEmbeddedSubtitles || external_tracks.empty()) && !embedded_tracks.empty();
+	if (!select_embedded)
 	{
-		if (options->preferEmbeddedSubtitles && isEmbeddedTrack(*it))
+		struct SubtitleTrack tmp_track = *external_tracks.begin();
+		subtitleStream tmp_stream = m_subtitle_streams[getTrackPosition(tmp_track)];
+		std::string video_base, subtitle_base, extension;
+		splitExtension(m_ref.path, video_base, extension);
+		splitExtension(tmp_stream.path, subtitle_base, extension);
+		if (video_base == subtitle_base || external_tracks.size() == 1)
 		{
-			eDebug("eServiceApp::getCachedSubtitle - found preferred embedded subtitle");
-			track = *it;
-			break;
+			track = tmp_track;
+			ret = 0;
 		}
-		else if(!options->preferEmbeddedSubtitles && isExternalTrack(*it))
+		else
 		{
-			eDebug("eServiceApp::getCachedSubtitle - found preferred external subtitle");
-			track = *it;
-			break;
+			select_embedded = true;
 		}
 	}
-	return 0;
+	if (select_embedded)
+	{
+		track = *embedded_tracks.begin();
+		ret = 0;
+	}
+
+	if (ret == 0)
+	{
+		if (options->preferEmbeddedSubtitles && isEmbeddedTrack(track))
+			eDebug("eServiceApp::getCachedSubtitle - selected preferred embedded track");
+		else if (options->preferEmbeddedSubtitles && !isEmbeddedTrack(track))
+			eDebug("eServiceApp::getCachedSubtitle - selected embedded track");
+		else if (!options->preferEmbeddedSubtitles && isExternalTrack(track))
+			eDebug("eServiceApp::getCachedSubtitle - selected preferred external track");
+		else if (!options->preferEmbeddedSubtitles && !isExternalTrack(track))
+			eDebug("eServiceApp::getCachedSubtitle - selected external track");
+	}
+	else
+	{
+		eDebug("eServiceApp::getCachedSubtitle - no track selected, more than one external track found, name doesn't correspond to video file");
+	}
+	return ret;
 }
 
 RESULT eServiceApp::getSubtitleList(std::vector<struct SubtitleTrack> &subtitlelist)
 {
 	m_subtitle_tracks.clear();
 	m_subtitle_streams.clear();
-	int track_num = player->subtitleGetNumberOfTracks(500);
-	eDebug("eServiceApp::getSubtitleList - found %d of embedded tracks", track_num);
-	for (int i = 0; i < track_num; i++)
+	int embedded_track_num = player->subtitleGetNumberOfTracks(500);
+	eDebug("eServiceApp::getSubtitleList - found embedded tracks (%d)", embedded_track_num);
+	int pid = 0;
+	for (; pid < embedded_track_num; pid++)
 	{
 		subtitleStream s;
-		if (player->subtitleGetTrackInfo(s, i) < 0)
-			continue;
-		m_subtitle_streams.push_back(s);
-
-		struct SubtitleTrack track;
-		// look in AudioSelection.py
-		track.type = 2; // non DVB/teletext
-		track.pid = i;
-		track.page_number = 1; // embedded
-		track.magazine_number = 0;
-		track.language_code = s.language_code;
-		subtitlelist.push_back(track);
-		m_subtitle_tracks.push_back(track);
+		if (player->subtitleGetTrackInfo(s, pid) == 0)
+		{
+			addEmbeddedTrack(subtitlelist, s, pid);
+		}
 	}
 	std::string basename, extension;
 	splitExtension(m_ref.path, basename, extension);
 	std::string subtitle_path(basename + ".srt");
+
+	std::string dirname, filename;
+	splitPath(subtitle_path, dirname, filename);
 	// TODO 
 	//
-	// - look for more subtitles, i.e look in "Subtitles" directory
-	// look for other subtitles in playpath directory.
-	//
 	// - try to find out language code from filename if possible
+	// - apply some sort of sorting which would add more relevant subtitles to beginning
+	// of the list
 	//
 	// - probably whole thing should be moved to manager
 	if (!access(subtitle_path.c_str(), F_OK))
 	{
-		eDebug("eServiceApp::getSubtitleList - found external track");
-		subtitleStream s;
-		s.path = subtitle_path;
-		m_subtitle_streams.push_back(s);
-
-		struct SubtitleTrack track;
-		track.type = 2;
-		track.pid = subtitlelist.size();
-		track.page_number = 4; // SRT
-		track.magazine_number = 0;
-		track.language_code = "unk";
-		subtitlelist.push_back(track);
-		m_subtitle_tracks.push_back(track);
+		addExternalTrack(subtitlelist, pid++, filename, subtitle_path);
 	}
+	std::vector<std::string> directories, files;
+	if (listDir(dirname, &files, &directories) == 0)
+	{
+		std::vector<std::string>::const_iterator it;
+		if ((std::find(directories.begin(), directories.end(), "Subs")) != directories.end())
+		{
+			std::vector<std::string> subsdir_files;
+			if (listDir(dirname + "/Subs", &subsdir_files, NULL) == 0)
+			{
+				for (it = subsdir_files.begin(); it != subsdir_files.end(); it++)
+				{
+					splitExtension(*it, basename, extension);
+					if (extension == ".srt")
+					{
+						addExternalTrack(subtitlelist, pid++, basename, dirname + "/Subs/" + *it);
+					}
+				}
+			}
+		}
+		for (it = files.begin(); it != files.end(); it++)
+		{
+			splitExtension(*it, basename, extension);
+			std::string path = dirname + "/" + *it;
+			if (extension == ".srt" && subtitle_path != path)
+			{
+				addExternalTrack(subtitlelist, pid++, basename, path);
+			}
+		}
+	}
+	eDebug("eServiceApp::getSubtitleList - found external tracks (%d)", pid - embedded_track_num);
 	return 0;
 }
 

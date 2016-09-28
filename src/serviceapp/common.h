@@ -14,6 +14,7 @@
 #include <functional>
 #include <locale>
 #include <string>
+#include <vector>
 
 class Url
 {
@@ -44,6 +45,8 @@ public:
 };
 
 void splitExtension(const std::string &path, std::string &basename, std::string &extension);
+void splitPath(const std::string &path, std::string &dirpath, std::string &filename);
+int listDir(const std::string &dirpath, std::vector<std::string> *directories, std::vector<std::string> *files);
 
 #ifndef NO_UCHARDET
 int detectEncoding(const std::string &content, std::string &encoding);
