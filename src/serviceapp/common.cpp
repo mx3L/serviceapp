@@ -1,8 +1,10 @@
+#include <dirent.h>
 #include <cstdlib>
 #include <cstdio>
-#include <dirent.h>
-#include <string>
+#include <cstring>
 #include <stdint.h>
+#include <string>
+#include <sys/stat.h>
 
 #include "common.h"
 
