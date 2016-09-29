@@ -91,8 +91,8 @@ int listDir(const std::string &dirpath, std::vector<std::string> *files, std::ve
     DIR *dp;
     if ((dp = opendir(dirpath.c_str())) == NULL)
     {
-        fprintf(stderr, "listDir(%s) - error in opendir: %s\n",
-                dirpath.c_str(), strerror(errno));
+        fprintf(stderr, "listDir(%s) - error in opendir: %m\n",
+                dirpath.c_str());
         return -1;
     }
 
@@ -127,7 +127,7 @@ int listDir(const std::string &dirpath, std::vector<std::string> *files, std::ve
     }
     if (closedir(dp) == -1)
     {
-        fprintf(stderr, "listDir(%s) - error in closedir: %s\n", dirpath.c_str(), strerror(errno));
+        fprintf(stderr, "listDir(%s) - error in closedir: %m\n", dirpath.c_str());
     }
     return 0;
 }
