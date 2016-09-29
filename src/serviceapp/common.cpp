@@ -8,7 +8,7 @@
 
 Url::Url(const std::string& url):
     m_url(url),
-    m_port(80)
+    m_port(-1)
 {
     parseUrl(url);
 }

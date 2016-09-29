@@ -88,8 +88,20 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, const
         return -1;
     }
     Url purl(url);
+
+    int port = purl.port();
+    if (port == -1)
+    {
+        if (purl.proto() == "http")
+            port = 80;
+        else
+        {
+            fprintf(stderr, "[%s] - not defined port!\n", __func__);
+            return -1;
+        }
+    }
     int sd;
-    if((sd = Connect(purl.host().c_str(), purl.port(), 5)) < 0)
+    if((sd = Connect(purl.host().c_str(), port, 5)) < 0)
     {
         fprintf(stderr, "[%s] - Error in Connect\n", __func__);
         return -1;
