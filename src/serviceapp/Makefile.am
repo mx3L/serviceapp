@@ -8,7 +8,8 @@ AM_CPPFLAGS = \
 AM_CXXFLAGS = \
 	-Wall \
 	@ENIGMA2_CFLAGS@ \
-	@UCHARDET_CFLAGS@
+	@UCHARDET_CFLAGS@ \
+	@OPENSSL_CFLAGS@
 
 plugindir = $(libdir)/enigma2/python/Plugins/Extensions/ServiceApp
 
@@ -29,6 +30,7 @@ serviceapp_la_SOURCES = \
 
 serviceapp_la_LDFLAGS = \
 	@UCHARDET_LIBS@ \
+	@OPENSSL_LIBS@ \
 	-avoid-version \
 	-module \
 	-shared

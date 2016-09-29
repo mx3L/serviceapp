@@ -10,6 +10,8 @@
 #include <sys/time.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
 #include <vector>
 #include <string>
@@ -263,3 +265,42 @@ ssize_t writeAll(int fd, const void *buf, size_t count)
 	}
 	return handledcount;
 }
+
+int SSLConnect(int fd, SSL **ssl, SSL_CTX **ctx)
+{
+	*ctx = SSL_CTX_new(SSLv23_client_method());
+	if (*ctx == NULL)
+	{
+		fprintf(stderr, "Error in SSL_CTX_new:\n");
+		ERR_print_errors_fp(stderr);
+		return -1;
+	}
+	SSL_CTX_set_default_verify_paths(*ctx);
+	*ssl = SSL_new(*ctx);
+	if (*ssl == NULL)
+	{
+		fprintf(stderr, "Error in SSL_new:\n");
+		ERR_print_errors_fp(stderr);
+		SSL_CTX_free(*ctx);
+		return -1;
+	}
+	if (SSL_set_fd(*ssl, fd) == 0)
+	{
+		fprintf(stderr, "Error in SSL_get_fd:\n");
+		ERR_print_errors_fp(stderr);
+		SSL_free(*ssl);
+		SSL_CTX_free(*ctx);
+		return -1;
+	}
+	long ret = SSL_connect(*ssl);
+	if (ret != 1)
+	{
+		fprintf(stderr, "Error in SSL_connect: %s\n",
+				ERR_error_string(SSL_get_error(*ssl, ret), NULL));
+		SSL_free(*ssl);
+		SSL_CTX_free(*ctx);
+		return -1;
+	}
+	return 0;
+}
+

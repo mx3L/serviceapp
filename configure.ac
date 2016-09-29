@@ -10,6 +10,7 @@ AX_PYTHON_DEVEL
 
 PKG_CHECK_MODULES(ENIGMA2, enigma2)
 PKG_CHECK_MODULES(UCHARDET, uchardet)
+PKG_CHECK_MODULES(OPENSSL, openssl)
 
 have_mhw=no
 AC_CHECK_HEADER([enigma2/lib/dvb/lowlevel/mhw.h], 
