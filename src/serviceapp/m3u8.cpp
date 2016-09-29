@@ -222,6 +222,7 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, const
                 {
                     contentTypeParsed = true;
                     if (!(!strncasecmp(contenttype, "application/text", 16)
+                            || !strncasecmp(contenttype, "text/plain", 10)
                             || !strncasecmp(contenttype, "audio/x-mpegurl", 15)
                             || !strncasecmp(contenttype, "application/x-mpegurl", 21)
                             || !strncasecmp(contenttype, "application/vnd.apple.mpegurl", 29)
