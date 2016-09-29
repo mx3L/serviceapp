@@ -5,12 +5,7 @@
 #include <string>
 #include <sstream>
 
-#ifndef TEST
-#include <lib/base/wrappers.h>
-#else
 #include "wrappers.h"
-#endif
-
 #include "common.h"
 
 typedef std::map<std::string,std::string> HeaderMap;

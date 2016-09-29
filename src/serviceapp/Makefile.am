@@ -18,6 +18,7 @@ serviceapp_la_SOURCES = \
 	serviceapp.cpp \
 	extplayer.cpp \
 	myconsole.cpp \
+	wrappers.cpp \
 	m3u8.cpp \
 	gstplayer.cpp \
 	exteplayer3.cpp \
