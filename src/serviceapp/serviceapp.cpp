@@ -1,6 +1,8 @@
 #include "Python.h"
 #include <sstream>
 #include <algorithm>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
 #include <lib/service/service.h>
 #include <lib/base/init_num.h>
@@ -1544,4 +1546,7 @@ PyMODINIT_FUNC
 initserviceapp(void)
 {
 	Py_InitModule("serviceapp", serviceappMethods);
+
+	SSL_load_error_strings();
+	SSL_library_init();
 }

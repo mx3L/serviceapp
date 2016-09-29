@@ -60,22 +60,36 @@ int Select(int maxfd, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, stru
 	return retval;
 }
 
-ssize_t singleRead(int fd, void *buf, size_t count)
+ssize_t singleRead(SSL *ssl, int fd, void *buf, size_t count)
 {
 	int retval;
 	while (1)
 	{
-		retval = ::read(fd, buf, count);
-		if (retval < 0)
+		if (ssl != NULL)
 		{
-			if (errno == EINTR) continue;
-			fprintf(stderr,"[singleRead] error: %m");
+			retval = SSL_read(ssl, buf, count);
+			if (retval < 0)
+			{
+				int error = SSL_get_error(ssl, retval);
+				if (error == SSL_ERROR_WANT_READ)
+					continue;
+				fprintf(stderr, "[singleRead(SSL) error: %s", ERR_error_string(error, NULL));
+			}
+		}
+		else
+		{
+			retval = ::read(fd, buf, count);
+			if (retval < 0)
+			{
+				if (errno == EINTR) continue;
+				fprintf(stderr,"[singleRead] error: %m");
+			}
 		}
 		return retval;
 	}
 }
 
-ssize_t timedRead(int fd, void *buf, size_t count, int initialtimeout, int interbytetimeout)
+ssize_t timedRead(SSL *ssl, int fd, void *buf, size_t count, int initialtimeout, int interbytetimeout)
 {
 	fd_set rset;
 	struct timeval timeout;
@@ -98,7 +112,7 @@ ssize_t timedRead(int fd, void *buf, size_t count, int initialtimeout, int inter
 		}
 		if ((result = select(fd + 1, &rset, NULL, NULL, &timeout)) < 0) return -1; /* error */
 		if (result == 0) break;
-		if ((result = singleRead(fd, ((char*)buf) + totalread, count - totalread)) < 0)
+		if ((result = singleRead(ssl, fd, ((char*)buf) + totalread, count - totalread)) < 0)
 		{
 			return -1;
 		}
@@ -108,7 +122,7 @@ ssize_t timedRead(int fd, void *buf, size_t count, int initialtimeout, int inter
 	return totalread;
 }
 
-ssize_t readLine(int fd, char** buffer, size_t* bufsize)
+ssize_t readLine(SSL *ssl, int fd, char** buffer, size_t* bufsize)
 {
 	size_t i = 0;
 	int result;
@@ -122,7 +136,7 @@ ssize_t readLine(int fd, char** buffer, size_t* bufsize)
 			*buffer = newbuf;
 			*bufsize = (*bufsize) + 1024;
 		}
-		result = timedRead(fd, (*buffer) + i, 1, 3000, 100);
+		result = timedRead(ssl, fd, (*buffer) + i, 1, 3000, 100);
 		if (result <= 0 || (*buffer)[i] == '\n')
 		{
 			(*buffer)[i] = '\0';
@@ -245,21 +259,36 @@ int Connect(const char *hostname, int port, int timeoutsec)
 	return sd;
 }
 
-ssize_t writeAll(int fd, const void *buf, size_t count)
+ssize_t writeAll(SSL *ssl, int fd, const void *buf, size_t count)
 {
 	int retval;
 	char *ptr = (char*)buf;
 	size_t handledcount = 0;
 	while (handledcount < count)
 	{
-		retval = ::write(fd, &ptr[handledcount], count - handledcount);
-
-		if (retval == 0) return -1;
-		if (retval < 0)
+		if (ssl != NULL)
 		{
-			if (errno == EINTR) continue;
-			fprintf(stderr,"[writeAll] error: %m");
-			return retval;
+			retval = SSL_write(ssl, &ptr[handledcount], count - handledcount);
+			if (retval == 0) return -1;
+			if (retval < 0)
+			{
+				int error = SSL_get_error(ssl, retval);
+				if (error == SSL_ERROR_WANT_WRITE)
+					continue;
+				fprintf(stderr, "[writeAll(SSL) error: %s", ERR_error_string(error, NULL));
+                        }
+		}
+		else
+		{
+			retval = ::write(fd, &ptr[handledcount], count - handledcount);
+
+			if (retval == 0) return -1;
+			if (retval < 0)
+			{
+				if (errno == EINTR) continue;
+				fprintf(stderr,"[writeAll] error: %m");
+				return retval;
+			}
 		}
 		handledcount += retval;
 	}

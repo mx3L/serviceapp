@@ -50,6 +50,8 @@ int main(int argc, char *argv[])
     {
         fprintf(stderr, "usage: %s [url...]\n", argv[0]);
     }
+    SSL_load_error_strings();
+    SSL_library_init();
     while (--argc > 0)
     {
         std::string url = *(++argv);
