@@ -115,7 +115,10 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, const
     if (purl.proto() == "https")
     {
         if (SSLConnect(sd, &ssl, &ssl_ctx) < 0)
+        {
+            ::close(sd);
             return -1;
+        }
         fprintf(stderr, "[%s] - (SSL) Connected with %s encryption\n",
                 __func__, SSL_get_cipher(ssl));
 
