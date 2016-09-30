@@ -936,7 +936,7 @@ RESULT eServiceApp::getCachedSubtitle(struct SubtitleTrack &track)
 		}
 		else
 		{
-			select_embedded = true;
+			select_embedded = !embedded_tracks.empty();
 		}
 	}
 	if (select_embedded)
