@@ -295,7 +295,7 @@ ssize_t writeAll(SSL *ssl, int fd, const void *buf, size_t count)
 	return handledcount;
 }
 
-int SSLConnect(int fd, SSL **ssl, SSL_CTX **ctx)
+int SSLConnect(const char *hostname, int fd, SSL **ssl, SSL_CTX **ctx)
 {
 	*ctx = SSL_CTX_new(SSLv23_client_method());
 	if (*ctx == NULL)
@@ -313,9 +313,26 @@ int SSLConnect(int fd, SSL **ssl, SSL_CTX **ctx)
 		SSL_CTX_free(*ctx);
 		return -1;
 	}
+	struct addrinfo hints = { 0 }, *ai = NULL;
+	hints.ai_flags = AI_NUMERICHOST;
+	if (getaddrinfo(hostname, NULL, &hints, &ai) != 0)
+	{
+		if (SSL_set_tlsext_host_name(*ssl, hostname) != 1)
+		{
+			fprintf(stderr, "Error in SSL_set_tlsext_host_name:\n");
+			ERR_print_errors_fp(stderr);
+			SSL_free(*ssl);
+			SSL_CTX_free(*ctx);
+			return -1;
+		}
+	}
+	else
+	{
+		freeaddrinfo(ai);
+	}
 	if (SSL_set_fd(*ssl, fd) == 0)
 	{
-		fprintf(stderr, "Error in SSL_get_fd:\n");
+		fprintf(stderr, "Error in SSL_set_fd:\n");
 		ERR_print_errors_fp(stderr);
 		SSL_free(*ssl);
 		SSL_CTX_free(*ctx);

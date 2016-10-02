@@ -114,7 +114,7 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, const
 
     if (purl.proto() == "https")
     {
-        if (SSLConnect(sd, &ssl, &ssl_ctx) < 0)
+        if (SSLConnect(purl.host().c_str(), sd, &ssl, &ssl_ctx) < 0)
         {
             ::close(sd);
             return -1;
