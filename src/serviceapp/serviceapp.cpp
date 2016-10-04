@@ -606,6 +606,7 @@ RESULT eServiceApp::connectEvent(const SigC::Slot2< void, iPlayableService*, int
 RESULT eServiceApp::start()
 {
 	std::string path_str(m_ref.path);
+	HeaderMap headers = getHeaders(m_ref.path);
 	if (options->HLSExplorer && options->autoSelectStream)
 	{
 		if (!m_subservices_checked)
@@ -660,10 +661,11 @@ RESULT eServiceApp::start()
 					subservice.bitrate, subservice_idx);
 			}
 			path_str = subservice.url;
+			headers = subservice.headers;
 		}
 	}
 	// don't pass fragment part to player
-	player->start(Url(path_str).url(), getHeaders(m_ref.path));
+	player->start(Url(path_str).url(), headers);
 	return 0;
 }
 
