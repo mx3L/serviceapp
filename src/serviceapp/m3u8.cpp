@@ -244,6 +244,10 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
                 ret = getVariantsFromMasterUrl(newurl, headers, ++redirect);
                 break;
             }
+            if (!strncmp(lineBuffer, "Set-Cookie: ", 12))
+            {
+                headers["Cookie"] = &lineBuffer[12];
+            }
             if (!result)
             {
                 contentStarted = true;
