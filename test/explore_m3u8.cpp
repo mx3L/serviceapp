@@ -66,6 +66,15 @@ int main(int argc, char *argv[])
         for (std::vector<M3U8StreamInfo>::const_iterator iter(streams.begin()); iter != streams.end(); iter++, i++)
         {
             printf("HLS[%d]: %s\n", i, iter->url.c_str());
+            printf("%15s: ", "headers");
+            int j = 0;
+            for (HeaderMap::const_iterator it(iter->headers.begin()); it != iter->headers.end(); it++, j++)
+            {
+                if (j != 0)
+                    printf(", ");
+                printf("\"%s: %s\"", it->first.c_str(), it->second.c_str());
+            }
+            printf("\n");
             printf("%15s: %ld\n", "bitrate", iter->bitrate);
             printf("%15s: %s\n", "resolution", iter->resolution.c_str());
             printf("%15s: %s\n", "codecs", iter->codecs.c_str());
