@@ -13,6 +13,7 @@ typedef std::map<std::string,std::string> HeaderMap;
 struct M3U8StreamInfo
 {
     std::string url;
+    HeaderMap headers;
     std::string codecs;
     std::string resolution;
     // TODO audio/video/subtitles..
@@ -31,7 +32,7 @@ class M3U8VariantsExplorer
     std::vector<M3U8StreamInfo> streams;
     const unsigned int redirectLimit;
     int parseStreamInfoAttributes(const char *line, M3U8StreamInfo& info);
-    int getVariantsFromMasterUrl(const std::string& url, const HeaderMap& headers, unsigned int redirect);
+    int getVariantsFromMasterUrl(const std::string& url, HeaderMap& headers, unsigned int redirect);
 public:
     M3U8VariantsExplorer(const std::string& url, const HeaderMap& headers):
         url(url),

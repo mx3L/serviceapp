@@ -80,7 +80,7 @@ int M3U8VariantsExplorer::parseStreamInfoAttributes(const char *attributes, M3U8
 }
 
 
-int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, const HeaderMap& headers, unsigned int redirect)
+int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, HeaderMap& headers, unsigned int redirect)
 {
     if (redirect > redirectLimit)
     {
@@ -295,6 +295,7 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, const
                 {
                     m3u8StreamInfo.url = url.substr(0, url.rfind('/') + 1) + lineBuffer;
                 }
+                m3u8StreamInfo.headers = headers;
                 streams.push_back(m3u8StreamInfo);
                 m3u8StreamInfoParsing = false;
             }
