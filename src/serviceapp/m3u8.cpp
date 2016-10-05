@@ -135,6 +135,7 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
     {
         userAgent = it->second;
     }
+    headers["User-Agent"] = userAgent;
 
     std::string path = purl.path();
     std::string query = purl.query();
