@@ -233,6 +233,8 @@ int convertToUTF8(const std::string &input_string, std::string &output_string)
 }
 #endif
 
+static int unquotePlus(char* out, const char* in);
+
 HeaderMap getHeaders(const std::string& url)
 {
     std::map<std::string, std::string> headers;
@@ -240,6 +242,17 @@ HeaderMap getHeaders(const std::string& url)
     if (pos != std::string::npos && (url.compare(0, 4, "http") == 0 || url.compare(0, 4, "rtsp") == 0))
     {
         std::string headers_str = url.substr(pos + 1);
+        char *headers_cstr = (char*) malloc ((url.length() + 1) * sizeof(char));
+        if (!unquotePlus(headers_cstr, headers_str.c_str()))
+        {
+            headers_str = headers_cstr;
+        }
+        else
+        {
+            fprintf(stderr, "getHeaders - cannot unquote headers string\n");
+        }
+        free(headers_cstr);
+
         pos = 0;
         while (pos != std::string::npos)
         {
@@ -269,5 +282,50 @@ HeaderMap getHeaders(const std::string& url)
         }
     }
     return headers;
+}
+
+// http://stackoverflow.com/questions/2673207/c-c-url-decode-library
+static int unquotePlus(char* out, const char* in)
+{
+    static const char tbl[256] = {
+        -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
+         0, 1, 2, 3, 4, 5, 6, 7,  8, 9,-1,-1,-1,-1,-1,-1,
+        -1,10,11,12,13,14,15,-1, -1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
+        -1,10,11,12,13,14,15,-1, -1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1
+    };
+    char c, v1, v2;
+    char *beg = out;
+    if(in != NULL) {
+        while((c=*in++) != '\0') {
+            if(c == '+')
+            {
+                *out++ = ' ';
+                continue;
+            }
+            if(c == '%') {
+                if(!(v1=*in++) || (v1=tbl[(unsigned char)v1])<0 ||
+                   !(v2=*in++) || (v2=tbl[(unsigned char)v2])<0) {
+                    *beg = '\0';
+                    return -1;
+                }
+                c = (v1<<4)|v2;
+            }
+            *out++ = c;
+        }
+    }
+    *out = '\0';
+    return 0;
 }
 
