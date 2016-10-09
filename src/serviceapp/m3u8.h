@@ -8,8 +8,6 @@
 #include "wrappers.h"
 #include "common.h"
 
-typedef std::map<std::string,std::string> HeaderMap;
-
 struct M3U8StreamInfo
 {
     std::string url;

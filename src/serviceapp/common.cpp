@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <map>
 #include <stdint.h>
 #include <string>
 #include <sys/stat.h>
@@ -231,4 +232,42 @@ int convertToUTF8(const std::string &input_string, std::string &output_string)
     return 0;
 }
 #endif
+
+HeaderMap getHeaders(const std::string& url)
+{
+    std::map<std::string, std::string> headers;
+    size_t pos = url.find('#');
+    if (pos != std::string::npos && (url.compare(0, 4, "http") == 0 || url.compare(0, 4, "rtsp") == 0))
+    {
+        std::string headers_str = url.substr(pos + 1);
+        pos = 0;
+        while (pos != std::string::npos)
+        {
+            std::string name, value;
+            size_t start = pos;
+            size_t len = std::string::npos;
+            pos = headers_str.find('=', pos);
+            if (pos != std::string::npos)
+            {
+                len = pos - start;
+                pos++;
+                name = headers_str.substr(start, len);
+                start = pos;
+                len = std::string::npos;
+                pos = headers_str.find('&', pos);
+                if (pos != std::string::npos)
+                {
+                    len = pos - start;
+                    pos++;
+                }
+                value = headers_str.substr(start, len);
+            }
+            if (!name.empty() && !value.empty())
+            {
+                headers[name] = value;
+            }
+        }
+    }
+    return headers;
+}
 

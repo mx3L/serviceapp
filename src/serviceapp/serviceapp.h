@@ -82,8 +82,6 @@ class eServiceApp: public Object, public iPlayableService, public iPauseableServ
 	ePtr<eServiceEvent> m_event_now, m_event_next;
 	void updateEpgCacheNowNext();
 #endif
-	HeaderMap getHeaders(const std::string& url);
-
 	void gotExtPlayerMessage(int message);
 
 public:

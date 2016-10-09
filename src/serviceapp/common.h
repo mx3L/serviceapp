@@ -13,8 +13,11 @@
 #include <cctype>
 #include <functional>
 #include <locale>
+#include <map>
 #include <string>
 #include <vector>
+
+typedef std::map<std::string, std::string> HeaderMap;
 
 class Url
 {
@@ -56,6 +59,7 @@ int detectEncoding(const std::string &content, std::string &encoding);
 int convertToUTF8(const std::string &input_string, const std::string &input_encoding, std::string &output_string);
 int convertToUTF8(const std::string &input_string, std::string &output_string);
 #endif
+HeaderMap getHeaders(const std::string& url);
 
 inline std::string &rtrim(std::string &s) 
 {
