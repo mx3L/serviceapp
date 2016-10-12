@@ -363,6 +363,12 @@ def main(session, **kwargs):
     session.openWithCallback(open_serviceapp_settings, ServiceAppDetectPlayers)
 
 
+def menu(menuid, **kwargs):
+    if menuid == "system":
+        return [(_("ServiceApp"), main, "serviceapp_setup", None)]
+    return []
+
+
 def play_exteplayer3(session, service, **kwargs):
     ref = eServiceReference(5002, 0, service.getPath())
     session.open(ServiceAppPlayer, service=ref)
@@ -376,7 +382,7 @@ def play_gstplayer(session, service, **kwargs):
 def Plugins(**kwargs):
     return [
             PluginDescriptor(name=_("ServiceApp"), description=_("setup player framework"),
-                where=PluginDescriptor.WHERE_PLUGINMENU, needsRestart=False, fnc=main),
+                where=PluginDescriptor.WHERE_MENU, needsRestart=False, fnc=menu),
             PluginDescriptor(name=_("ServiceApp"), description=_("Play with ServiceExtEplayer3"),
                 where=PluginDescriptor.WHERE_MOVIELIST, needsRestart=False, fnc=play_exteplayer3),
             PluginDescriptor(name=_("ServiceApp"), description=_("Play with ServiceGstPlayer"),
