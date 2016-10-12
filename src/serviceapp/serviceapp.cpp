@@ -126,6 +126,7 @@ eServiceApp::eServiceApp(eServiceReference ref):
 	m_progressive(-1),
 	m_subtitle_pages(0),
 	m_selected_subtitle_track(0),
+	m_prev_subtitle_message(0),
 	m_prev_subtitle_fps(1),
 	m_prev_decoder_time(-1),
 	m_decoder_time_valid_state(0)
@@ -389,6 +390,7 @@ void eServiceApp::pushSubtitles()
 			submap = m_subtitle_manager.load(m_subtitle_streams[track_pos].path, m_framerate, subtitle_fps);
 			if (submap)
 			{
+				m_prev_subtitle_message = NULL;
 				m_subtitle_pages = submap;
 			}
 		}
@@ -448,10 +450,16 @@ void eServiceApp::pushSubtitles()
 			next_timer = diff_start_ms;
 			goto exit;
 		}
+		// don't show the same message twice
+		if (m_prev_subtitle_message && m_prev_subtitle_message == &(current->second))
+		{
+			next_timer = 30;
+			goto exit;
+		}
 		if (m_subtitle_widget && !m_paused)
 		{
 			//eDebug("eServiceApp::pushSubtitles - current sub actual, show!");
-
+			m_prev_subtitle_message = &(current->second);
 			ePangoSubtitlePage pango_page;
 			gRGB rgbcol(0xD0,0xD0,0xD0);
 
@@ -807,6 +815,7 @@ RESULT eServiceApp::selectChannel(int i)
 RESULT eServiceApp::enableSubtitles(iSubtitleUser *user, struct SubtitleTrack &track)
 {
 	m_subtitle_sync_timer->stop();
+	m_prev_subtitle_message = NULL;
 	m_subtitle_pages = NULL;
 	m_selected_subtitle_track = NULL;
 
@@ -855,6 +864,7 @@ RESULT eServiceApp::disableSubtitles()
 {
 	eDebug("eServiceApp::disableSubtitles");
 	m_subtitle_sync_timer->stop();
+	m_prev_subtitle_message = NULL;
 	m_embedded_subtitle_pages.clear();
 	m_subtitle_pages = NULL;
 	m_selected_subtitle_track = NULL;

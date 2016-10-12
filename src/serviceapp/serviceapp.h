@@ -59,6 +59,7 @@ class eServiceApp: public Object, public iPlayableService, public iPauseableServ
 	subtitle_pages_map m_embedded_subtitle_pages;
 	subtitle_pages_map const *m_subtitle_pages;
 	SubtitleTrack const *m_selected_subtitle_track;
+	subtitleMessage const *m_prev_subtitle_message;
 	ePtr<eTimer> m_subtitle_sync_timer;
 	iSubtitleUser *m_subtitle_widget;
 	SubtitleManager m_subtitle_manager;
