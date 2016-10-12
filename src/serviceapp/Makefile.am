@@ -11,7 +11,7 @@ AM_CXXFLAGS = \
 	@UCHARDET_CFLAGS@ \
 	@OPENSSL_CFLAGS@
 
-plugindir = $(libdir)/enigma2/python/Plugins/Extensions/ServiceApp
+plugindir = $(libdir)/enigma2/python/Plugins/SystemPlugins/ServiceApp
 
 plugin_LTLIBRARIES = serviceapp.la
 
