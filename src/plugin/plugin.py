@@ -164,8 +164,7 @@ class ServiceAppSettings(ConfigListScreen, Screen):
         del config_serviceapp.servicemp3.replace.notifiers[:]
 
     def gstplayer_options(self, gstplayer_options_cfg):
-        config_list = [getConfigListEntry("  " + _("GstPlayer"), 
-        ConfigSelection([GSTPLAYER_VERSION or "not installed"], GSTPLAYER_VERSION or "not installed"))]
+        config_list = []
         config_list.append(getConfigListEntry("  " + _("Sink"), 
             gstplayer_options_cfg.sink, _("Select sink that you want to use.")))
         config_list.append(getConfigListEntry("  " + _("Subtitles"),
@@ -177,8 +176,7 @@ class ServiceAppSettings(ConfigListScreen, Screen):
         return config_list
 
     def exteplayer3_options(self, exteplayer3_options_cfg):
-        config_list = [getConfigListEntry("  " + _("ExtEplayer3"),
-            ConfigSelection([EXTEPLAYER3_VERSION or "not installed"], EXTEPLAYER3_VERSION or "not installed"))]
+        config_list = []
         config_list.append(getConfigListEntry("  " + _("AAC software decoding"),
             exteplayer3_options_cfg.aac_swdecoding, _("Turn on AAC software decoding.")))
         config_list.append(getConfigListEntry("  " + _("DTS software decoding"),
@@ -203,6 +201,25 @@ class ServiceAppSettings(ConfigListScreen, Screen):
             serviceapp_options_cfg.connection_speed_kb, _("Set connection speed in kb/s, according to which you want to have streams auto-selected")))
         return config_list
 
+    def player_options(self, player_type, service_type):
+        config_list = []
+        player_cfg = getattr(config_serviceapp, player_type)[service_type]
+        serviceapp_cfg = config_serviceapp.options[service_type]
+        if player_type == "exteplayer3":
+            config_list.append(getConfigListEntry("  " + _("ExtEplayer3"),
+                ConfigSelection([EXTEPLAYER3_VERSION or "not installed"], EXTEPLAYER3_VERSION or "not installed")))
+            if EXTEPLAYER3_VERSION:
+                config_list += self.exteplayer3_options(player_cfg)
+                config_list += self.serviceapp_options(serviceapp_cfg)
+        if player_type == "gstplayer":
+            config_list.append(getConfigListEntry("  " + _("GstPlayer"), 
+                ConfigSelection([GSTPLAYER_VERSION or "not installed"], GSTPLAYER_VERSION or "not installed")))
+            if GSTPLAYER_VERSION:
+                config_list += self.gstplayer_options(player_cfg)
+                config_list += self.serviceapp_options(serviceapp_cfg)
+        return config_list
+
+
     def build_configlist(self):
         config_list = [getConfigListEntry(_("Enigma2 playback system"), 
             config_serviceapp.servicemp3.replace, _("Select the player who will be used for Enigma2 playback."))]
@@ -212,20 +229,17 @@ class ServiceAppSettings(ConfigListScreen, Screen):
             configlist_servicemp3 = [getConfigListEntry("", ConfigNothing())]
             configlist_servicemp3.append(getConfigListEntry(_("ServiceMp3 (%s)" % str(serviceapp_client.ID_SERVICEMP3)), ConfigNothing()))
             if config_serviceapp.servicemp3.player.value == "gstplayer":
-                config_list += configlist_servicemp3 + self.gstplayer_options(config_serviceapp.gstplayer["servicemp3"])
+                config_list += configlist_servicemp3 + self.player_options("gstplayer","servicemp3")
             elif config_serviceapp.servicemp3.player.value == "exteplayer3":
-                config_list += configlist_servicemp3 + self.exteplayer3_options(config_serviceapp.exteplayer3["servicemp3"])
+                config_list += configlist_servicemp3 + self.player_options("exteplayer3","servicemp3")
             else:
                 config_list += configlist_servicemp3
-            config_list += self.serviceapp_options(config_serviceapp.options["servicemp3"])
         config_list.append(getConfigListEntry("", ConfigNothing()))
         config_list.append(getConfigListEntry(_("ServiceGstPlayer (%s)" % str(serviceapp_client.ID_SERVICEGSTPLAYER)), ConfigNothing()))
-        config_list += self.gstplayer_options(config_serviceapp.gstplayer["servicegstplayer"])
-        config_list += self.serviceapp_options(config_serviceapp.options["servicegstplayer"])
+        config_list += self.player_options("gstplayer", "servicegstplayer")
         config_list.append(getConfigListEntry("", ConfigNothing()))
         config_list.append(getConfigListEntry(_("ServiceExtEplayer3 (%s)" % str(serviceapp_client.ID_SERVICEEXTEPLAYER3)), ConfigNothing()))
-        config_list += self.exteplayer3_options(config_serviceapp.exteplayer3["serviceexteplayer3"])
-        config_list += self.serviceapp_options(config_serviceapp.options["serviceexteplayer3"])
+        config_list += self.player_options("exteplayer3", "serviceexteplayer3")
         self["config"].list = config_list
         self["config"].l.setList(config_list)
 
