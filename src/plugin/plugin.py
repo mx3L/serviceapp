@@ -166,9 +166,9 @@ class ServiceAppSettings(ConfigListScreen, Screen):
     def gstplayer_options(self, gstplayer_options_cfg):
         config_list = []
         config_list.append(getConfigListEntry("  " + _("Sink"), 
-            gstplayer_options_cfg.sink, _("Select sink that you want to use.")))
-        config_list.append(getConfigListEntry("  " + _("Subtitles"),
-            gstplayer_options_cfg.subtitle_enabled, _("Turn on the subtitles.")))
+            gstplayer_options_cfg.sink, _("Select sink which you want to use.")))
+        config_list.append(getConfigListEntry("  " + _("Embedded subtitles"),
+            gstplayer_options_cfg.subtitle_enabled, _("Turn on the embedded subtitles support.")))
         config_list.append(getConfigListEntry("  " + _("Buffer size"),
             gstplayer_options_cfg.buffer_size, _("Set buffer size in kilobytes.")))
         config_list.append(getConfigListEntry("  " + _("Buffer duration"),
@@ -222,10 +222,10 @@ class ServiceAppSettings(ConfigListScreen, Screen):
 
     def build_configlist(self):
         config_list = [getConfigListEntry(_("Enigma2 playback system"), 
-            config_serviceapp.servicemp3.replace, _("Select the player who will be used for Enigma2 playback."))]
+            config_serviceapp.servicemp3.replace, _("Select the player which will be used for Enigma2 playback."))]
         if config_serviceapp.servicemp3.replace.value:
             config_list.append(getConfigListEntry(_("Player"), 
-                config_serviceapp.servicemp3.player, _("Select the player who will be used in serviceapp for Enigma2 playback.")))
+                config_serviceapp.servicemp3.player, _("Select the player which will be used in serviceapp for Enigma2 playback.")))
             configlist_servicemp3 = [getConfigListEntry("", ConfigNothing())]
             configlist_servicemp3.append(getConfigListEntry(_("ServiceMp3 (%s)" % str(serviceapp_client.ID_SERVICEMP3)), ConfigNothing()))
             if config_serviceapp.servicemp3.player.value == "gstplayer":
@@ -246,7 +246,7 @@ class ServiceAppSettings(ConfigListScreen, Screen):
     def keyOk(self):
         if config_serviceapp.servicemp3.replace.isChanged():
             self.session.openWithCallback(self.save_settings_and_close, 
-                    MessageBox, _("Enigma2 Playback System was changed and Enigma2 should be restarted\nDo you want to restart it now?"), 
+                    MessageBox, _("Enigma2 playback system was changed and Enigma2 should be restarted\n\nDo you want to restart it now?"),
                     type=MessageBox.TYPE_YESNO)
         else:
             self.save_settings_and_close()
