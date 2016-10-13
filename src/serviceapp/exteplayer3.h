@@ -27,12 +27,10 @@ class ExtEplayer3: public PlayerApp, public BasePlayer
 public:
 	ExtEplayer3(ExtEplayer3Options& options): PlayerApp(STD_ERROR) 
 	{
-		eDebug("ExtEplayer3");
 		mPlayerOptions = options;
 	}
 	~ExtEplayer3()
 	{
-		eDebug("~ExtEplayer3");
 	}
 	int start(eMainloop *context);
 	

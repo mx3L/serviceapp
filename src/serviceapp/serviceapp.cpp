@@ -131,7 +131,6 @@ eServiceApp::eServiceApp(eServiceReference ref):
 	m_prev_decoder_time(-1),
 	m_decoder_time_valid_state(0)
 {
-	eDebug("eServiceApp");
 	options = createOptions(ref);
 	extplayer = createPlayer(ref);
 	player = new PlayerBackend(extplayer);
@@ -161,7 +160,6 @@ eServiceApp::~eServiceApp()
 	m_nownext_timer->stop();
 #endif
 	g_useUserSettings = false;
-	eDebug("~eServiceApp");
 };
 
 
