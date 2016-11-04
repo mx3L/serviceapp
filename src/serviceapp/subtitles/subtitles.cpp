@@ -119,7 +119,6 @@ const subtitleMap *SubtitleManager::load(const std::string &path, int video_fps,
         }
         std::stringstream ss;
         ss << ifs.rdbuf();
-        ifs.close();
         std::string out;
         if (m_convert_to_utf8)
         {
