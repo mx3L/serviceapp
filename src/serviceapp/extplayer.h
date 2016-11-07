@@ -34,7 +34,7 @@ class PlayerApp: public Object
 	void handleJsonStr(const std::string& data);
 	void handleAppClosed(int retval);
 protected:
-	virtual std::string buildCommand() = 0;
+	virtual std::vector<std::string> buildCommand() = 0;
 	virtual void handleJsonOutput(cJSON *json) = 0;
 	virtual void handleProcessStopped(int retval) = 0;
 	int processStart(eMainloop *context);

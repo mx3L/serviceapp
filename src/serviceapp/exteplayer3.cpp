@@ -4,49 +4,41 @@
 #include "exteplayer3.h"
 
 
-std::string ExtEplayer3::buildCommand()
+std::vector<std::string> ExtEplayer3::buildCommand()
 {
 	// TODO add all options
-	std::string cmd("exteplayer3");
-	bool addquote = false;
-	cmd += " \"" + mPath + "\"";
-	if (!mHeaders.empty())
+	std::vector<std::string> args;
+	args.push_back("exteplayer3");
+	args.push_back(mPath);
+	std::map<std::string,std::string>::const_iterator i(mHeaders.find("User-Agent"));
+	if (i != mHeaders.end())
 	{
-		std::map<std::string,std::string>::const_iterator i(mHeaders.find("User-Agent"));
-		if (i != mHeaders.end())
-		{
-			cmd += " -u \"" + i->second + "\"";
-			if (mHeaders.size() > 1)
-			{
-				cmd += " -h \"";
-				addquote = true;
-			}
-		}
-		else
-		{
-			cmd += " -h \"";
-			addquote = true;
-		}
+		args.push_back("-u");
+		args.push_back(i->second);
 	}
+	std::string headersStr;
 	for (std::map<std::string,std::string>::const_iterator i(mHeaders.begin()); i != mHeaders.end(); i++)
 	{
 		if (i->first.compare("User-Agent") == 0)
 			continue;
-		cmd +=  i->first + ":" + i->second + "\r\n";
+		headersStr +=  i->first + ":" + i->second + "\r\n";
 	}
-	if (addquote)
-		cmd += "\"";
+	if (!headersStr.empty())
+	{
+		args.push_back("-h");
+		args.push_back(headersStr);
+	}
 	if (mPlayerOptions.aacSwDecoding)
-		cmd += " -a ";
+		args.push_back("-a");
 	if (mPlayerOptions.dtsSwDecoding)
-		cmd += " -d ";
+		args.push_back("-d");
 	if (mPlayerOptions.wmaSwDecoding)
-		cmd += " -w ";
+		args.push_back("-w");
 	if (mPlayerOptions.lpcmInjection)
-		cmd += " -l ";
+		args.push_back("-l");
 	if (mPlayerOptions.downmix)
-		cmd += " -s ";
-	return cmd;
+		args.push_back("-s");
+	return args;
 }
 int ExtEplayer3::start(eMainloop *context)
 {

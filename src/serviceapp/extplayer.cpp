@@ -97,9 +97,31 @@ int PlayerApp::processStart(eMainloop *context)
 	CONNECT(console->appClosed, PlayerApp::appClosed);
 	CONNECT(console->stdoutAvail, PlayerApp::stdoutAvail);
 	CONNECT(console->stderrAvail, PlayerApp::stderrAvail);
-	const std::string cmd = buildCommand();
-	eDebug("PlayerApp::processStart: %s", cmd.c_str());
-	return console->execute(context, cmd.c_str());
+	const std::vector<std::string> args = buildCommand();
+	eDebugNoNewLine("PlayerApp::processStart: ");
+	char **cargs = (char **) malloc(sizeof(char *) * args.size()+1);
+	for (size_t i=0; i <= args.size(); i++)
+	{
+		// execvp needs args array terminated with NULL
+		if (i == args.size())
+		{
+			cargs[i] = NULL;
+			eDebugNoNewLine("\n");
+		}
+		else
+		{
+			cargs[i] = strdup(args[i].c_str());
+			if (i != 0 && cargs[i][0] != '-')
+				eDebugNoNewLine("\"%s\" ", cargs[i]);
+			else
+				eDebugNoNewLine("%s ", cargs[i]);
+		}
+	}
+	int ret = console->execute(context, cargs[0], cargs);
+	for (size_t i=0; i < args.size(); i++)
+		free(cargs[i]);
+	free(cargs);
+	return ret;
 }
 
 int PlayerApp::processSend(const std::string& data)

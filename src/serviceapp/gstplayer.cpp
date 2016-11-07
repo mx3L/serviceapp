@@ -4,39 +4,45 @@
 #include "gstplayer.h"
 
 
-std::string GstPlayer::buildCommand()
+std::vector<std::string> GstPlayer::buildCommand()
 {
-	std::string cmd("gstplayer_gst-1.0");
-	cmd += " \"" + mPath + "\"";
+	std::vector<std::string> args;
+	args.push_back("gstplayer_gst-1.0");
+	args.push_back(mPath);
 	for (std::map<std::string,std::string>::const_iterator i(mHeaders.begin()); i!=mHeaders.end(); i++)
 	{
-		cmd += " -H \"" + i->first + "=" + i->second + "\"";
+		args.push_back("-H");
+		args.push_back(i->first + "=" + i->second);
 	}
 	if (!mPlayerOptions.videoSink.empty())
 	{
-		cmd += " -v " + mPlayerOptions.videoSink;
+		args.push_back("-v");
+		args.push_back(mPlayerOptions.videoSink);
 	}
 	if (!mPlayerOptions.audioSink.empty())
 	{
-		cmd += " -a " + mPlayerOptions.audioSink;
+		args.push_back("-a");
+		args.push_back(mPlayerOptions.audioSink);
 	}
 	if (mPlayerOptions.subtitleEnabled)
 	{
-		cmd += " -e ";
+		args.push_back("-e");
 	}
 	if (mPlayerOptions.bufferDuration >= 0)
 	{
 		std::stringstream sstm;
 		sstm << mPlayerOptions.bufferDuration; 
-		cmd += " -d " + sstm.str();
+		args.push_back("-d");
+		args.push_back(sstm.str());
 	}
 	if (mPlayerOptions.bufferSize >= 0)
 	{
 		std::stringstream sstm;
 		sstm << mPlayerOptions.bufferSize; 
-		cmd += " -s " + sstm.str();
+		args.push_back("-s");
+		args.push_back(sstm.str());
 	}
-	return cmd;
+	return args;
 }
 int GstPlayer::start(eMainloop* context)
 {

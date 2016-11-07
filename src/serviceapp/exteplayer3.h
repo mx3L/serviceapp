@@ -23,7 +23,7 @@ class ExtEplayer3: public PlayerApp, public BasePlayer
 	ExtEplayer3Options mPlayerOptions;
 	void handleProcessStopped(int retval);
 	void handleJsonOutput(cJSON* json);
-	std::string buildCommand();
+	std::vector<std::string> buildCommand();
 public:
 	ExtEplayer3(ExtEplayer3Options& options): PlayerApp(STD_ERROR) 
 	{
