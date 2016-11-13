@@ -93,7 +93,11 @@ public:
 	RESULT connectEvent(const Slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection);
 	RESULT start();
 	RESULT stop();
-	RESULT setTarget(int target);
+#if OPENPLI_ISERVICE_VERSION > 1
+	RESULT setTarget(int target, bool noaudio=false){return -1;}
+#else
+	RESULT setTarget(int target){return -1;}
+#endif
 	RESULT seek(ePtr<iSeekableService> &ptr){ ptr=this; return 0;};
 	RESULT pause(ePtr<iPauseableService> &ptr){ ptr=this; return 0;};
 	RESULT audioTracks(ePtr<iAudioTrackSelection> &ptr) { ptr=this; return 0;};

@@ -645,13 +645,6 @@ RESULT eServiceApp::stop()
 	return 0;
 }
 
-RESULT eServiceApp::setTarget(int target)
-{
-	eDebug("eServiceApp::setTarget %d", target);
-	return -1;
-}
-
-
 // __iPausableService
 RESULT eServiceApp::pause()
 {
