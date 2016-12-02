@@ -1,0 +1,169 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ServiceApp / enigma2\n"
+"POT-Creation-Date: 2016-12-02 19:42+0200\n"
+"PO-Revision-Date: 2016-12-02 21:50+0200\n"
+"Language-Team: TM2TURK | by thawtes <thawtes@gmail.com>\n"
+"Last-Translator: TM2TURK | by thawtes <thawtes@gmail.com>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.8.11\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "ServiceApp"
+msgstr "ServiceApp"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Ok"
+msgstr "Ok"
+
+msgid "Sink"
+msgstr "Sink"
+
+msgid "Select sink which you want to use."
+msgstr "Select sink which you want to use."
+
+msgid "Embedded subtitles"
+msgstr "Embedded subtitles"
+
+msgid "Turn on the embedded subtitles support."
+msgstr "Turn on the embedded subtitles support."
+
+msgid "Buffer size"
+msgstr "Buffer size"
+
+msgid "Set buffer size in kilobytes."
+msgstr "Set buffer size in kilobytes."
+
+msgid "Buffer duration"
+msgstr "Buffer duration"
+
+msgid "Set buffer duration in seconds."
+msgstr "Set buffer duration in seconds."
+
+msgid "AAC software decoding"
+msgstr "AAC software decoding"
+
+msgid "Turn on AAC software decoding."
+msgstr "Turn on AAC software decoding."
+
+msgid "DTS software decoding"
+msgstr "DTS software decoding"
+
+msgid "Turn on DTS software decoding."
+msgstr "Turn on DTS software decoding."
+
+msgid "WMA software decoding"
+msgstr "WMA software decoding"
+
+msgid "Turn on WMA1, WMA2, WMA/PRO software decoding."
+msgstr "Turn on WMA1, WMA2, WMA/PRO software decoding."
+
+msgid "Stereo downmix"
+msgstr "Stereo downmix"
+
+msgid "Turn on downmix to stereo, when software decoding is in use"
+msgstr "Turn on downmix to stereo, when software decoding is in use"
+
+msgid "LPCM injection"
+msgstr "LPCM injection"
+
+msgid ""
+"Software decoder use LPCM for injection (otherwise wav PCM will be used)"
+msgstr ""
+"Software decoder use LPCM for injection (otherwise wav PCM will be used)"
+
+msgid "Auto turn on subtitles"
+msgstr "Auto turn on subtitles"
+
+msgid "Automatically turn on subtitles if available."
+msgstr "Automatically turn on subtitles if available."
+
+msgid "HLS Explorer"
+msgstr "HLS Explorer"
+
+msgid ""
+"Turn on explorer to retrieve different quality streams from HLS variant "
+"playlist and select them via subservices."
+msgstr ""
+"Turn on explorer to retrieve different quality streams from HLS variant "
+"playlist and select them via subservices."
+
+msgid "Auto select stream"
+msgstr "Auto select stream"
+
+msgid "Turn on auto-selection of streams according to set Connection speed."
+msgstr ""
+"Turn on auto-selection of streams according to set Connection speed."
+
+msgid "Connection speed"
+msgstr "Connection speed"
+
+msgid ""
+"Set connection speed in kb/s, according to which you want to have streams "
+"auto-selected"
+msgstr ""
+"Set connection speed in kb/s, according to which you want to have streams "
+"auto-selected"
+
+msgid "ExtEplayer3"
+msgstr "ExtEplayer3"
+
+msgid "GstPlayer"
+msgstr "GstPlayer"
+
+msgid "Enigma2 playback system"
+msgstr "Enigma2 playback system"
+
+msgid "Select the player which will be used for Enigma2 playback."
+msgstr "Select the player which will be used for Enigma2 playback."
+
+msgid "Player"
+msgstr "Player"
+
+msgid ""
+"Select the player which will be used in serviceapp for Enigma2 playback."
+msgstr ""
+"Select the player which will be used in serviceapp for Enigma2 playback."
+
+msgid "ServiceMp3 (%s)"
+msgstr "ServiceMp3 (%s)"
+
+msgid "ServiceGstPlayer (%s)"
+msgstr "ServiceGstPlayer (%s)"
+
+msgid "ServiceExtEplayer3 (%s)"
+msgstr "ServiceExtEplayer3 (%s)"
+
+msgid ""
+"Enigma2 playback system was changed and Enigma2 should be restarted\n"
+"\n"
+"Do you want to restart it now?"
+msgstr ""
+"Enigma2 playback system was changed and Enigma2 should be restarted\n"
+"\n"
+"Do you want to restart it now?"
+
+msgid "Stop playing this movie?"
+msgstr "Stop playing this movie?"
+
+msgid "Detecting gstreamer player ..."
+msgstr "Detecting gstreamer player ..."
+
+msgid "Detecting exteplayer3 player ..."
+msgstr "Detecting exteplayer3 player ..."
+
+msgid "setup player framework"
+msgstr "setup player framework"
+
+msgid "Play with ServiceExtEplayer3"
+msgstr "Play with ServiceExtEplayer3"
+
+msgid "Play with ServiceGstPlayer"
+msgstr "Play with ServiceGstPlayer"
