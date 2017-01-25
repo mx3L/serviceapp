@@ -69,6 +69,8 @@ AC_LINK_IFELSE(
         AC_DEFINE(OPENPLI_ISERVICE_VERSION, 1)
     ])
 
+AC_PATH_PROG(MSGFMT, msgfmt, AC_MSG_ERROR(Could not find msgfmt))
+
 CXXFLAGS="$SAVE_CXXFLAGS"
 LDFLAGS="$SAVE_LDFLAGS"
 
@@ -78,6 +80,7 @@ Makefile
 src/Makefile
 src/serviceapp/Makefile
 src/plugin/Makefile
+src/locale/Makefile
 
 ])
 AC_OUTPUT

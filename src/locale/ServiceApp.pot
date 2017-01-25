@@ -1,150 +1,241 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: ServiceApp / enigma2\n"
-"POT-Creation-Date: 2016-12-02 08:20+0200\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-01-25 21:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME\n"
-"Language-Team: TEAM <EMAIL@ADDRESS>\n"
-"Language: LANGUAGE <ll_CC>\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-SourceCharset: UTF-8\n"
-"X-Generator: TM2TURK by thawtes\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "ServiceApp"
-msgstr ""
-
-msgid "Cancel"
-msgstr ""
-
-msgid "Ok"
-msgstr ""
-
-msgid "Sink"
-msgstr ""
-
-msgid "Select sink which you want to use."
-msgstr ""
-
-msgid "Embedded subtitles"
-msgstr ""
-
-msgid "Turn on the embedded subtitles support."
-msgstr ""
-
-msgid "Buffer size"
-msgstr ""
-
-msgid "Set buffer size in kilobytes."
-msgstr ""
-
-msgid "Buffer duration"
-msgstr ""
-
-msgid "Set buffer duration in seconds."
-msgstr ""
-
+#: plugin/plugin.py:181
 msgid "AAC software decoding"
 msgstr ""
 
-msgid "Turn on AAC software decoding."
-msgstr ""
-
-msgid "DTS software decoding"
-msgstr ""
-
-msgid "Turn on DTS software decoding."
-msgstr ""
-
-msgid "WMA software decoding"
-msgstr ""
-
-msgid "Turn on WMA1, WMA2, WMA/PRO software decoding."
-msgstr ""
-
-msgid "Stereo downmix"
-msgstr ""
-
-msgid "Turn on downmix to stereo, when software decoding is in use"
-msgstr ""
-
-msgid "LPCM injection"
-msgstr ""
-
-msgid "Software decoder use LPCM for injection (otherwise wav PCM will be used)"
-msgstr ""
-
-msgid "Auto turn on subtitles"
-msgstr ""
-
-msgid "Automatically turn on subtitles if available."
-msgstr ""
-
-msgid "HLS Explorer"
-msgstr ""
-
-msgid "Turn on explorer to retrieve different quality streams from HLS variant playlist and select them via subservices."
-msgstr ""
-
+#: plugin/plugin.py:199
 msgid "Auto select stream"
 msgstr ""
 
-msgid "Turn on auto-selection of streams according to set Connection speed."
+#: plugin/plugin.py:195
+msgid "Auto turn on subtitles"
 msgstr ""
 
+#: plugin/plugin.py:196
+msgid "Automatically turn on subtitles if available."
+msgstr ""
+
+#: plugin/plugin.py:175
+msgid "Buffer duration"
+msgstr ""
+
+#: plugin/plugin.py:173
+msgid "Buffer size"
+msgstr ""
+
+#: plugin/plugin.py:145
+msgid "Cancel"
+msgstr ""
+
+#: plugin/plugin.py:201
 msgid "Connection speed"
 msgstr ""
 
-msgid "Set connection speed in kb/s, according to which you want to have streams auto-selected"
+#: plugin/plugin.py:183
+msgid "DTS software decoding"
 msgstr ""
 
-msgid "ExtEplayer3"
-msgstr ""
-
-msgid "GstPlayer"
-msgstr ""
-
-msgid "Enigma2 playback system"
-msgstr ""
-
-msgid "Select the player which will be used for Enigma2 playback."
-msgstr ""
-
-msgid "Player"
-msgstr ""
-
-msgid "Select the player which will be used in serviceapp for Enigma2 playback."
-msgstr ""
-
-msgid "ServiceMp3 (%s)"
-msgstr ""
-
-msgid "ServiceGstPlayer (%s)"
-msgstr ""
-
-msgid "ServiceExtEplayer3 (%s)"
-msgstr ""
-
-msgid "Enigma2 playback system was changed and Enigma2 should be restarted\n\nDo you want to restart it now?"
-msgstr ""
-
-msgid "Stop playing this movie?"
-msgstr ""
-
-msgid "Detecting gstreamer player ..."
-msgstr ""
-
+#: plugin/plugin.py:297
 msgid "Detecting exteplayer3 player ..."
 msgstr ""
 
-msgid "setup player framework"
+#: plugin/plugin.py:294
+msgid "Detecting gstreamer player ..."
 msgstr ""
 
+#: plugin/plugin.py:171
+msgid "Embedded subtitles"
+msgstr ""
+
+#: plugin/plugin.py:225
+msgid "Enigma2 playback system"
+msgstr ""
+
+#: plugin/plugin.py:250
+msgid ""
+"Enigma2 playback system was changed and Enigma2 should be restarted\n"
+"\n"
+"Do you want to restart it now?"
+msgstr ""
+
+#: plugin/plugin.py:210
+msgid "ExtEplayer3"
+msgstr ""
+
+#: plugin/plugin.py:216
+msgid "GstPlayer"
+msgstr ""
+
+#: plugin/plugin.py:197
+msgid "HLS Explorer"
+msgstr ""
+
+#: plugin/plugin.py:189
+msgid "LPCM injection"
+msgstr ""
+
+#: plugin/plugin.py:146
+msgid "Ok"
+msgstr ""
+
+#: plugin/plugin.py:387
 msgid "Play with ServiceExtEplayer3"
 msgstr ""
 
+#: plugin/plugin.py:389
 msgid "Play with ServiceGstPlayer"
+msgstr ""
+
+#: plugin/plugin.py:228
+msgid "Player"
+msgstr ""
+
+#: plugin/plugin.py:170
+msgid "Select sink which you want to use."
+msgstr ""
+
+#: plugin/plugin.py:226
+msgid "Select the player which will be used for Enigma2 playback."
+msgstr ""
+
+#: plugin/plugin.py:229
+msgid "Select the player which will be used in serviceapp for Enigma2 playback."
+msgstr ""
+
+#: plugin/plugin.py:142 plugin/plugin.py:369 plugin/plugin.py:385
+#: plugin/plugin.py:387 plugin/plugin.py:389
+msgid "ServiceApp"
+msgstr ""
+
+#: plugin/plugin.py:242
+#, python-format
+msgid "ServiceExtEplayer3 (%s)"
+msgstr ""
+
+#: plugin/plugin.py:239
+#, python-format
+msgid "ServiceGstPlayer (%s)"
+msgstr ""
+
+#: plugin/plugin.py:231
+#, python-format
+msgid "ServiceMp3 (%s)"
+msgstr ""
+
+#: plugin/plugin.py:176
+msgid "Set buffer duration in seconds."
+msgstr ""
+
+#: plugin/plugin.py:174
+msgid "Set buffer size in kilobytes."
+msgstr ""
+
+#: plugin/plugin.py:202
+msgid "Set connection speed in kb/s, according to which you want to have streams auto-selected"
+msgstr ""
+
+#: plugin/plugin.py:169
+msgid "Sink"
+msgstr ""
+
+#: plugin/plugin.py:190
+msgid "Software decoder use LPCM for injection (otherwise wav PCM will be used)"
+msgstr ""
+
+#: plugin/plugin.py:187
+msgid "Stereo downmix"
+msgstr ""
+
+#: plugin/plugin.py:274
+msgid "Stop playing this movie?"
+msgstr ""
+
+#: plugin/plugin.py:182
+msgid "Turn on AAC software decoding."
+msgstr ""
+
+#: plugin/plugin.py:184
+msgid "Turn on DTS software decoding."
+msgstr ""
+
+#: plugin/plugin.py:186
+msgid "Turn on WMA1, WMA2, WMA/PRO software decoding."
+msgstr ""
+
+#: plugin/plugin.py:200
+msgid "Turn on auto-selection of streams according to set Connection speed."
+msgstr ""
+
+#: plugin/plugin.py:188
+msgid "Turn on downmix to stereo, when software decoding is in use"
+msgstr ""
+
+#: plugin/plugin.py:198
+msgid "Turn on explorer to retrieve different quality streams from HLS variant playlist and select them via subservices."
+msgstr ""
+
+#: plugin/plugin.py:172
+msgid "Turn on the embedded subtitles support."
+msgstr ""
+
+#: plugin/plugin.py:185
+msgid "WMA software decoding"
+msgstr ""
+
+#: plugin/plugin.py:31
+msgid "experimental"
+msgstr ""
+
+#: plugin/plugin.py:33
+msgid "exteplayer3"
+msgstr ""
+
+#: plugin/plugin.py:50 plugin/plugin.py:51 plugin/plugin.py:53
+#: plugin/plugin.py:62 plugin/plugin.py:68 plugin/plugin.py:69
+#: plugin/plugin.py:70 plugin/plugin.py:71 plugin/plugin.py:72
+msgid "false"
+msgstr ""
+
+#: plugin/plugin.py:33
+msgid "gstplayer"
+msgstr ""
+
+#: plugin/plugin.py:211 plugin/plugin.py:217
+msgid "not installed"
+msgstr ""
+
+#: plugin/plugin.py:28 plugin/plugin.py:41
+msgid "original"
+msgstr ""
+
+#: plugin/plugin.py:41
+msgid "serviceapp"
+msgstr ""
+
+#: plugin/plugin.py:385
+msgid "setup player framework"
+msgstr ""
+
+#: plugin/plugin.py:50 plugin/plugin.py:51 plugin/plugin.py:53
+#: plugin/plugin.py:62 plugin/plugin.py:68 plugin/plugin.py:69
+#: plugin/plugin.py:70 plugin/plugin.py:71 plugin/plugin.py:72
+msgid "true"
 msgstr ""
