@@ -1,1 +1,1 @@
-SUBDIRS = serviceapp plugin
+SUBDIRS = serviceapp plugin locale

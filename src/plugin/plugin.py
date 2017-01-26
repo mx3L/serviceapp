@@ -15,6 +15,7 @@ from Screens.Screen import Screen
 from Tools.BoundFunction import boundFunction
 from enigma import eEnv, eServiceReference
 
+from . import _
 import serviceapp_client
 
 
@@ -24,12 +25,12 @@ SINKS_EXPERIMENTAL = ("dvbvideosinkexp", "dvbaudiosinkexp")
 sink_choices = []
 if (os.path.isfile(eEnv.resolve("$libdir/gstreamer-1.0/libgstdvbvideosink.so")) and
         os.path.isfile(eEnv.resolve("$libdir/gstreamer-1.0/libgstdvbaudiosink.so"))):
-    sink_choices.append("original")
+    sink_choices.append(("original", _("original")))
 if (os.path.isfile(eEnv.resolve("$libdir/gstreamer-1.0/libgstdvbvideosinkexp.so")) and
         os.path.isfile(eEnv.resolve("$libdir/gstreamer-1.0/libgstdvbaudiosinkexp.so"))):
-    sink_choices.append("experimental")
+    sink_choices.append(("experimental", _("experimental")))
 
-player_choices = ["gstplayer", "exteplayer3"]
+player_choices = [("gstplayer", _("gstplayer")), ("exteplayer3", _("exteplayer3"))]
 GSTPLAYER_VERSION = None
 EXTEPLAYER3_VERSION = None
 
@@ -37,7 +38,7 @@ config.plugins.serviceapp                               = ConfigSubsection()
 config_serviceapp                                       = config.plugins.serviceapp
 
 config_serviceapp.servicemp3                            = ConfigSubsection()
-config_serviceapp.servicemp3.replace                    = ConfigBoolean(default=False, descriptions={0: "original", 1: "serviceapp"})
+config_serviceapp.servicemp3.replace                    = ConfigBoolean(default=False, descriptions={0: _("original"), 1: _("serviceapp")})
 config_serviceapp.servicemp3.replace.value              = serviceapp_client.isServiceMP3Replaced()
 config_serviceapp.servicemp3.player                     = ConfigSelection(default="gstplayer", choices=player_choices)
 
@@ -46,10 +47,10 @@ config_serviceapp.options["servicemp3"]                 = ConfigSubsection()
 config_serviceapp.options["servicegstplayer"]           = ConfigSubsection()
 config_serviceapp.options["serviceexteplayer3"]         = ConfigSubsection()
 for key in config_serviceapp.options.keys():
-    config_serviceapp.options[key].hls_explorer         = ConfigBoolean(default=True)
-    config_serviceapp.options[key].autoselect_stream    = ConfigBoolean(default=True)
+    config_serviceapp.options[key].hls_explorer         = ConfigBoolean(default=True, descriptions = {False: _("false"), True: _("true")})
+    config_serviceapp.options[key].autoselect_stream    = ConfigBoolean(default=True, descriptions = {False: _("false"), True: _("true")})
     config_serviceapp.options[key].connection_speed_kb  = ConfigInteger(9999999, limits=(0, 9999999))
-    config_serviceapp.options[key].autoturnon_subtitles = ConfigBoolean(True)
+    config_serviceapp.options[key].autoturnon_subtitles = ConfigBoolean(default=True, descriptions = {False: _("false"), True: _("true")})
 
 config_serviceapp.gstplayer                             = ConfigSubDict()
 config_serviceapp.gstplayer["servicemp3"]               = ConfigSubsection()
@@ -58,17 +59,17 @@ for key in config_serviceapp.gstplayer.keys():
     config_serviceapp.gstplayer[key].sink               = ConfigSelection(default="original", choices=sink_choices)
     config_serviceapp.gstplayer[key].buffer_size        = ConfigInteger(8192, (1024, 1024 * 64))
     config_serviceapp.gstplayer[key].buffer_duration    = ConfigInteger(0, (0, 100))
-    config_serviceapp.gstplayer[key].subtitle_enabled   = ConfigBoolean(default=True)
+    config_serviceapp.gstplayer[key].subtitle_enabled   = ConfigBoolean(default=True, descriptions = {False: _("false"), True: _("true")})
 
 config_serviceapp.exteplayer3                           = ConfigSubDict()
 config_serviceapp.exteplayer3["servicemp3"]             = ConfigSubsection()
 config_serviceapp.exteplayer3["serviceexteplayer3"]     = ConfigSubsection()
 for key in config_serviceapp.exteplayer3.keys():
-    config_serviceapp.exteplayer3[key].aac_swdecoding   = ConfigBoolean(default = False)
-    config_serviceapp.exteplayer3[key].dts_swdecoding   = ConfigBoolean(default = False)
-    config_serviceapp.exteplayer3[key].wma_swdecoding   = ConfigBoolean(default = False)
-    config_serviceapp.exteplayer3[key].lpcm_injecion    = ConfigBoolean(default = False)
-    config_serviceapp.exteplayer3[key].downmix          = ConfigBoolean(default = False)
+    config_serviceapp.exteplayer3[key].aac_swdecoding   = ConfigBoolean(default = False, descriptions = {False: _("false"), True: _("true")})
+    config_serviceapp.exteplayer3[key].dts_swdecoding   = ConfigBoolean(default = False, descriptions = {False: _("false"), True: _("true")})
+    config_serviceapp.exteplayer3[key].wma_swdecoding   = ConfigBoolean(default = False, descriptions = {False: _("false"), True: _("true")})
+    config_serviceapp.exteplayer3[key].lpcm_injecion    = ConfigBoolean(default = False, descriptions = {False: _("false"), True: _("true")})
+    config_serviceapp.exteplayer3[key].downmix          = ConfigBoolean(default = False, descriptions = {False: _("false"), True: _("true")})
 
 
 def key_to_setting_id(key):
@@ -207,13 +208,13 @@ class ServiceAppSettings(ConfigListScreen, Screen):
         serviceapp_cfg = config_serviceapp.options[service_type]
         if player_type == "exteplayer3":
             config_list.append(getConfigListEntry("  " + _("ExtEplayer3"),
-                ConfigSelection([EXTEPLAYER3_VERSION or "not installed"], EXTEPLAYER3_VERSION or "not installed")))
+                ConfigSelection([EXTEPLAYER3_VERSION or "not installed"], EXTEPLAYER3_VERSION or _("not installed"))))
             if EXTEPLAYER3_VERSION:
                 config_list += self.exteplayer3_options(player_cfg)
                 config_list += self.serviceapp_options(serviceapp_cfg)
         if player_type == "gstplayer":
             config_list.append(getConfigListEntry("  " + _("GstPlayer"), 
-                ConfigSelection([GSTPLAYER_VERSION or "not installed"], GSTPLAYER_VERSION or "not installed")))
+                ConfigSelection([GSTPLAYER_VERSION or "not installed"], GSTPLAYER_VERSION or _("not installed"))))
             if GSTPLAYER_VERSION:
                 config_list += self.gstplayer_options(player_cfg)
                 config_list += self.serviceapp_options(serviceapp_cfg)

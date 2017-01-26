@@ -1,0 +1,183 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ServiceApp / enigma2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-01-25 21:19+0200\n"
+"PO-Revision-Date: 2016-12-02 21:50+0200\n"
+"Last-Translator: Tapat <taapat@gmail.com>\n"
+"Language-Team: Taapat <taapat@gmail.com>\n"
+"Language: lv_LV\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.5.4\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+
+msgid "AAC software decoding"
+msgstr "AAC dekodēšana"
+
+msgid "Auto select stream"
+msgstr "Izvēlēties straumi automātiski"
+
+msgid "Auto turn on subtitles"
+msgstr "Automātiski ieslēgt subtitrus"
+
+msgid "Automatically turn on subtitles if available."
+msgstr "Automātiski ieslēgt subtitrus ja tie ir pieejami."
+
+msgid "Buffer duration"
+msgstr "Bufera ilgums"
+
+msgid "Buffer size"
+msgstr "Bufera izmērs"
+
+msgid "Cancel"
+msgstr "Atcelt"
+
+msgid "Connection speed"
+msgstr "Pieslēguma ātrums"
+
+msgid "DTS software decoding"
+msgstr "DTS dekodēšana"
+
+msgid "Detecting exteplayer3 player ..."
+msgstr "Nosaka exteplayer3 atskaņotāju ..."
+
+msgid "Detecting gstreamer player ..."
+msgstr "Nosaka gstreamer atskaņotāju ..."
+
+msgid "Embedded subtitles"
+msgstr "Iebūvētie subtitri"
+
+msgid "Enigma2 playback system"
+msgstr "Enigma atskaņošanai izmanto"
+
+msgid ""
+"Enigma2 playback system was changed and Enigma2 should be restarted\n"
+"\n"
+"Do you want to restart it now?"
+msgstr ""
+"Enigmas failu atskaņotājs ir izmainīts tādēļ to nepieciešams pārstartēt\n"
+"\n"
+"Vai vēlaties pārstartēt enigmu?"
+
+msgid "ExtEplayer3"
+msgstr "ExtEplayer3"
+
+msgid "GstPlayer"
+msgstr "GstPlayer"
+
+msgid "HLS Explorer"
+msgstr "HLS subservisi"
+
+msgid "LPCM injection"
+msgstr "LPCM izmantošana"
+
+msgid "Ok"
+msgstr "Ok"
+
+msgid "Play with ServiceExtEplayer3"
+msgstr "Atskaņot ar ServiceExtEplayer3"
+
+msgid "Play with ServiceGstPlayer"
+msgstr "Atskaņot ar ServiceGstPlayer"
+
+msgid "Player"
+msgstr "Atskaņotājs"
+
+msgid "Select sink which you want to use."
+msgstr "Izvēlieties veidu kuru vēlaties izmantot."
+
+msgid "Select the player which will be used for Enigma2 playback."
+msgstr "Izvēlieties atskaņotāju kuru vēlaties lietot Enigma2 failu atskaņošanai pēc noklusējuma."
+
+msgid "Select the player which will be used in serviceapp for Enigma2 playback."
+msgstr "Izvēlieties atskaņotāju kuru vēlaties lietot serviceapp priekš Enigma2 failu atskaņošanas."
+
+msgid "ServiceApp"
+msgstr "ServiceApp"
+
+#, python-format
+msgid "ServiceExtEplayer3 (%s)"
+msgstr "ServiceExtEplayer3 (%s)"
+
+#, python-format
+msgid "ServiceGstPlayer (%s)"
+msgstr "ServiceGstPlayer (%s)"
+
+#, python-format
+msgid "ServiceMp3 (%s)"
+msgstr "ServiceMp3 (%s)"
+
+msgid "Set buffer duration in seconds."
+msgstr "Iestatiet bufera ilgumu sekundēs."
+
+msgid "Set buffer size in kilobytes."
+msgstr "Iestatiet bufera izmēru kilobaitos."
+
+msgid "Set connection speed in kb/s, according to which you want to have streams auto-selected"
+msgstr "Iestatiet pieslēguma ātrumu kb/s, kuru vēlaties izmantot straumju automātiskai izvēlei"
+
+msgid "Sink"
+msgstr "Veids"
+
+msgid "Software decoder use LPCM for injection (otherwise wav PCM will be used)"
+msgstr "Pprogramatūras dekoderis izmantos LPCM (vai arī tiks izmantots PCM)"
+
+msgid "Stereo downmix"
+msgstr "Stereo dekodēšana"
+
+msgid "Stop playing this movie?"
+msgstr "Apturēt filmas atskaņošanu?"
+
+msgid "Turn on AAC software decoding."
+msgstr "Izslēgt AAC dekodēšanu."
+
+msgid "Turn on DTS software decoding."
+msgstr "Izslēgt DTS dekodēšanu."
+
+msgid "Turn on WMA1, WMA2, WMA/PRO software decoding."
+msgstr "Izslēgt WMA1, WMA2, WMA/PRO dekodēšanu."
+
+msgid "Turn on auto-selection of streams according to set Connection speed."
+msgstr "Izslēgt straumju automātisku izvēlni pēc pieslēguma ātruma."
+
+msgid "Turn on downmix to stereo, when software decoding is in use"
+msgstr "Izslēgt dekodēšanu uz stereo, kad tiek izmantota programmatūras dekodēšana."
+
+msgid "Turn on explorer to retrieve different quality streams from HLS variant playlist and select them via subservices."
+msgstr "Izslēgt dažādas kvalitātes straumju atlasīšanu no HLS atskaņošanas sarakstiem lai piedāvātu tos kā subservisus."
+
+msgid "Turn on the embedded subtitles support."
+msgstr "Izslēgt iebūvētos subtitrus."
+
+msgid "WMA software decoding"
+msgstr "WMA dekodēšana"
+
+msgid "experimental"
+msgstr "eksperimentālais"
+
+msgid "exteplayer3"
+msgstr "exteplayer3"
+
+msgid "false"
+msgstr "nē"
+
+msgid "gstplayer"
+msgstr "gstplayerr"
+
+msgid "not installed"
+msgstr "nav uzstādīts"
+
+msgid "original"
+msgstr "oriģinālais"
+
+msgid "serviceapp"
+msgstr "serviceapp"
+
+msgid "setup player framework"
+msgstr "Iestatīt dažādus failu atskaņotājus"
+
+msgid "true"
+msgstr "jā"
