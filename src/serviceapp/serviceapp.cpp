@@ -5,6 +5,7 @@
 #include <openssl/err.h>
 
 #include <lib/service/service.h>
+#include <lib/components/file_eraser.h>
 #include <lib/base/init_num.h>
 #include <lib/base/init.h>
 #include <lib/base/eenv.h>
@@ -109,6 +110,68 @@ static eServiceAppOptions *createOptions(const eServiceReference& ref)
 		options = &g_ServiceAppOptionsUser;
 	}
 	return new eServiceAppOptions(*options);
+}
+
+
+class eServiceOfflineOperations: public iServiceOfflineOperations
+{
+	DECLARE_REF(eServiceOfflineOperations);
+	eServiceReference m_ref;
+public:
+	eServiceOfflineOperations(const eServiceReference &ref);
+
+	RESULT deleteFromDisk(int simulate);
+	RESULT getListOfFilenames(std::list<std::string> &);
+	RESULT reindex();
+};
+
+DEFINE_REF(eServiceOfflineOperations);
+
+eServiceOfflineOperations::eServiceOfflineOperations(const eServiceReference &ref): m_ref((const eServiceReference&)ref)
+{
+}
+
+RESULT eServiceOfflineOperations::deleteFromDisk(int simulate)
+{
+	if (!simulate)
+	{
+		std::list<std::string> res;
+		if (getListOfFilenames(res))
+			return -1;
+
+		eBackgroundFileEraser *eraser = eBackgroundFileEraser::getInstance();
+		if (!eraser)
+			eDebug("[eServiceOfflineOperations] FATAL !! can't get background file eraser");
+
+		for (std::list<std::string>::iterator i(res.begin()); i != res.end(); ++i)
+		{
+			eDebug("[eServiceOfflineOperations] Removing %s...", i->c_str());
+			if (eraser)
+				eraser->erase(i->c_str());
+			else
+				::unlink(i->c_str());
+		}
+	}
+	return 0;
+}
+
+RESULT eServiceOfflineOperations::getListOfFilenames(std::list<std::string> &res)
+{
+	res.clear();
+	res.push_back(m_ref.path);
+	return 0;
+}
+
+RESULT eServiceOfflineOperations::reindex()
+{
+	return -1;
+}
+
+
+RESULT eServiceFactoryApp::offlineOperations(const eServiceReference &ref, ePtr<iServiceOfflineOperations> &ptr)
+{
+	ptr = new eServiceOfflineOperations(ref);
+	return 0;
 }
 
 
