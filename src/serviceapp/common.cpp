@@ -287,7 +287,7 @@ HeaderMap getHeaders(const std::string& url)
 // http://stackoverflow.com/questions/2673207/c-c-url-decode-library
 static int unquotePlus(char* out, const char* in)
 {
-    static const char tbl[256] = {
+    static const signed char tbl[256] = {
         -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
         -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
         -1,-1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1,
