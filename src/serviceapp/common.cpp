@@ -9,6 +9,66 @@
 
 #include "common.h"
 
+SettingEntry::SettingEntry():m_is_set(false){}
+SettingEntry::SettingEntry(const std::string &app_arg, int value, const std::string value_type):
+    m_is_set(true),
+    m_app_arg(app_arg), m_int_value(value), m_value_type(value_type){}
+SettingEntry::SettingEntry(const std::string &app_arg, const std::string &value, const std::string value_type):
+    m_is_set(true),
+    m_app_arg(app_arg), m_string_value(value), m_value_type(value_type){}
+SettingEntry::SettingEntry(const std::string &app_arg, const std::string value_type):
+    m_is_set(false),
+    m_app_arg(app_arg), m_value_type(value_type){}
+
+void SettingEntry::setValue(int value)
+{
+    m_is_set = true;
+    m_int_value = value;
+}
+
+void SettingEntry::setValue(std::string value)
+{
+    if (value.empty())
+        return;
+    m_is_set = true;
+    m_string_value = value;
+}
+
+std::string SettingEntry::getAppArg() const
+{
+    return m_app_arg;
+}
+
+std::string SettingEntry::getValue() const
+{
+    if (m_value_type == "int" || m_value_type == "bool")
+    {
+        std::stringstream ss;
+        ss << m_int_value;
+        return ss.str();
+    }
+    return m_string_value;
+}
+
+int SettingEntry::getValueInt() const { return m_int_value; }
+
+std::string SettingEntry::toString() const
+{
+    std::stringstream ss;
+    if (!m_is_set)
+    {
+        ss << "not set";
+    }
+    else
+    {
+        ss << getValue();
+    }
+    return ss.str();
+}
+
+bool SettingEntry::isSet() const {return m_is_set;}
+std::string SettingEntry::getType() const { return m_value_type; }
+
 Url::Url(const std::string& url):
     m_url(url),
     m_port(-1)

@@ -3,6 +3,110 @@
 #include <lib/base/eerror.h>
 #include "gstplayer.h"
 
+const std::string GST_DOWNLOAD_BUFFER_PATH = "download_buffer_path";
+const std::string GST_RING_BUFFER_MAXSIZE  = "ring_buffer_maxsize";
+const std::string GST_BUFFER_SIZE          = "buffer_size";
+const std::string GST_BUFFER_DURATION      = "buffer_duration";
+const std::string GST_VIDEO_SINK           = "video_sink";
+const std::string GST_AUDIO_SINK           = "audio_sink";
+const std::string GST_AUDIO_TRACK_IDX      = "audio_id";
+const std::string GST_SUBTITLE_ENABLED     = "subtitles_enabled";
+
+GstPlayerOptions::GstPlayerOptions()
+{
+	settingMap[GST_DOWNLOAD_BUFFER_PATH] = SettingEntry("-p", "string");
+	settingMap[GST_RING_BUFFER_MAXSIZE]  = SettingEntry("-r", "int");
+	settingMap[GST_BUFFER_SIZE]          = SettingEntry("-s", 8*1024, "int");
+	settingMap[GST_BUFFER_DURATION]      = SettingEntry("-d", 0, "int");
+	settingMap[GST_VIDEO_SINK]           = SettingEntry("-v", "string");
+	settingMap[GST_AUDIO_SINK]           = SettingEntry("-a", "string");
+	settingMap[GST_AUDIO_TRACK_IDX]      = SettingEntry("-i", "int");
+	settingMap[GST_SUBTITLE_ENABLED]     = SettingEntry("-e", true, "bool");
+}
+
+SettingMap &GstPlayerOptions::GetSettingMap()
+{
+	return settingMap;
+}
+
+int GstPlayerOptions::update(const std::string &key, const std::string &val)
+{
+	int ret = 0;
+	if (settingMap.find(key) != settingMap.end())
+	{
+		SettingEntry &entry = settingMap[key];
+		if (entry.getType() == "bool")
+		{
+			if (val == "1")
+				entry.setValue(1);
+			else if (val == "0")
+				entry.setValue(0);
+			else
+			{
+				eWarning("GstPlayerOptions::update - invalid value '%s' for '%s' setting, allowed values are 0|1", key.c_str(), val.c_str());
+				ret = -2;
+			}
+		}
+		else if (entry.getType() == "int")
+		{
+			char *endptr = NULL;
+			int intval = -1;
+			intval = strtol(val.c_str(), &endptr , 10);
+			if (!*endptr && intval >= 0)
+			{
+				entry.setValue(intval);
+			}
+			else
+			{
+				eWarning("GstPlayerOptions::update - invalid value '%s' for '%s' setting, allowed values are >= 0", val.c_str(), key.c_str());
+				ret = -2;
+			}
+		}
+		else if (entry.getType() == "string")
+		{
+			if (val.empty())
+			{
+				eWarning("GstPlayerOptions::update - empty string for '%s' setting", key.c_str());
+				ret = -2;
+			}
+			else
+			{
+				entry.setValue(val);
+			}
+		}
+	}
+	else
+	{
+		eWarning("GstPlayerOptions::update - not recognized setting '%s'", key.c_str());
+		ret = -1;
+	}
+	return ret;
+}
+
+void GstPlayerOptions::print() const
+{
+	for (SettingIter it(settingMap.begin()); it != settingMap.end(); it++)
+	{
+		std::stringstream ss;
+		ss << " %-30s = %s";
+		if (it->first == GST_BUFFER_SIZE)
+		{
+			ss << "KB";
+		}
+		else if (it->first == GST_BUFFER_DURATION)
+		{
+			ss << "s";
+		}
+		eDebug(ss.str().c_str(), it->first.c_str(), it->second.toString().c_str());
+	}
+}
+
+GstPlayer::GstPlayer(GstPlayerOptions& options): PlayerApp(STD_ERROR)
+{
+	mPlayerOptions = options;
+	eDebug("GstPlayer::GstPlayer initializing with options:");
+	mPlayerOptions.print();
+}
 
 std::vector<std::string> GstPlayer::buildCommand()
 {
@@ -14,34 +118,26 @@ std::vector<std::string> GstPlayer::buildCommand()
 		args.push_back("-H");
 		args.push_back(i->first + "=" + i->second);
 	}
-	if (!mPlayerOptions.videoSink.empty())
+	for (SettingIter i(mPlayerOptions.GetSettingMap().begin()); i != mPlayerOptions.GetSettingMap().end(); i++)
 	{
-		args.push_back("-v");
-		args.push_back(mPlayerOptions.videoSink);
+		if (!i->second.isSet())
+		{
+			continue;
+		}
+		if (i->second.getType() == "bool" && i->second.getValueInt())
+		{
+			args.push_back(i->second.getAppArg());
+		}
+		if (i->second.getType() == "int" || i->second.getType() == "string")
+		{
+			std::stringstream ss;
+			ss << i->second.getAppArg();
+			ss << " ";
+			ss << i->second.getValue();
+			args.push_back(ss.str());
+		}
 	}
-	if (!mPlayerOptions.audioSink.empty())
-	{
-		args.push_back("-a");
-		args.push_back(mPlayerOptions.audioSink);
-	}
-	if (mPlayerOptions.subtitleEnabled)
-	{
-		args.push_back("-e");
-	}
-	if (mPlayerOptions.bufferDuration >= 0)
-	{
-		std::stringstream sstm;
-		sstm << mPlayerOptions.bufferDuration; 
-		args.push_back("-d");
-		args.push_back(sstm.str());
-	}
-	if (mPlayerOptions.bufferSize >= 0)
-	{
-		std::stringstream sstm;
-		sstm << mPlayerOptions.bufferSize; 
-		args.push_back("-s");
-		args.push_back(sstm.str());
-	}
+
 	return args;
 }
 int GstPlayer::start(eMainloop* context)

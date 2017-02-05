@@ -16,8 +16,42 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <sstream>
+class SettingEntry;
 
 typedef std::map<std::string, std::string> HeaderMap;
+typedef std::map<std::string, SettingEntry> SettingMap;
+typedef SettingMap::const_iterator SettingIter;
+
+class IOption
+{
+public:
+	virtual int update(const std::string&, const std::string&) = 0;
+    virtual void print() const = 0;
+};
+
+class SettingEntry
+{
+public:
+    SettingEntry();
+    SettingEntry(const std::string &app_arg, int value, const std::string value_type);
+    SettingEntry(const std::string &app_arg, const std::string &value, const std::string value_type);
+    SettingEntry(const std::string &app_arg, const std::string value_type);
+    void setValue(int value);
+    void setValue(std::string value);
+    std::string getAppArg() const;
+    std::string getValue() const;
+    int getValueInt() const;
+    std::string toString() const;
+    std::string getType() const;
+    bool isSet() const;
+private:
+    bool m_is_set;
+    std::string m_app_arg;
+    std::string m_string_value;
+    int m_int_value;
+    std::string m_value_type;
+};
 
 class Url
 {
