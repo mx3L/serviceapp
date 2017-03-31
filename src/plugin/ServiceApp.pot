@@ -1,0 +1,157 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: ServiceApp _ enigma2-plugin by mx3L\n"
+"POT-Creation-Date: 2016-10-26 01:27+0300\n"
+"PO-Revision-Date: 2016-10-26 01:23+0300\n"
+"Last-Translator: thawtes <thawtes@gmail.com>\n"
+"Language-Team: thawtes <thawtes@gmail.com>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.11\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "ServiceApp"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Ok"
+msgstr ""
+
+msgid "Sink"
+msgstr ""
+
+msgid "Select sink that you want to use."
+msgstr ""
+
+msgid "Subtitles"
+msgstr ""
+
+msgid "Turn on the subtitles."
+msgstr ""
+
+msgid "Buffer size"
+msgstr ""
+
+msgid "Set buffer size in kilobytes."
+msgstr ""
+
+msgid "Buffer duration"
+msgstr ""
+
+msgid "Set buffer duration in seconds."
+msgstr ""
+
+msgid "AAC software decoding"
+msgstr ""
+
+msgid "Turn on AAC software decoding."
+msgstr ""
+
+msgid "DTS software decoding"
+msgstr ""
+
+msgid "Turn on DTS software decoding."
+msgstr ""
+
+msgid "WMA software decoding"
+msgstr ""
+
+msgid "Turn on WMA1, WMA2, WMA/PRO software decoding."
+msgstr ""
+
+msgid "Stereo downmix"
+msgstr ""
+
+msgid "Turn on downmix to stereo, when software decoding is in use"
+msgstr ""
+
+msgid "LPCM injection"
+msgstr ""
+
+msgid ""
+"Software decoder use LPCM for injection (otherwise wav PCM will be used)"
+msgstr ""
+
+msgid "Auto turn on subtitles"
+msgstr ""
+
+msgid "Automatically turn on subtitles if available."
+msgstr ""
+
+msgid "HLS Explorer"
+msgstr ""
+
+msgid ""
+"Turn on explorer to retrieve different quality streams from HLS variant "
+"playlist and select them via subservices."
+msgstr ""
+
+msgid "Auto select stream"
+msgstr ""
+
+msgid "Turn on auto-selection of streams according to set Connection speed."
+msgstr ""
+
+msgid "Connection speed"
+msgstr ""
+
+msgid ""
+"Set connection speed in kb/s, according to which you want to have streams "
+"auto-selected"
+msgstr ""
+
+msgid "ExtEplayer3"
+msgstr ""
+
+msgid "GstPlayer"
+msgstr ""
+
+msgid "Enigma2 playback system"
+msgstr ""
+
+msgid "Select the player who will be used for Enigma2 playback."
+msgstr ""
+
+msgid "Player"
+msgstr ""
+
+msgid "Select the player who will be used in serviceapp for Enigma2 playback."
+msgstr ""
+
+msgid "ServiceMp3 (%s)"
+msgstr ""
+
+msgid "ServiceGstPlayer (%s)"
+msgstr ""
+
+msgid "ServiceExtEplayer3 (%s)"
+msgstr ""
+
+msgid ""
+"Enigma2 Playback System was changed and Enigma2 should be restarted\n"
+"Do you want to restart it now?"
+msgstr ""
+
+msgid "Stop playing this movie?"
+msgstr ""
+
+msgid "Detecting gstreamer player ..."
+msgstr ""
+
+msgid "Detecting exteplayer3 player ..."
+msgstr ""
+
+msgid "setup player framework"
+msgstr ""
+
+msgid "Play with ServiceExtEplayer3"
+msgstr ""
+
+msgid "Play with ServiceGstPlayer"
+msgstr ""
