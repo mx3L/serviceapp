@@ -28,7 +28,7 @@ struct eServiceAppOptions
 	{};
 };
 
-class eServiceApp: public Object, public iPlayableService, public iPauseableService, public iSeekableService, 
+class eServiceApp: public sigc::trackable, public iPlayableService, public iPauseableService, public iSeekableService,
 	public iAudioChannelSelection, public iAudioTrackSelection,  public iSubtitleOutput, public iSubserviceList, public iServiceInformation
 {
 	DECLARE_REF(eServiceApp);
@@ -40,7 +40,7 @@ class eServiceApp: public Object, public iPlayableService, public iPauseableServ
 	bool m_subservices_checked;
 	void fillSubservices();
 
-	Signal2<void,iPlayableService*,int> m_event;
+	sigc::signal2<void,iPlayableService*,int> m_event;
 	eServiceAppOptions *options;
 	PlayerBackend *player;
 	BasePlayer *extplayer;
@@ -90,7 +90,7 @@ public:
 	~eServiceApp();
 
 	// iPlayableService
-	RESULT connectEvent(const Slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection);
+	RESULT connectEvent(const sigc::slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection);
 	RESULT start();
 	RESULT stop();
 #if OPENPLI_ISERVICE_VERSION > 1
