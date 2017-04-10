@@ -41,7 +41,7 @@ AC_LINK_IFELSE(
     void AddRef(){}
     void Release(){}
 
-    RESULT connectEvent(const Slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection){return -1;}
+    RESULT connectEvent(const sigc::slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection){return -1;}
     RESULT start(){return -1;}
     RESULT stop(){return -1;}
     RESULT setTarget(int target, bool noaudio=false){return -1;}; //only this function was changed
