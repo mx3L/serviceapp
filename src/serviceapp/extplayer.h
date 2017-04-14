@@ -21,7 +21,7 @@ enum
 	STD_ERROR,
 };
 
-class PlayerApp: public Object
+class PlayerApp: public sigc::trackable
 {
 	ePtr<eConsoleContainer> console;
 	std::string jsonstr;
@@ -176,7 +176,7 @@ public:
 };
 
 
-class PlayerBackend: public Object, public eThread, public eMainloop, public iPlayerCallback
+class PlayerBackend: public sigc::trackable, public eThread, public eMainloop, public iPlayerCallback
 {
 	struct Message
 	{
