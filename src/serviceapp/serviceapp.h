@@ -28,7 +28,11 @@ struct eServiceAppOptions
 	{};
 };
 
+#if SIGCXX_MAJOR_VERSION == 2
 class eServiceApp: public sigc::trackable, public iPlayableService, public iPauseableService, public iSeekableService,
+#else
+class eServiceApp: public Object, public iPlayableService, public iPauseableService, public iSeekableService,
+#endif
 	public iAudioChannelSelection, public iAudioTrackSelection,  public iSubtitleOutput, public iSubserviceList, public iServiceInformation
 {
 	DECLARE_REF(eServiceApp);
@@ -40,7 +44,11 @@ class eServiceApp: public sigc::trackable, public iPlayableService, public iPaus
 	bool m_subservices_checked;
 	void fillSubservices();
 
+#if SIGCXX_MAJOR_VERSION == 2
 	sigc::signal2<void,iPlayableService*,int> m_event;
+#else
+	Signal2<void,iPlayableService*,int> m_event;
+#endif
 	eServiceAppOptions *options;
 	PlayerBackend *player;
 	BasePlayer *extplayer;
@@ -90,7 +98,11 @@ public:
 	~eServiceApp();
 
 	// iPlayableService
+#if SIGCXX_MAJOR_VERSION == 2
 	RESULT connectEvent(const sigc::slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection);
+#else
+	RESULT connectEvent(const Slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection);
+#endif
 	RESULT start();
 	RESULT stop();
 #if OPENPLI_ISERVICE_VERSION > 1

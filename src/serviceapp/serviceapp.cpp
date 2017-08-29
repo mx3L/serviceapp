@@ -655,7 +655,11 @@ void eServiceApp::gotExtPlayerMessage(int message)
 
 
 // __iPlayableService
+#if SIGCXX_MAJOR_VERSION == 2
 RESULT eServiceApp::connectEvent(const sigc::slot2< void, iPlayableService*, int >& event, ePtr< eConnection >& connection)
+#else
+RESULT eServiceApp::connectEvent(const Slot2< void, iPlayableService*, int >& event, ePtr< eConnection >& connection)
+#endif
 {
 	connection = new eConnection((iPlayableService*)this, m_event.connect(event));
 	return 0;
