@@ -298,7 +298,10 @@ public:
 		pErrorMessage(NULL),
 		mMessageMain(eApp, 1),
 		mMessageThread(this, 1),
-		mTimerDelay(100) // updated play position timer
+		mTimerDelay(100), // updated play position timer
+		mWaitForUpdate(false),
+		mWaitForStop(false)
+
 	{
 		pPlayer->setCallback(this);
 		CONNECT(mMessageThread.recv_msg, PlayerBackend::gotMessage);
