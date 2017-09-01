@@ -11,6 +11,7 @@ const std::string  EXT3_SW_DECODING_MP3            = "mp3_swdec";
 const std::string  EXT3_SW_DECODING_WMA            = "wma_swdec";
 const std::string  EXT3_DOWNMIX                    = "downmix";
 const std::string  EXT3_LPCM_INJECTION             = "lpcm_injection";
+const std::string  EXT3_NO_PCM_RESAMPLING          = "no_pcm_resampling";
 const std::string  EXT3_FLV2MPEG4_CONVERTER        = "flv2mpeg4";
 const std::string  EXT3_PLAYBACK_PROGRESSIVE       = "progressive";
 const std::string  EXT3_PLAYBACK_INIFITY_LOOP      = "loop";
@@ -20,6 +21,7 @@ const std::string  EXT3_PLAYBACK_SUBTITLE_TRACK_ID = "subtitle_id";
 const std::string  EXT3_PLAYBACK_AUDIO_URI         = "audio_uri";
 const std::string  EXT3_PLAYBACK_DASH_VIDEO_ID     = "dash_video_id";
 const std::string  EXT3_PLAYBACK_DASH_AUDIO_ID     = "dash_audio_id";
+const std::string  EXT3_PLAYBACK_MPEGTS_PROGRAM    = "mpegts_program_id";
 const std::string  EXT3_RTMP_PROTOCOL              = "rtmpproto";
 const std::string  EXT3_NICE_VALUE                 = "nice";
 const std::string  EXT3_FFMPEG_SETTING_STRING      = "ffmpeg_option";
@@ -39,12 +41,14 @@ ExtEplayer3Options::ExtEplayer3Options()
 	settingMap[EXT3_SW_DECODING_WMA]            = SettingEntry ("-w", "bool");
 	settingMap[EXT3_LPCM_INJECTION]             = SettingEntry ("-l", "bool");
 	settingMap[EXT3_DOWNMIX]                    = SettingEntry ("-s", "bool");
+	settingMap[EXT3_NO_PCM_RESAMPLING]          = SettingEntry ("-r", "bool");
 	settingMap[EXT3_FLV2MPEG4_CONVERTER]        = SettingEntry ("-4", "bool");
 	settingMap[EXT3_PLAYBACK_INIFITY_LOOP]      = SettingEntry ("-i", "bool");
 	settingMap[EXT3_PLAYBACK_LIVETS]            = SettingEntry ("-v", "bool");
 	settingMap[EXT3_RTMP_PROTOCOL]              = SettingEntry ("-n", "int");
 	settingMap[EXT3_PLAYBACK_PROGRESSIVE]       = SettingEntry ("-o", "bool");
 	settingMap[EXT3_NICE_VALUE]                 = SettingEntry ("-p", "int");
+	settingMap[EXT3_PLAYBACK_MPEGTS_PROGRAM]    = SettingEntry ("-P", "int");
 	settingMap[EXT3_PLAYBACK_AUDIO_TRACK_ID]    = SettingEntry ("-t", "int");
 	settingMap[EXT3_PLAYBACK_SUBTITLE_TRACK_ID] = SettingEntry ("-9", "int");
 	settingMap[EXT3_PLAYBACK_AUDIO_URI]         = SettingEntry ("-x", "string");
@@ -80,13 +84,13 @@ int ExtEplayer3Options::update(const std::string &key, const std::string &val)
 			{
 				if (key == EXT3_SW_DECODING_AAC || key == EXT3_RTMP_PROTOCOL)
 				{
-					if (intval > 1 && intval <= 2)
+					if (intval < 3)
 					{
 						entry.setValue(intval);
 					}
 					else
 					{
-						eWarning("ExtEplayer3Options::update - invalid value '%s' for '%s' setting, allowed values <1,2>", val.c_str(), key.c_str());
+						eWarning("ExtEplayer3Options::update - invalid value '%s' for '%s' setting, allowed values <0,2>", val.c_str(), key.c_str());
 						ret = -2;
 					}
 				}
