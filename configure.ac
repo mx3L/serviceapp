@@ -60,6 +60,7 @@ AC_LINK_IFELSE(
     SWIG_VOID(RESULT) stream(ePtr<iStreamableService> &SWIG_OUTPUT){};
     SWIG_VOID(RESULT) streamed(ePtr<iStreamedService> &SWIG_OUTPUT){};
     SWIG_VOID(RESULT) keys(ePtr<iServiceKeys> &SWIG_OUTPUT){};
+    void setQpipMode(bool value, bool audio){};
 };],[MyPlayableService service;])
     ],[
         AC_MSG_RESULT([yes])
