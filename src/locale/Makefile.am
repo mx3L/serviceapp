@@ -1,4 +1,4 @@
-LANGS = en lv tr fr
+LANGS = en fr lv pt tr
 LANGMO = $(LANGS:=.mo)
 LANGPO = $(LANGS:=.po)
 
