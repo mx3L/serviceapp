@@ -166,16 +166,19 @@ class ServiceAppSettings(ConfigListScreen, Screen):
                 "green": self.keyOk,
             }, -2)
 
+    def build_configlist_notifier_cb(self, entry):
+        self.build_configlist()
+
     def init_configlist(self):
         config_serviceapp.servicemp3.player.addNotifier(
-                lambda x: self.build_configlist(), initial_call=False)
+                self.build_configlist_notifier_cb, initial_call=False)
         config_serviceapp.servicemp3.replace.addNotifier(
-                lambda x: self.build_configlist(), initial_call=False)
+                self.build_configlist_notifier_cb, initial_call=False)
         self.build_configlist()
 
     def deinit_config(self):
-        del config_serviceapp.servicemp3.player.notifiers[:]
-        del config_serviceapp.servicemp3.replace.notifiers[:]
+        config_serviceapp.servicemp3.player.notifiers.remove(self.build_configlist_notifier_cb)
+        config_serviceapp.servicemp3.replace.notifiers.remove(self.build_configlist_notifier_cb)
 
     def gstplayer_options(self, gstplayer_options_cfg):
         config_list = []
