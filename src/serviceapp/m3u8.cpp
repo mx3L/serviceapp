@@ -298,7 +298,13 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
                 }
                 else
                 {
-                    m3u8StreamInfo.url = url.substr(0, url.rfind('/') + 1) + lineBuffer;
+                   if ((lineBuffer[0] == '/') && url.find("//")) {
+                        m3u8StreamInfo.url = url.substr(0, url.find("/", url.find("//") + 2)) + lineBuffer;
+                    }
+                    else
+                    {
+                        m3u8StreamInfo.url = url.substr(0, url.rfind('/') + 1) + lineBuffer;
+                    }
                 }
                 m3u8StreamInfo.headers = headers;
                 streams.push_back(m3u8StreamInfo);
