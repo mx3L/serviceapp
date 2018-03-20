@@ -136,7 +136,7 @@ ssize_t readLine(SSL *ssl, int fd, char** buffer, size_t* bufsize)
 			*buffer = newbuf;
 			*bufsize = (*bufsize) + 1024;
 		}
-		result = timedRead(ssl, fd, (*buffer) + i, 1, 3000, 100);
+		result = timedRead(ssl, fd, (*buffer) + i, 1, 10000, 100);
 		if (result <= 0 || (*buffer)[i] == '\n')
 		{
 			(*buffer)[i] = '\0';
