@@ -15,7 +15,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
 msgid "AAC software decoding"
-msgstr "Декодирование программного обеспечения ААС"
+msgstr "Программное декодирование ААС"
 
 msgid "Auto select stream"
 msgstr "Автоматический выбор потока"
@@ -24,7 +24,7 @@ msgid "Auto turn on subtitles"
 msgstr "Автоматическое включение субтитров"
 
 msgid "Automatically turn on subtitles if available."
-msgstr "Автоматически включать доступные субтитры."
+msgstr "Автоматически включать субтитры при доступности."
 
 msgid "Buffer duration"
 msgstr "Длительность буфера"
@@ -39,7 +39,7 @@ msgid "Connection speed"
 msgstr "Скорость соединения"
 
 msgid "DTS software decoding"
-msgstr "Декодирование программного обеспечения DTS"
+msgstr "Программное декодирование DTS"
 
 msgid "Detecting exteplayer3 player ..."
 msgstr "Обнаружение плеера exteplayer3 ..."
@@ -69,7 +69,7 @@ msgid "GstPlayer"
 msgstr "GstPlayer"
 
 msgid "HLS Explorer"
-msgstr "HLS парсер"
+msgstr "HLS Проводник"
 
 msgid "LPCM injection"
 msgstr "Вставка LPCM"
@@ -84,16 +84,16 @@ msgid "Play with ServiceGstPlayer"
 msgstr "Проигрывать в ServiceGstPlayer"
 
 msgid "Player"
-msgstr "Проигрыватеь"
+msgstr "Проигрыватель"
 
 msgid "Select sink which you want to use."
 msgstr "Выберите устройство вывода."
 
 msgid "Select the player which will be used for Enigma2 playback."
-msgstr "Выберите плеер, используемый системой для воспроизведения."
+msgstr "Выберите плеер который будет использоваться системой для воспроизведения."
 
 msgid "Select the player which will be used in serviceapp for Enigma2 playback."
-msgstr "Выберите плеер, используемый ServiceApp для воспроизведения системой."
+msgstr "Выберите плеер который будет использоваться ServiceApp для воспроизведения системой."
 
 msgid "ServiceApp"
 msgstr "ServiceApp"
@@ -120,7 +120,7 @@ msgid "Sink"
 msgstr "Приёмник"
 
 msgid "Software decoder use LPCM for injection (otherwise wav PCM will be used)"
-msgstr "Использовать LPCM для программного декодирования (в иных случаях PCM)"
+msgstr "Использовать LPCM в программном декодере (в иных случаях wav PCM)"
 
 msgid "Stereo downmix"
 msgstr "Микшировать в стерео"
@@ -129,37 +129,37 @@ msgid "Stop playing this movie?"
 msgstr "Прекратить воспроизведение фильма?"
 
 msgid "Turn on AAC software decoding."
-msgstr "Включить декодирование программного обеспечения AAC."
+msgstr "Включает программное декодирование AAC."
 
 msgid "Turn on DTS software decoding."
-msgstr "Включить декодирование программного обеспечения DTS."
+msgstr "Включает программное декодирование DTS."
 
 msgid "Turn on WMA1, WMA2, WMA/PRO software decoding."
-msgstr "Включить декодирование программного обеспечения WMA1, WMA2, WMA/PRO."
+msgstr "Включает программное декодирование WMA1, WMA2, WMA/PRO."
 
 msgid "Turn on auto-selection of streams according to set Connection speed."
-msgstr "Включить автоматический выбор потоков в соответствии с установленной скоростью соединения."
+msgstr "Включает автоматический выбор потоков в соответствии с установленной скоростью соединения."
 
 msgid "Turn on downmix to stereo, when software decoding is in use"
-msgstr "Включите понижающее микширование в стерео, когда используется программное декодирование"
+msgstr "Включает понижающее микширование в стерео, когда используется программное декодирование"
 
 msgid "Turn on explorer to retrieve different quality streams from HLS variant playlist and select them via subservices."
-msgstr "Включите проводник, чтобы извлекать различные качественные потоки из списка воспроизведения HLS и выбирать их через подсистемы."
+msgstr "Включает проводник, для извлечения потоков различного качества из плейлиста вариантов HLS и их выбора через субсервисы."
 
 msgid "Turn on the embedded subtitles support."
-msgstr "Включить поддержку встроенных субтитров."
+msgstr "Включает поддержку встроенных субтитров."
 
 msgid "WMA software decoding"
-msgstr "декодирование программного обеспечения WMA"
+msgstr "Программное декодирование WMA"
 
 msgid "experimental"
-msgstr "экспериментальний"
+msgstr "экспериментальный"
 
 msgid "exteplayer3"
 msgstr "exteplayer3"
 
 msgid "false"
-msgstr "ложь"
+msgstr "Нет"
 
 msgid "gstplayer"
 msgstr "gstplayer"
@@ -177,4 +177,4 @@ msgid "setup player framework"
 msgstr "настройка фреймворк плеера"
 
 msgid "true"
-msgstr "истина"
+msgstr "Да"

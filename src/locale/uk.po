@@ -15,7 +15,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
 msgid "AAC software decoding"
-msgstr "Декодування програмного забезпечення ААС"
+msgstr "Програмне декодування ААС"
 
 msgid "Auto select stream"
 msgstr "Автоматичний вибір потоку"
@@ -24,7 +24,7 @@ msgid "Auto turn on subtitles"
 msgstr "Автоматичне включення субтитрів"
 
 msgid "Automatically turn on subtitles if available."
-msgstr "Автоматично включати доступні субтитри."
+msgstr "Автоматично включати доступні субтитри при наявності."
 
 msgid "Buffer duration"
 msgstr "Тривалість буфера"
@@ -39,7 +39,7 @@ msgid "Connection speed"
 msgstr "Швидкість з'єднання"
 
 msgid "DTS software decoding"
-msgstr "Декодування програмного забезпечення DTS"
+msgstr "Програмне декодування DTS"
 
 msgid "Detecting exteplayer3 player ..."
 msgstr "Виявлення плеєра exteplayer3 ..."
@@ -69,7 +69,7 @@ msgid "GstPlayer"
 msgstr "GstPlayer"
 
 msgid "HLS Explorer"
-msgstr "HLS парсер"
+msgstr "HLS Провідник"
 
 msgid "LPCM injection"
 msgstr "Вставка LPCM"
@@ -78,10 +78,10 @@ msgid "Ok"
 msgstr "OK"
 
 msgid "Play with ServiceExtEplayer3"
-msgstr "Програти в ServiceExtEplayer3"
+msgstr "Програвати в ServiceExtEplayer3"
 
 msgid "Play with ServiceGstPlayer"
-msgstr "Програти в ServiceGstPlayer"
+msgstr "Програвати в ServiceGstPlayer"
 
 msgid "Player"
 msgstr "Програвач"
@@ -90,10 +90,10 @@ msgid "Select sink which you want to use."
 msgstr "Виберіть пристрій виводу."
 
 msgid "Select the player which will be used for Enigma2 playback."
-msgstr "Виберіть плеєр, який використовується системою для програвання."
+msgstr "Виберіть плеєр, який буде використовуватися системою для програвання."
 
 msgid "Select the player which will be used in serviceapp for Enigma2 playback."
-msgstr "Виберіть плеєр, який використовується ServiceApp для програвання системою."
+msgstr "Виберіть плеєр, який буде використовується ServiceApp для програвання системою."
 
 msgid "ServiceApp"
 msgstr "ServiceApp"
@@ -108,19 +108,19 @@ msgid "ServiceMp3 (%s)"
 msgstr "ServiceMp3 (%s)"
 
 msgid "Set buffer duration in seconds."
-msgstr "Встановіть тривалість буферизації в секундах."
+msgstr "Встановлює тривалість буферизації в секундах."
 
 msgid "Set buffer size in kilobytes."
-msgstr "Встановіть розмір буферізації в кілобайтах."
+msgstr "Встановлює розмір буферізації в кілобайтах."
 
 msgid "Set connection speed in kb/s, according to which you want to have streams auto-selected"
-msgstr "Встановіть швидкість з'єднання в кб/с, відповідно до якої Ви бажаєте, щоб потоки автоматично вибиралися"
+msgstr "Встановлює швидкість з'єднання в кб/с, відповідно до якої Ви бажаєте, щоб потоки автоматично вибиралися"
 
 msgid "Sink"
 msgstr "Приймач"
 
 msgid "Software decoder use LPCM for injection (otherwise wav PCM will be used)"
-msgstr "Використовувати LPCM для програмного декодування (в інших випадках PCM)"
+msgstr "Використовувує LPCM для програмного декодування (в інших випадках wav PCM)"
 
 msgid "Stereo downmix"
 msgstr "Мікшувати в стерео"
@@ -129,28 +129,28 @@ msgid "Stop playing this movie?"
 msgstr "Припинити програвання фільму?"
 
 msgid "Turn on AAC software decoding."
-msgstr "Включити декодування програмного забезпечення AAC."
+msgstr "Вмикає програмне декодування AAC."
 
 msgid "Turn on DTS software decoding."
-msgstr "Включити декодування програмного забезпечення DTS."
+msgstr "Вмикає програмне декодування DTS."
 
 msgid "Turn on WMA1, WMA2, WMA/PRO software decoding."
-msgstr "Включити декодування програмного забезпечення WMA1, WMA2, WMA/PRO."
+msgstr "Вмикає програмне декодування WMA1, WMA2, WMA/PRO."
 
 msgid "Turn on auto-selection of streams according to set Connection speed."
-msgstr "Включити автоматичний вибір потоків відповідно до встановленої швидкістю з'єднання."
+msgstr "Вмикає автоматичний вибір потоків відповідно до встановленої швидкості з'єднання."
 
 msgid "Turn on downmix to stereo, when software decoding is in use"
-msgstr "Увімкніть знижуюче мікшування в стерео, коли використовується програмне декодування"
+msgstr "Вмикає знижуюче мікшування в стерео, коли використовується програмне декодування"
 
 msgid "Turn on explorer to retrieve different quality streams from HLS variant playlist and select them via subservices."
-msgstr "Увімкніть провідник, щоб витягувати різні якісні потоки зі списку програвання HLS та вибирати їх через підсистеми."
+msgstr "Вмикає провідник для витягання потоків різної якості з плейлиста варіантів HLS та вибирати їх через субсервіси."
 
 msgid "Turn on the embedded subtitles support."
-msgstr "Увімкніти підтримку вбудованих субтитрів."
+msgstr "Вмикає підтримку вбудованих субтитрів."
 
 msgid "WMA software decoding"
-msgstr "декодування програмного забезпечення WMA"
+msgstr "Програмне декодування WMA"
 
 msgid "experimental"
 msgstr "експериментальний"
@@ -159,7 +159,7 @@ msgid "exteplayer3"
 msgstr "exteplayer3"
 
 msgid "false"
-msgstr "хибність"
+msgstr "Ні"
 
 msgid "gstplayer"
 msgstr "gstplayer"
@@ -177,4 +177,4 @@ msgid "setup player framework"
 msgstr "налаштування фреймворк плеєра"
 
 msgid "true"
-msgstr "істина"
+msgstr "Так"
