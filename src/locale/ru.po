@@ -1,0 +1,180 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ServiceApp / enigma2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-03-26 21:19+0200\n"
+"PO-Revision-Date: 2018-03-26 21:50+0200\n"
+"Last-Translator: igorrrrr <igorzhugan66@gmail.com>\n"
+"Language-Team: igorrrrr <igorzhugan66@gmail.com>\n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 2.0.6\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+
+msgid "AAC software decoding"
+msgstr "Программное декодирование ААС"
+
+msgid "Auto select stream"
+msgstr "Автоматический выбор потока"
+
+msgid "Auto turn on subtitles"
+msgstr "Автоматическое включение субтитров"
+
+msgid "Automatically turn on subtitles if available."
+msgstr "Автоматически включать субтитры при доступности."
+
+msgid "Buffer duration"
+msgstr "Длительность буфера"
+
+msgid "Buffer size"
+msgstr "Размер буфера"
+
+msgid "Cancel"
+msgstr "Отмена"
+
+msgid "Connection speed"
+msgstr "Скорость соединения"
+
+msgid "DTS software decoding"
+msgstr "Программное декодирование DTS"
+
+msgid "Detecting exteplayer3 player ..."
+msgstr "Обнаружение плеера exteplayer3 ..."
+
+msgid "Detecting gstreamer player ..."
+msgstr "Обнаружение плеера gstreamer ..."
+
+msgid "Embedded subtitles"
+msgstr "Встроенные субтитры"
+
+msgid "Enigma2 playback system"
+msgstr "Система воспроизведения Enigma2"
+
+msgid ""
+"Enigma2 playback system was changed and Enigma2 should be restarted\n"
+"\n"
+"Do you want to restart it now?"
+msgstr ""
+"Система воспроизведения Enigma2 была изменена и Enigma2 необходимо перезапустить\n"
+"\n"
+"Вы хотите перезапустить её сейчас?"
+
+msgid "ExtEplayer3"
+msgstr "ExtEplayer3"
+
+msgid "GstPlayer"
+msgstr "GstPlayer"
+
+msgid "HLS Explorer"
+msgstr "HLS Проводник"
+
+msgid "LPCM injection"
+msgstr "Вставка LPCM"
+
+msgid "Ok"
+msgstr "OK"
+
+msgid "Play with ServiceExtEplayer3"
+msgstr "Проигрывать в ServiceExtEplayer3"
+
+msgid "Play with ServiceGstPlayer"
+msgstr "Проигрывать в ServiceGstPlayer"
+
+msgid "Player"
+msgstr "Проигрыватель"
+
+msgid "Select sink which you want to use."
+msgstr "Выберите устройство вывода."
+
+msgid "Select the player which will be used for Enigma2 playback."
+msgstr "Выберите плеер который будет использоваться системой для воспроизведения."
+
+msgid "Select the player which will be used in serviceapp for Enigma2 playback."
+msgstr "Выберите плеер который будет использоваться ServiceApp для воспроизведения системой."
+
+msgid "ServiceApp"
+msgstr "ServiceApp"
+
+msgid "ServiceExtEplayer3 (%s)"
+msgstr "ServiceExtEplayer3 (%s)"
+
+msgid "ServiceGstPlayer (%s)"
+msgstr "ServiceGstPlayer (%s)"
+
+msgid "ServiceMp3 (%s)"
+msgstr "ServiceMp3 (%s)"
+
+msgid "Set buffer duration in seconds."
+msgstr "Установите длительность буферизации в секундах."
+
+msgid "Set buffer size in kilobytes."
+msgstr "Установите размер буферизации в килобайтах."
+
+msgid "Set connection speed in kb/s, according to which you want to have streams auto-selected"
+msgstr "Установите скорость соединения в кб/с, в соответствии с которой Вы хотите, чтобы потоки автоматически выбирались"
+
+msgid "Sink"
+msgstr "Приёмник"
+
+msgid "Software decoder use LPCM for injection (otherwise wav PCM will be used)"
+msgstr "Использовать LPCM в программном декодере (в иных случаях wav PCM)"
+
+msgid "Stereo downmix"
+msgstr "Микшировать в стерео"
+
+msgid "Stop playing this movie?"
+msgstr "Прекратить воспроизведение фильма?"
+
+msgid "Turn on AAC software decoding."
+msgstr "Включает программное декодирование AAC."
+
+msgid "Turn on DTS software decoding."
+msgstr "Включает программное декодирование DTS."
+
+msgid "Turn on WMA1, WMA2, WMA/PRO software decoding."
+msgstr "Включает программное декодирование WMA1, WMA2, WMA/PRO."
+
+msgid "Turn on auto-selection of streams according to set Connection speed."
+msgstr "Включает автоматический выбор потоков в соответствии с установленной скоростью соединения."
+
+msgid "Turn on downmix to stereo, when software decoding is in use"
+msgstr "Включает понижающее микширование в стерео, когда используется программное декодирование"
+
+msgid "Turn on explorer to retrieve different quality streams from HLS variant playlist and select them via subservices."
+msgstr "Включает проводник, для извлечения потоков различного качества из плейлиста вариантов HLS и их выбора через субсервисы."
+
+msgid "Turn on the embedded subtitles support."
+msgstr "Включает поддержку встроенных субтитров."
+
+msgid "WMA software decoding"
+msgstr "Программное декодирование WMA"
+
+msgid "experimental"
+msgstr "экспериментальный"
+
+msgid "exteplayer3"
+msgstr "exteplayer3"
+
+msgid "false"
+msgstr "Нет"
+
+msgid "gstplayer"
+msgstr "gstplayer"
+
+msgid "not installed"
+msgstr "не установлен"
+
+msgid "original"
+msgstr "оригинальный"
+
+msgid "serviceapp"
+msgstr "serviceapp"
+
+msgid "setup player framework"
+msgstr "настройка фреймворк плеера"
+
+msgid "true"
+msgstr "Да"
