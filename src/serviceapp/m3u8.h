@@ -35,7 +35,7 @@ public:
     M3U8VariantsExplorer(const std::string& url, const HeaderMap& headers):
         url(url),
         headers(headers),
-        redirectLimit(3){};
+        redirectLimit(5){};
     std::vector<M3U8StreamInfo> getStreams();
 
 };

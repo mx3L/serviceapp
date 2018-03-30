@@ -84,7 +84,7 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
 {
     if (redirect > redirectLimit)
     {
-        fprintf(stderr, "[%s] - reached maximum number of %d - redirects", __func__, redirectLimit);
+        fprintf(stderr, "[%s] - reached maximum number of %d - redirects\n", __func__, redirectLimit);
         return -1;
     }
     Url purl(url);
