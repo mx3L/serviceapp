@@ -90,6 +90,7 @@ public:
     sigc::signal1<void,int> urlResolved;
 #else
     Signal1<void, int> urlResolved;
+#endif
 };
 
 #endif // SCRIPTRUN_H
