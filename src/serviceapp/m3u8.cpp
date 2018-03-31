@@ -203,6 +203,7 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
             return -1;
     }
     int ret = -1;
+    std::string redirectUrl;
     while(1)
     {
         result = readLine(ssl, sd, &lineBuffer, &bufferSize);
@@ -233,17 +234,17 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
                             || !strncasecmp(contenttype, "audio/mpegurl", 13)
                             || !strncasecmp(contenttype, "application/m3u", 15)))
                     {
-                        fprintf(stderr, "[%s] - not supported contenttype detected: %s!\n", __func__, contenttype);
-                        break;
+                        if (statusCode == 200)
+                        {
+                            fprintf(stderr, "[%s] - not supported contenttype detected: %s!\n", __func__, contenttype);
+                            break;
+                        }
                     }
                 }
             }
             if (statusCode == 302 && strncasecmp(lineBuffer, "location: ", 10) == 0)
             {
-                std::string newurl = &lineBuffer[10];
-                fprintf(stderr, "[%s] - redirecting to: %s\n", __func__, newurl.c_str());
-                ret = getVariantsFromMasterUrl(newurl, headers, ++redirect);
-                break;
+                redirectUrl = &lineBuffer[10];
             }
             if (!strncmp(lineBuffer, "Set-Cookie: ", 12))
             {
@@ -256,6 +257,12 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
             {
                 contentStarted = true;
                 fprintf(stderr, "[%s] - content part started\n", __func__);
+                if (!redirectUrl.empty())
+                {
+                    fprintf(stderr, "[%s] - redirecting to: %s\n", __func__, redirectUrl.c_str());
+                    ret = getVariantsFromMasterUrl(redirectUrl, headers, ++redirect);
+                    break;
+                }
             }
         }
         else
