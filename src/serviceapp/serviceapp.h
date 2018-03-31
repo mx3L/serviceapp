@@ -10,6 +10,7 @@
 
 #include "common.h"
 #include "extplayer.h"
+#include "scriptrun.h"
 #include "m3u8.h"
 
 struct eServiceAppOptions
@@ -52,6 +53,7 @@ class eServiceApp: public Object, public iPlayableService, public iPauseableServ
 	eServiceAppOptions *options;
 	PlayerBackend *player;
 	BasePlayer *extplayer;
+    ResolveUrl *m_resolver = NULL;
 	std::string cmd;
 
 	bool m_paused;
@@ -85,6 +87,7 @@ class eServiceApp: public Object, public iPlayableService, public iPauseableServ
 	void pullSubtitles();
 	void pushSubtitles();
 	void signalEventUpdatedInfo();
+    void urlResolved(int success);
 
 #ifdef HAVE_EPG
 	ePtr<eTimer> m_nownext_timer;

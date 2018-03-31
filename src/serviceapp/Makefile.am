@@ -18,6 +18,7 @@ plugin_LTLIBRARIES = serviceapp.la
 serviceapp_la_SOURCES = \
 	serviceapp.cpp \
 	extplayer.cpp \
+	scriptrun.cpp \
 	myconsole.cpp \
 	wrappers.cpp \
 	m3u8.cpp \

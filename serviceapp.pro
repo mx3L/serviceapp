@@ -75,7 +75,8 @@ HEADERS = \
    $$PWD/src/serviceapp/myconsole.h \
    $$PWD/src/serviceapp/serviceapp.h \
    $$PWD/src/serviceapp/wrappers.h \
-   $$PWD/configure.ac
+   $$PWD/configure.ac \
+    src/serviceapp/scriptrun.h
 
 SOURCES = \
    $$PWD/src/serviceapp/cJSON/cJSON.c \
@@ -90,6 +91,7 @@ SOURCES = \
    $$PWD/src/serviceapp/serviceapp.cpp \
    $$PWD/src/serviceapp/wrappers.cpp \
    #$$PWD/test/explore_m3u8.cpp
+    src/serviceapp/scriptrun.cpp
 
 INCLUDEPATH += \
     $$PWD/src/serviceapp \

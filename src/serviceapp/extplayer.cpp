@@ -279,7 +279,7 @@ int PlayerBackend::getPlayPosition(int& mseconds)
 	{
 		return -1;
 	}
-	if (!mPositionInMs) 
+	if (!mPositionInMs)
 	{
 		//mMessageThread.send(Message(Message::tGetPosition));
 		return -2;
@@ -294,7 +294,7 @@ int PlayerBackend::getLength(int& mseconds)
 	{
 		return -1;
 	}
-	if (!mLengthInMs) 
+	if (!mLengthInMs)
 	{
 		mMessageThread.send(Message(Message::tGetLength));
 		return -2;
@@ -581,13 +581,13 @@ void PlayerBackend::recvResumed(int status)
 
 void PlayerBackend::recvAudioTracksList(int status, std::vector<audioStream>& streams)
 {
-	if(!status) 
+	if(!status)
 		mAudioStreams = streams;
 	recvMessage();
 }
 
 void PlayerBackend::recvAudioTrackCurrent(int status, audioStream& stream)
-{ 
+{
 	eDebug("PlayerBackend::recvAudioTrackCurrent - status = %d", status);
 	if(!status)
 	{
@@ -598,7 +598,7 @@ void PlayerBackend::recvAudioTrackCurrent(int status, audioStream& stream)
 		}
 		pCurrentAudio = new audioStream(stream);
 	}
-} 
+}
 
 void PlayerBackend::recvAudioTrackSelected(int status, int trackId)
 {
@@ -622,14 +622,14 @@ void PlayerBackend::recvAudioTrackSelected(int status, int trackId)
 }
 
 void PlayerBackend::recvSubtitleTracksList(int status, std::vector<subtitleStream>& streams)
-{ 
-	if(!status) 
+{
+	if(!status)
 		mSubtitleStreams = streams;
 	recvMessage();
 }
 
 void PlayerBackend::recvSubtitleTrackCurrent(int status, subtitleStream& stream)
-{ 
+{
 	eDebug("PlayerBackend::recvSubtitleTrackCurrent - status = %d", status);
 	if(!status)
 	{
@@ -640,7 +640,7 @@ void PlayerBackend::recvSubtitleTrackCurrent(int status, subtitleStream& stream)
 		}
 		pCurrentSubtitle = new subtitleStream(stream);
 	}
-} 
+}
 
 void PlayerBackend::recvSubtitleTrackSelected(int status, int trackId)
 {

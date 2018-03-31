@@ -242,6 +242,7 @@ eServiceApp::~eServiceApp()
 	delete options;
 	delete player;
 	delete extplayer;
+    delete m_resolver;
 
 	if (m_subtitle_widget) m_subtitle_widget->destroy();
 	m_subtitle_widget = 0;
@@ -570,7 +571,20 @@ exit:
 void eServiceApp::signalEventUpdatedInfo()
 {
 	eDebug("eServiceApp::signalEventUpdatedInfo");
-	m_event(this, evUpdatedInfo);
+    m_event(this, evUpdatedInfo);
+}
+
+void eServiceApp::urlResolved(int success)
+{
+    eDebug("eServiceApp::urlResolved: %s", success ? "success": "error");
+    if (success)
+    {
+        m_ref.path = m_resolver->getUrl();
+        eDebug("eServiceApp::urlResolved: %s", m_ref.path);
+        start();
+    }
+    else
+        stop();
 }
 
 void eServiceApp::gotExtPlayerMessage(int message)
@@ -668,6 +682,14 @@ RESULT eServiceApp::connectEvent(const Slot2< void, iPlayableService*, int >& ev
 RESULT eServiceApp::start()
 {
 	std::string path_str(m_ref.path);
+    std::string resolve_uri = "resolve://";
+    if (path_str.find(resolve_uri) == 0)
+    {
+        m_resolver = new ResolveUrl(m_ref.path.substr(resolve_uri.size()));
+        CONNECT(m_resolver->urlResolved, eServiceApp::urlResolved);
+        m_resolver->start();
+        return 0;
+    }
 	HeaderMap headers = getHttpHeaders(m_ref.path);
 	if (options->HLSExplorer && options->autoSelectStream)
 	{
@@ -734,6 +756,7 @@ RESULT eServiceApp::start()
 RESULT eServiceApp::stop()
 {
 	eDebug("eServiceApp::stop");
+    if (m_resolver) m_resolver->stop();
 	player->stop();
 	return 0;
 }
