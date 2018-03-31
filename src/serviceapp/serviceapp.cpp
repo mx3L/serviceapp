@@ -580,7 +580,7 @@ void eServiceApp::urlResolved(int success)
     if (success)
     {
         m_ref.path = m_resolver->getUrl();
-        eDebug("eServiceApp::urlResolved: %s", m_ref.path);
+        eDebug("eServiceApp::urlResolved: %s", m_ref.path.c_str());
         start();
     }
     else
