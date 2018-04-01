@@ -124,16 +124,7 @@ void ResolveUrl::stop()
     mStopped = true;
     if (mThreadRunning)
     {
-        // wait 10 seconds for normal exit if timed out then kill process
-        mWaitForStop = true;
-        WaitThread t(mWaitForStopMutex, mWaitForStopCond, mWaitForStop, 10000);
-        t.run();
-        mMessageThread.send(Message(Message::tStop));
-        t.kill();
-        if (t.isTimedOut())
-        {
-            mMessageThread.send(Message(Message::tKill));
-        }
+        mMessageThread.send(Message(Message::tKill));
     }
     kill();
 }
@@ -158,7 +149,11 @@ void ResolveUrl::scriptEnded(int retval)
     if (mStopped)
         m_success = false;
     else
+    {
         m_success = !retval;
+        if (m_success)
+            m_success = !getUrl().empty();
+    }
     mMessageMain.send(Message(Message::stop));
 }
 
