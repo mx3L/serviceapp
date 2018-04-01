@@ -44,18 +44,18 @@ enum
 static int g_playerServiceMP3 = GSTPLAYER;
 static bool g_useUserSettings = false;
 
-static GstPlayerOptions g_GstPlayerOptionsServiceMP3;
-static GstPlayerOptions g_GstPlayerOptionsServiceGst;
-static GstPlayerOptions g_GstPlayerOptionsUser;
+static GstPlayerOptions *g_GstPlayerOptionsServiceMP3;
+static GstPlayerOptions *g_GstPlayerOptionsServiceGst;
+static GstPlayerOptions *g_GstPlayerOptionsUser;
 
-static ExtEplayer3Options g_ExtEplayer3OptionsServiceMP3;
-static ExtEplayer3Options g_ExtEplayer3OptionsServiceExt3;
-static ExtEplayer3Options g_ExtEplayer3OptionsUser;
+static ExtEplayer3Options *g_ExtEplayer3OptionsServiceMP3;
+static ExtEplayer3Options *g_ExtEplayer3OptionsServiceExt3;
+static ExtEplayer3Options *g_ExtEplayer3OptionsUser;
 
-static eServiceAppOptions g_ServiceAppOptionsServiceMP3;
-static eServiceAppOptions g_ServiceAppOptionsServiceExt3;
-static eServiceAppOptions g_ServiceAppOptionsServiceGst;
-static eServiceAppOptions g_ServiceAppOptionsUser;
+static eServiceAppOptions *g_ServiceAppOptionsServiceMP3;
+static eServiceAppOptions *g_ServiceAppOptionsServiceExt3;
+static eServiceAppOptions *g_ServiceAppOptionsServiceGst;
+static eServiceAppOptions *g_ServiceAppOptionsUser;
 
 static const std::string gReplaceServiceMP3Path = eEnv::resolve("$sysconfdir/enigma2/serviceapp_replaceservicemp3");
 static const bool gReplaceServiceMP3 = ( access( gReplaceServiceMP3Path.c_str(), F_OK ) != -1 );
@@ -91,11 +91,11 @@ static BasePlayer *createPlayer(const eServiceReference& ref, const HeaderMap &h
 	{
 		ExtEplayer3Options options;
 		if (g_useUserSettings)
-			options = g_ExtEplayer3OptionsUser;
+			options = *g_ExtEplayer3OptionsUser;
 		else if (ref.type == eServiceFactoryApp::idServiceExtEplayer3)
-			options = g_ExtEplayer3OptionsServiceExt3;
+			options = *g_ExtEplayer3OptionsServiceExt3;
 		else
-			options = g_ExtEplayer3OptionsServiceMP3;
+			options = *g_ExtEplayer3OptionsServiceMP3;
 		updatePlayerOptions(options, headers);
 		player = new ExtEplayer3(options);
 	}
@@ -103,11 +103,11 @@ static BasePlayer *createPlayer(const eServiceReference& ref, const HeaderMap &h
 	{
 		GstPlayerOptions options;
 		if (g_useUserSettings)
-			options = g_GstPlayerOptionsUser;
+			options = *g_GstPlayerOptionsUser;
 		else if (ref.type == eServiceFactoryApp::idServiceGstPlayer)
-			options = g_GstPlayerOptionsServiceGst;
+			options = *g_GstPlayerOptionsServiceGst;
 		else
-			options = g_GstPlayerOptionsServiceMP3;
+			options = *g_GstPlayerOptionsServiceMP3;
 		updatePlayerOptions(options, headers);
 		player = new GstPlayer(options);
 	}
@@ -120,20 +120,20 @@ static eServiceAppOptions *createOptions(const eServiceReference& ref)
 	switch(ref.type)
 	{
 		case eServiceFactoryApp::idServiceMP3:
-			options = &g_ServiceAppOptionsServiceMP3;
+			options = g_ServiceAppOptionsServiceMP3;
 			break;
 		case eServiceFactoryApp::idServiceExtEplayer3:
-			options = &g_ServiceAppOptionsServiceExt3;
+			options = g_ServiceAppOptionsServiceExt3;
 			break;
 		case eServiceFactoryApp::idServiceGstPlayer:
-			options = &g_ServiceAppOptionsServiceGst;
+			options = g_ServiceAppOptionsServiceGst;
 			break;
 		default:
 			break;
 	}
 	if(g_useUserSettings)
 	{
-		options = &g_ServiceAppOptionsUser;
+		options = g_ServiceAppOptionsUser;
 	}
 	return new eServiceAppOptions(*options);
 }
@@ -1453,15 +1453,15 @@ gstplayer_set_setting(PyObject *self, PyObject *args)
 	switch (settingId)
 	{
 		case OPTIONS_SERVICEGSTPLAYER:
-			options = &g_GstPlayerOptionsServiceGst;
+			options = g_GstPlayerOptionsServiceGst;
 			eDebug("[gstplayer_set_setting] setting servicegstplayer options");
 			break;
 		case OPTIONS_SERVICEMP3:
-			options = &g_GstPlayerOptionsServiceMP3;
+			options = g_GstPlayerOptionsServiceMP3;
 			eDebug("[gstplayer_set_setting] setting servicemp3 options");
 			break;
 		case OPTIONS_USER:
-			options = &g_GstPlayerOptionsUser;
+			options = g_GstPlayerOptionsUser;
 			eDebug("[gstplayer_set_setting] setting user options");
 			break;
 		default:
@@ -1513,15 +1513,15 @@ exteplayer3_set_setting(PyObject *self, PyObject *args)
 	switch (settingId)
 	{
 		case OPTIONS_SERVICEEXTEPLAYER3:
-			options = &g_ExtEplayer3OptionsServiceExt3;
+			options = g_ExtEplayer3OptionsServiceExt3;
 			eDebug("[exteplayer3_set_setting] setting serviceextplayer3 options");
 			break;
 		case OPTIONS_SERVICEMP3:
-			options = &g_ExtEplayer3OptionsServiceMP3;
+			options = g_ExtEplayer3OptionsServiceMP3;
 			eDebug("[exteplayer3_set_setting] setting servicemp3 options");
 			break;
 		case OPTIONS_USER:
-			options = &g_ExtEplayer3OptionsUser;
+			options = g_ExtEplayer3OptionsUser;
 			eDebug("[exteplayer3_set_setting] setting user options");
 			break;
 		default:
@@ -1562,19 +1562,19 @@ serviceapp_set_setting(PyObject *self, PyObject *args)
 	switch (settingId)
 	{
 		case OPTIONS_SERVICEEXTEPLAYER3:
-			options = &g_ServiceAppOptionsServiceExt3;
+			options = g_ServiceAppOptionsServiceExt3;
 			eDebug("[serviceapp_set_setting] setting serviceexteplayer3 options");
 			break;
 		case OPTIONS_SERVICEGSTPLAYER:
-			options = &g_ServiceAppOptionsServiceGst;
+			options = g_ServiceAppOptionsServiceGst;
 			eDebug("[serviceapp_set_setting] setting servicegstplayer options");
 			break;
 		case OPTIONS_SERVICEMP3:
-			options = &g_ServiceAppOptionsServiceMP3;
+			options = g_ServiceAppOptionsServiceMP3;
 			eDebug("[serviceapp_set_setting] setting servicemp3 options");
 			break;
 		case OPTIONS_USER:
-			options = &g_ServiceAppOptionsUser;
+			options = g_ServiceAppOptionsUser;
 			eDebug("[serviceapp_set_setting] setting user options");
 			break;
 		default:
@@ -1638,6 +1638,18 @@ PyMODINIT_FUNC
 initserviceapp(void)
 {
 	Py_InitModule("serviceapp", serviceappMethods);
+	g_GstPlayerOptionsServiceMP3 = new GstPlayerOptions();
+	g_GstPlayerOptionsServiceGst = new GstPlayerOptions();
+	g_GstPlayerOptionsUser = new GstPlayerOptions();
+
+	g_ExtEplayer3OptionsServiceMP3 = new ExtEplayer3Options();
+	g_ExtEplayer3OptionsServiceExt3 = new ExtEplayer3Options();
+	g_ExtEplayer3OptionsUser = new ExtEplayer3Options();
+
+	g_ServiceAppOptionsServiceMP3 = new eServiceAppOptions();
+	g_ServiceAppOptionsServiceExt3 = new eServiceAppOptions();
+	g_ServiceAppOptionsServiceGst = new eServiceAppOptions();
+	g_ServiceAppOptionsUser = new eServiceAppOptions();
 
 	SSL_load_error_strings();
 	SSL_library_init();
