@@ -359,7 +359,7 @@ class ServiceAppDetectPlayers(Screen):
 
     def detect_exteplayer3(self, data, retval, extra_args):
         global EXTEPLAYER3_VERSION
-        EXTEPLAYER3_VERSION = 36
+        EXTEPLAYER3_VERSION = None
         jsondata = self._get_first_json_data_from_string(data)
         if jsondata is None:
             print "[ServiceApp] cannot detect exteplayer3 version(1)!"
