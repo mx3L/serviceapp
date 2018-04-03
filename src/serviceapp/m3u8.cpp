@@ -308,7 +308,10 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
                 }
                 else
                 {
-                    m3u8StreamInfo.url = purl.proto().append("://").append(purl.host()).append(lineBuffer);
+                    if (strlen(lineBuffer) > 0 && lineBuffer[0] == '/')
+                        m3u8StreamInfo.url = purl.proto().append("://").append(purl.host()).append(lineBuffer);
+                    else
+                        m3u8StreamInfo.url = url.substr(0, url.rfind('/') + 1) + lineBuffer;
                 }
                 m3u8StreamInfo.headers = headers;
                 streams.push_back(m3u8StreamInfo);
