@@ -143,7 +143,12 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
         path += "?" + query;
     std::string request = "GET ";
     request.append(path).append(" HTTP/1.1\r\n");
-    request.append("Host: ").append(purl.host()).append("\r\n");
+    request.append("Host: ").append(purl.host());
+    if (purl.port() > 0)
+    {
+        request.append(":").append(std::to_string(purl.port()));
+    }
+    request.append("\r\n");
     request.append("User-Agent: ").append(userAgent).append("\r\n");
     request.append("Accept: */*\r\n");
     for (HeaderMap::const_iterator it(headers.begin()); it != headers.end(); it++)
