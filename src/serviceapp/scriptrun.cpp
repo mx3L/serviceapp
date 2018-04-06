@@ -185,7 +185,7 @@ void ResolveUrl::gotMessage(const ResolveUrl::Message &message)
         break;
     case Message::tKill:
         eDebug("ResolveUrl::gotMessage - tKill");
-        m_scriptrun->tKill();
+        m_scriptrun->kill();
         break;
     case Message::stop:
         eDebug("ResolveUrl::gotMessage - stop");
