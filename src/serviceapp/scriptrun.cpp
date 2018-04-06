@@ -124,7 +124,7 @@ void ResolveUrl::stop()
     mStopped = true;
     if (mThreadRunning)
     {
-        mMessageThread.send(Message(Message::tKill));
+        mMessageThread.send(Message(Message::tStop));
     }
     kill();
 }
@@ -185,7 +185,7 @@ void ResolveUrl::gotMessage(const ResolveUrl::Message &message)
         break;
     case Message::tKill:
         eDebug("ResolveUrl::gotMessage - tKill");
-        m_scriptrun->kill();
+        m_scriptrun->tKill();
         break;
     case Message::stop:
         eDebug("ResolveUrl::gotMessage - stop");
