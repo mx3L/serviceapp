@@ -124,7 +124,7 @@ void ResolveUrl::stop()
     mStopped = true;
     if (mThreadRunning)
     {
-        mMessageThread.send(Message(Message::tKill));
+        mMessageThread.send(Message(Message::tStop));
     }
     kill();
 }
