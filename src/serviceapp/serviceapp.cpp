@@ -200,6 +200,8 @@ RESULT eServiceFactoryApp::offlineOperations(const eServiceReference &ref, ePtr<
 	return 0;
 }
 
+std::string resolve_uri = "resolve://";
+bool infobar_updated = false;
 
 DEFINE_REF(eServiceApp);
 
@@ -220,6 +222,7 @@ eServiceApp::eServiceApp(eServiceReference ref):
 	m_prev_decoder_time(-1),
 	m_decoder_time_valid_state(0)
 {
+	infobar_updated = false;
 	options = createOptions(ref);
 	extplayer = createPlayer(ref, getHeaders(ref.path));
 	player = new PlayerBackend(extplayer);
@@ -593,8 +596,6 @@ void eServiceApp::gotExtPlayerMessage(int message)
 	{
 		case PlayerMessage::start:
 			eDebug("eServiceApp::gotExtPlayerMessage - start");
-			m_event(this, evUpdatedEventInfo);
-			m_event(this, evStart);
 			m_event_updated_info_timer->start(1000, true);
 #ifdef HAVE_EPG
 			updateEpgCacheNowNext();
@@ -681,8 +682,14 @@ RESULT eServiceApp::connectEvent(const Slot2< void, iPlayableService*, int >& ev
 
 RESULT eServiceApp::start()
 {
+	if (!infobar_updated)
+	{
+		m_event(this, evUpdatedEventInfo);
+		m_event(this, evStart);
+		infobar_updated = true;
+	}
 	std::string path_str(m_ref.path);
-    std::string resolve_uri = "resolve://";
+
     if (path_str.find(resolve_uri) == 0)
     {
         m_resolver = new ResolveUrl(m_ref.path.substr(resolve_uri.size()));
@@ -690,6 +697,8 @@ RESULT eServiceApp::start()
         m_resolver->start();
         return 0;
     }
+    else
+    {
 	HeaderMap headers = getHttpHeaders(m_ref.path);
 	if (options->HLSExplorer && options->autoSelectStream)
 	{
@@ -751,6 +760,7 @@ RESULT eServiceApp::start()
 	// don't pass fragment part to player
 	player->start(Url(path_str).url(), headers);
 	return 0;
+    }
 }
 
 RESULT eServiceApp::stop()
@@ -1113,7 +1123,8 @@ RESULT eServiceApp::getSubtitleList(std::vector<struct SubtitleTrack> &subtitlel
 // __iSubservices
 int eServiceApp::getNumberOfSubservices()
 {
-	if (options->HLSExplorer && !m_subservices_checked)
+	std::string path_str(m_ref.path);
+	if (options->HLSExplorer && path_str.find(resolve_uri) && !m_subservices_checked)
 	{
 		fillSubservices();
 		m_subservices_checked = true;
