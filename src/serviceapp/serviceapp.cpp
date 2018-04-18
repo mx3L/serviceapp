@@ -43,6 +43,8 @@ enum
 
 static int g_playerServiceMP3 = GSTPLAYER;
 static bool g_useUserSettings = false;
+static std::string resolve_uri = "resolve://";
+static bool infobar_updated = false;
 
 static GstPlayerOptions *g_GstPlayerOptionsServiceMP3;
 static GstPlayerOptions *g_GstPlayerOptionsServiceGst;
@@ -220,6 +222,8 @@ eServiceApp::eServiceApp(eServiceReference ref):
 	m_prev_decoder_time(-1),
 	m_decoder_time_valid_state(0)
 {
+	eDebug("eServiceApp::eServiceApp(eServiceReference ref)");
+	infobar_updated = false;
 	options = createOptions(ref);
 	extplayer = createPlayer(ref, getHeaders(ref.path));
 	player = new PlayerBackend(extplayer);
@@ -242,7 +246,7 @@ eServiceApp::~eServiceApp()
 	delete options;
 	delete player;
 	delete extplayer;
-    delete m_resolver;
+	delete m_resolver;
 
 	if (m_subtitle_widget) m_subtitle_widget->destroy();
 	m_subtitle_widget = 0;
@@ -593,8 +597,6 @@ void eServiceApp::gotExtPlayerMessage(int message)
 	{
 		case PlayerMessage::start:
 			eDebug("eServiceApp::gotExtPlayerMessage - start");
-			m_event(this, evUpdatedEventInfo);
-			m_event(this, evStart);
 			m_event_updated_info_timer->start(1000, true);
 #ifdef HAVE_EPG
 			updateEpgCacheNowNext();
@@ -681,76 +683,88 @@ RESULT eServiceApp::connectEvent(const Slot2< void, iPlayableService*, int >& ev
 
 RESULT eServiceApp::start()
 {
-	std::string path_str(m_ref.path);
-    std::string resolve_uri = "resolve://";
-    if (path_str.find(resolve_uri) == 0)
-    {
-        m_resolver = new ResolveUrl(m_ref.path.substr(resolve_uri.size()));
-        CONNECT(m_resolver->urlResolved, eServiceApp::urlResolved);
-        m_resolver->start();
-        return 0;
-    }
-	HeaderMap headers = getHttpHeaders(m_ref.path);
-	if (options->HLSExplorer && options->autoSelectStream)
+	// we should do this to update InfoBar
+	if (!infobar_updated)
 	{
-		if (!m_subservices_checked)
-		{
-			fillSubservices();
-			m_subservices_checked = true;
-		}
-		size_t subservice_num = m_subservice_vec.size();
-		if (subservice_num)
-		{
-			M3U8StreamInfo subservice = *(m_subservice_vec.begin());
-			unsigned int subservice_flag = m_ref.getUnsignedData(7);
-			bool bitrate_selection = (!subservice_flag || subservice_flag >= SUBSERVICES_BITRATEKB_START);
-			if (bitrate_selection)
-			{
-				unsigned int bitrate = 0;
-				if (subservice_flag)
-					bitrate = (subservice_flag - SUBSERVICES_BITRATEKB_START);
-				else
-					bitrate = options->connectionSpeedInKb;
-				// vector is sorted from best to lowest quality in fillSubservices
-				std::vector<M3U8StreamInfo>::const_reverse_iterator it(m_subservice_vec.rbegin());
-				while(it != m_subservice_vec.rend())
-				{
-					if (it->bitrate > bitrate * 1000L)
-					{
-						if (it != m_subservice_vec.rbegin())
-							subservice = *(--it);
-						else
-							subservice = *(it);
-						break;
-					}
-					it++;
-				}
-				eDebug("eServiceApp::start - subservice(%lub/s) selected according to connection speed (%lu)",
-					subservice.bitrate, bitrate * 1000L);
-			}
-			else
-			{
-				unsigned int subservice_idx = subservice_flag - SUBSERVICES_INDEX_START;
-				if (subservice_idx < subservice_num)
-				{
-					subservice = m_subservice_vec[subservice_idx];
-				}
-				else
-				{
-					eWarning("eServiceApp::start - subservice_idx(%u) >= subservice_num(%zu), assuming lowest quality",
-						subservice_idx, subservice_num);
-					subservice = *(m_subservice_vec.end() - 1);
-				}
-				eDebug("eServiceApp::start - subservice(%lub/s) selected according to index(%u)",
-					subservice.bitrate, subservice_idx);
-			}
-			path_str = subservice.url;
-			headers = subservice.headers;
-		}
+		m_event(this, evUpdatedEventInfo);
+		m_event(this, evStart);
+		infobar_updated = true;
 	}
-	// don't pass fragment part to player
-	player->start(Url(path_str).url(), headers);
-	return 0;
+
+	std::string path_str(m_ref.path);
+    	if (path_str.find(resolve_uri) == 0)
+    	{
+        	m_resolver = new ResolveUrl(m_ref.path.substr(resolve_uri.size()));
+        	CONNECT(m_resolver->urlResolved, eServiceApp::urlResolved);
+        	m_resolver->start();
+        	return 0;
+    	} 
+	else
+	{
+		HeaderMap headers = getHttpHeaders(m_ref.path);
+		if (options->HLSExplorer && options->autoSelectStream)
+		{
+			eDebug("eServiceApp::start() / HLSExplorer & autoSelectStream");
+			if (!m_subservices_checked)
+			{
+				eDebug("eServiceApp::start() / fillSubservices()");
+				fillSubservices();
+				m_subservices_checked = true;
+			}
+			size_t subservice_num = m_subservice_vec.size();
+			if (subservice_num)
+			{
+				M3U8StreamInfo subservice = *(m_subservice_vec.begin());
+				unsigned int subservice_flag = m_ref.getUnsignedData(7);
+				bool bitrate_selection = (!subservice_flag || subservice_flag >= SUBSERVICES_BITRATEKB_START);
+				if (bitrate_selection)
+				{
+					unsigned int bitrate = 0;
+					if (subservice_flag)
+						bitrate = (subservice_flag - SUBSERVICES_BITRATEKB_START);
+					else
+						bitrate = options->connectionSpeedInKb;
+					// vector is sorted from best to lowest quality in fillSubservices
+					std::vector<M3U8StreamInfo>::const_reverse_iterator it(m_subservice_vec.rbegin());
+					while(it != m_subservice_vec.rend())
+					{
+						if (it->bitrate > bitrate * 1000L)
+						{
+							if (it != m_subservice_vec.rbegin())
+								subservice = *(--it);
+							else
+								subservice = *(it);
+							break;
+						}
+						it++;
+					}
+					eDebug("eServiceApp::start - subservice(%lub/s) selected according to connection speed (%lu)",
+						subservice.bitrate, bitrate * 1000L);
+				}
+				else
+				{
+					unsigned int subservice_idx = subservice_flag - SUBSERVICES_INDEX_START;
+					if (subservice_idx < subservice_num)
+					{
+						subservice = m_subservice_vec[subservice_idx];
+					}
+					else
+					{
+						eWarning("eServiceApp::start - subservice_idx(%u) >= subservice_num(%zu), assuming lowest quality",
+							subservice_idx, subservice_num);
+						subservice = *(m_subservice_vec.end() - 1);
+					}
+					eDebug("eServiceApp::start - subservice(%lub/s) selected according to index(%u)",
+						subservice.bitrate, subservice_idx);
+				}
+				path_str = subservice.url;
+				headers = subservice.headers;
+			}
+		}
+		// don't pass fragment part to player
+		player->start(Url(path_str).url(), headers);
+		return 0;
+	}
 }
 
 RESULT eServiceApp::stop()
@@ -1113,8 +1127,10 @@ RESULT eServiceApp::getSubtitleList(std::vector<struct SubtitleTrack> &subtitlel
 // __iSubservices
 int eServiceApp::getNumberOfSubservices()
 {
-	if (options->HLSExplorer && !m_subservices_checked)
+	std::string path_str(m_ref.path);
+	if (options->HLSExplorer && path_str.find(resolve_uri) && !m_subservices_checked)
 	{
+		eDebug("eServiceApp::getNumberOfSubservices() / fillSubservices()");
 		fillSubservices();
 		m_subservices_checked = true;
 	}
@@ -1654,26 +1670,25 @@ static PyMethodDef serviceappMethods[] = {
 	 " connectionSpeedInKb - defines bitrate in kilobits/s according to which will be selected stream from playlist <0, max(int32_t)>\n"
 	 " autoTurnOnSubtitles - auto turn on subtitles if available (True, False)\n"
 	},
-	 {NULL,NULL,0,NULL}
+	{NULL,NULL,0,NULL}
 };
 
 PyMODINIT_FUNC
 initserviceapp(void)
 {
 	Py_InitModule("serviceapp", serviceappMethods);
-    g_GstPlayerOptionsServiceMP3 = new GstPlayerOptions();
-    g_GstPlayerOptionsServiceGst = new GstPlayerOptions();
-    g_GstPlayerOptionsUser = new GstPlayerOptions();
+	g_GstPlayerOptionsServiceMP3 = new GstPlayerOptions();
+	g_GstPlayerOptionsServiceGst = new GstPlayerOptions();
+	g_GstPlayerOptionsUser = new GstPlayerOptions();
 
-    g_ExtEplayer3OptionsServiceMP3 = new ExtEplayer3Options();
-    g_ExtEplayer3OptionsServiceExt3 = new ExtEplayer3Options();
-    g_ExtEplayer3OptionsUser = new ExtEplayer3Options();
+	g_ExtEplayer3OptionsServiceMP3 = new ExtEplayer3Options();
+	g_ExtEplayer3OptionsServiceExt3 = new ExtEplayer3Options();
+	g_ExtEplayer3OptionsUser = new ExtEplayer3Options();
 
-    g_ServiceAppOptionsServiceMP3 = new eServiceAppOptions();
-    g_ServiceAppOptionsServiceExt3 = new eServiceAppOptions();
-    g_ServiceAppOptionsServiceGst = new eServiceAppOptions();
-    g_ServiceAppOptionsUser = new eServiceAppOptions();
-
+	g_ServiceAppOptionsServiceMP3 = new eServiceAppOptions();
+	g_ServiceAppOptionsServiceExt3 = new eServiceAppOptions();
+	g_ServiceAppOptionsServiceGst = new eServiceAppOptions();
+	g_ServiceAppOptionsUser = new eServiceAppOptions();
 
 	SSL_load_error_strings();
 	SSL_library_init();
