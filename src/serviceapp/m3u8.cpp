@@ -195,7 +195,7 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
     int result = readLine(ssl, sd, &lineBuffer, &bufferSize);
     fprintf(stderr, "[%s] Response[%d](size=%d): %s\n", __func__, lines++, result, lineBuffer);
     result = sscanf(lineBuffer, "%99s %d %99s", protocol, &statusCode, statusMessage);
-    if (result != 3 || (statusCode != 200 && statusCode != 302))
+    if (result != 3 || (statusCode != 200 && statusCode != 301 && statusCode != 302))
     {
             fprintf(stderr, "[%s] - wrong http response code: %d\n", __func__, statusCode);
             free(lineBuffer);
@@ -247,7 +247,7 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
                     }
                 }
             }
-            if (statusCode == 302 && strncasecmp(lineBuffer, "location: ", 10) == 0)
+            if ((statusCode == 301 || statusCode == 302) && strncasecmp(lineBuffer, "location: ", 10) == 0)
             {
                 redirectUrl = &lineBuffer[10];
             }
