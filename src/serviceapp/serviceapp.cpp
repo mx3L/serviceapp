@@ -705,6 +705,7 @@ RESULT eServiceApp::start()
 		if (!m_subservices_checked)
 		{
 			fillSubservices();
+			m_event(this, evUpdatedEventInfo);
 			m_subservices_checked = true;
 		}
 		size_t subservice_num = m_subservice_vec.size();
