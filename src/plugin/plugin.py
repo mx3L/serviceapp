@@ -19,7 +19,7 @@ from . import _
 import serviceapp_client
 
 
-SINKS_DEFAULT = ("dvbvideosink", "dvbaudiosink")
+SINKS_DEFAULT = ("", "")
 SINKS_EXPERIMENTAL = ("dvbvideosinkexp", "dvbaudiosinkexp")
 
 sink_choices = []
@@ -65,11 +65,15 @@ config_serviceapp.exteplayer3                           = ConfigSubDict()
 config_serviceapp.exteplayer3["servicemp3"]             = ConfigSubsection()
 config_serviceapp.exteplayer3["serviceexteplayer3"]     = ConfigSubsection()
 for key in config_serviceapp.exteplayer3.keys():
-    config_serviceapp.exteplayer3[key].aac_swdecoding   = ConfigBoolean(default = False, descriptions = {False: _("false"), True: _("true")})
+    config_serviceapp.exteplayer3[key].aac_swdecoding   = ConfigSelection(default = "0", choices = [("0", _("off")), ("1", _("To AAC ADTS")), ("2", _("To AAC LATM"))])
+    config_serviceapp.exteplayer3[key].eac3_swdecoding  = ConfigBoolean(default = False, descriptions = {False: _("false"), True: _("true")})
+    config_serviceapp.exteplayer3[key].ac3_swdecoding   = ConfigBoolean(default = False, descriptions = {False: _("false"), True: _("true")})
     config_serviceapp.exteplayer3[key].dts_swdecoding   = ConfigBoolean(default = False, descriptions = {False: _("false"), True: _("true")})
+    config_serviceapp.exteplayer3[key].mp3_swdecoding   = ConfigBoolean(default = False, descriptions = {False: _("false"), True: _("true")})
     config_serviceapp.exteplayer3[key].wma_swdecoding   = ConfigBoolean(default = False, descriptions = {False: _("false"), True: _("true")})
     config_serviceapp.exteplayer3[key].lpcm_injecion    = ConfigBoolean(default = False, descriptions = {False: _("false"), True: _("true")})
     config_serviceapp.exteplayer3[key].downmix          = ConfigBoolean(default = False, descriptions = {False: _("false"), True: _("true")})
+    config_serviceapp.exteplayer3[key].rtmp_protocol    = ConfigSelection(default = "auto", choices = ["auto","ffmpeg","librtmp"])
 
 
 def key_to_setting_id(key):
@@ -88,13 +92,11 @@ def init_serviceapp_settings():
         setting_id           = key_to_setting_id(key)
         serviceapp_cfg       = config_serviceapp.options[key]
 
-        autoturnon_subtitles = serviceapp_cfg.autoturnon_subtitles.value
-        hls_explorer         = serviceapp_cfg.hls_explorer.value
-        autoselect_stream    = serviceapp_cfg.autoselect_stream.value
-        connection_speed_kb  = serviceapp_cfg.connection_speed_kb.value
-
-        serviceapp_client.setServiceAppSettings(setting_id, hls_explorer,
-                autoselect_stream, connection_speed_kb, autoturnon_subtitles)
+        serviceapp_client.setServiceAppSettings(setting_id,
+                serviceapp_cfg.hls_explorer.value,
+                serviceapp_cfg.autoselect_stream.value,
+                serviceapp_cfg.connection_speed_kb.value,
+                serviceapp_cfg.autoturnon_subtitles.value)
 
     for key in config_serviceapp.gstplayer.keys():
         setting_id = key_to_setting_id(key)
@@ -106,25 +108,36 @@ def init_serviceapp_settings():
             video_sink, audio_sink = SINKS_EXPERIMENTAL
         else:
             continue
-        subtitle_enabled = player_cfg.subtitle_enabled.value
-        buffer_size      = player_cfg.buffer_size.value
-        buffer_duration  = player_cfg.buffer_duration.value
 
-        serviceapp_client.setGstreamerPlayerSettings(setting_id, video_sink, 
-                audio_sink, subtitle_enabled, buffer_size, buffer_duration)
+        serviceapp_client.setGstreamerPlayerSettings(setting_id,
+                video_sink,
+                audio_sink,
+                player_cfg.subtitle_enabled.value,
+                player_cfg.buffer_size.value,
+                player_cfg.buffer_duration.value)
 
     for key in config_serviceapp.exteplayer3.keys():
         setting_id     = key_to_setting_id(key)
         player_cfg     = config_serviceapp.exteplayer3[key]
 
-        aac_swdecoding = player_cfg.aac_swdecoding.value
-        dts_swdecoding = player_cfg.dts_swdecoding.value
-        wma_swdecoding = player_cfg.wma_swdecoding.value
-        lpcm_injecion  = player_cfg.lpcm_injecion.value
-        downmix        = player_cfg.downmix.value
-
-        serviceapp_client.setExtEplayer3Settings(setting_id, aac_swdecoding,
-                dts_swdecoding, wma_swdecoding, lpcm_injecion, downmix)
+        rtmp_proto_val = 0
+        rtmp_proto_cfg_val = player_cfg.rtmp_protocol.value
+        if rtmp_proto_cfg_val == "librtmp":
+            rtmp_proto_val = 2
+        elif rtmp_proto_cfg_val == "ffmpeg":
+            rtmp_proto_val = 1
+        else:
+            rtmp_proto_val = 0
+        serviceapp_client.setExtEplayer3Settings(setting_id,
+                int(player_cfg.aac_swdecoding.value),
+                player_cfg.dts_swdecoding.value,
+                player_cfg.wma_swdecoding.value,
+                player_cfg.lpcm_injecion.value,
+                player_cfg.downmix.value,
+                player_cfg.ac3_swdecoding.value,
+                player_cfg.eac3_swdecoding.value,
+                player_cfg.mp3_swdecoding.value,
+                rtmp_proto_val)
 
     if config_serviceapp.servicemp3.player.value == "gstplayer":
         serviceapp_client.setServiceMP3GstPlayer()
@@ -180,14 +193,22 @@ class ServiceAppSettings(ConfigListScreen, Screen):
         config_list = []
         config_list.append(getConfigListEntry("  " + _("AAC software decoding"),
             exteplayer3_options_cfg.aac_swdecoding, _("Turn on AAC software decoding.")))
+        config_list.append(getConfigListEntry("  " + _("EAC3 software decoding"),
+            exteplayer3_options_cfg.eac3_swdecoding, _("Turn on EAC3 software decoding.")))
+        config_list.append(getConfigListEntry("  " + _("AC3 software decoding"),
+            exteplayer3_options_cfg.ac3_swdecoding, _("Turn on AC3 software decoding.")))
         config_list.append(getConfigListEntry("  " + _("DTS software decoding"),
             exteplayer3_options_cfg.dts_swdecoding, _("Turn on DTS software decoding.")))
+        config_list.append(getConfigListEntry("  " + _("MP3 software decoding"),
+            exteplayer3_options_cfg.dts_swdecoding, _("Turn on MP3 software decoding.")))
         config_list.append(getConfigListEntry("  " + _("WMA software decoding"),
             exteplayer3_options_cfg.wma_swdecoding, _("Turn on WMA1, WMA2, WMA/PRO software decoding.")))
         config_list.append(getConfigListEntry("  " + _("Stereo downmix"),
             exteplayer3_options_cfg.downmix, _("Turn on downmix to stereo, when software decoding is in use")))
         config_list.append(getConfigListEntry("  " + _("LPCM injection"),
             exteplayer3_options_cfg.lpcm_injecion, _("Software decoder use LPCM for injection (otherwise wav PCM will be used)")))
+        config_list.append(getConfigListEntry("  " + _("RTMP protocol implementation"),
+            exteplayer3_options_cfg.rtmp_protocol, _("Set which RTMP protocol implementation will be used for playback of RTMP streams")))
         return config_list
 
     def serviceapp_options(self, serviceapp_options_cfg):

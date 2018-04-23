@@ -21,7 +21,11 @@ enum
 	STD_ERROR,
 };
 
+#if SIGCXX_MAJOR_VERSION == 2
 class PlayerApp: public sigc::trackable
+#else
+class PlayerApp: public Object
+#endif
 {
 	ePtr<eConsoleContainer> console;
 	std::string jsonstr;
@@ -176,7 +180,11 @@ public:
 };
 
 
+#if SIGCXX_MAJOR_VERSION == 2
 class PlayerBackend: public sigc::trackable, public eThread, public eMainloop, public iPlayerCallback
+#else
+class PlayerBackend: public Object, public eThread, public eMainloop, public iPlayerCallback
+#endif
 {
 	struct Message
 	{
@@ -290,7 +298,10 @@ public:
 		pErrorMessage(NULL),
 		mMessageMain(eApp, 1),
 		mMessageThread(this, 1),
-		mTimerDelay(100) // updated play position timer
+		mTimerDelay(100), // updated play position timer
+		mWaitForUpdate(false),
+		mWaitForStop(false)
+
 	{
 		pPlayer->setCallback(this);
 		CONNECT(mMessageThread.recv_msg, PlayerBackend::gotMessage);

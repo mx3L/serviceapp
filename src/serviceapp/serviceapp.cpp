@@ -44,46 +44,72 @@ enum
 static int g_playerServiceMP3 = GSTPLAYER;
 static bool g_useUserSettings = false;
 
-static GstPlayerOptions g_GstPlayerOptionsServiceMP3;
-static GstPlayerOptions g_GstPlayerOptionsServiceGst;
-static GstPlayerOptions g_GstPlayerOptionsUser;
+static GstPlayerOptions *g_GstPlayerOptionsServiceMP3;
+static GstPlayerOptions *g_GstPlayerOptionsServiceGst;
+static GstPlayerOptions *g_GstPlayerOptionsUser;
 
-static ExtEplayer3Options g_ExtEplayer3OptionsServiceMP3;
-static ExtEplayer3Options g_ExtEplayer3OptionsServiceExt3;
-static ExtEplayer3Options g_ExtEplayer3OptionsUser;
+static ExtEplayer3Options *g_ExtEplayer3OptionsServiceMP3;
+static ExtEplayer3Options *g_ExtEplayer3OptionsServiceExt3;
+static ExtEplayer3Options *g_ExtEplayer3OptionsUser;
 
-static eServiceAppOptions g_ServiceAppOptionsServiceMP3;
-static eServiceAppOptions g_ServiceAppOptionsServiceExt3;
-static eServiceAppOptions g_ServiceAppOptionsServiceGst;
-static eServiceAppOptions g_ServiceAppOptionsUser;
+static eServiceAppOptions *g_ServiceAppOptionsServiceMP3;
+static eServiceAppOptions *g_ServiceAppOptionsServiceExt3;
+static eServiceAppOptions *g_ServiceAppOptionsServiceGst;
+static eServiceAppOptions *g_ServiceAppOptionsUser;
 
 static const std::string gReplaceServiceMP3Path = eEnv::resolve("$sysconfdir/enigma2/serviceapp_replaceservicemp3");
 static const bool gReplaceServiceMP3 = ( access( gReplaceServiceMP3Path.c_str(), F_OK ) != -1 );
 
-static BasePlayer *createPlayer(const eServiceReference& ref)
+static HeaderMap getHttpHeaders(const std::string& path)
+{
+	HeaderMap headers = getHeaders(path);
+	for (HeaderMap::iterator it(headers.begin()); it != headers.end();)
+	{
+		if (it->first.find("sapp_") == 0)
+			headers.erase(it++);
+		else
+			it++;
+	}
+	return headers;
+}
+
+static void updatePlayerOptions(IOption &options, const HeaderMap &headers)
+{
+	for (HeaderMap::const_iterator it(headers.begin()); it != headers.end(); it++)
+	{
+		if (it->first.find("sapp_") == 0)
+		{
+			options.update(it->first.substr(5), it->second);
+		}
+	}
+}
+
+static BasePlayer *createPlayer(const eServiceReference& ref, const HeaderMap &headers)
 {
 	BasePlayer *player = NULL;
 	if (ref.type == eServiceFactoryApp::idServiceExtEplayer3 || (ref.type == eServiceFactoryApp::idServiceMP3 && g_playerServiceMP3 == EXTEPLAYER3) )
 	{
-		ExtEplayer3Options *options = NULL;
+		ExtEplayer3Options options;
 		if (g_useUserSettings)
-			options = &g_ExtEplayer3OptionsUser;
+			options = *g_ExtEplayer3OptionsUser;
 		else if (ref.type == eServiceFactoryApp::idServiceExtEplayer3)
-			options = &g_ExtEplayer3OptionsServiceExt3;
+			options = *g_ExtEplayer3OptionsServiceExt3;
 		else
-			options = &g_ExtEplayer3OptionsServiceMP3;
-		player = new ExtEplayer3(*options);
+			options = *g_ExtEplayer3OptionsServiceMP3;
+		updatePlayerOptions(options, headers);
+		player = new ExtEplayer3(options);
 	}
 	else if (ref.type == eServiceFactoryApp::idServiceGstPlayer || (ref.type == eServiceFactoryApp::idServiceMP3 && g_playerServiceMP3 == GSTPLAYER) )
 	{
-		GstPlayerOptions *options = NULL;
+		GstPlayerOptions options;
 		if (g_useUserSettings)
-			options = &g_GstPlayerOptionsUser;
+			options = *g_GstPlayerOptionsUser;
 		else if (ref.type == eServiceFactoryApp::idServiceGstPlayer)
-			options = &g_GstPlayerOptionsServiceGst;
+			options = *g_GstPlayerOptionsServiceGst;
 		else
-			options = &g_GstPlayerOptionsServiceMP3;
-		player = new GstPlayer(*options);
+			options = *g_GstPlayerOptionsServiceMP3;
+		updatePlayerOptions(options, headers);
+		player = new GstPlayer(options);
 	}
 	return player;
 }
@@ -94,20 +120,20 @@ static eServiceAppOptions *createOptions(const eServiceReference& ref)
 	switch(ref.type)
 	{
 		case eServiceFactoryApp::idServiceMP3:
-			options = &g_ServiceAppOptionsServiceMP3;
+			options = g_ServiceAppOptionsServiceMP3;
 			break;
-                case eServiceFactoryApp::idServiceExtEplayer3:
-			options = &g_ServiceAppOptionsServiceExt3;
+		case eServiceFactoryApp::idServiceExtEplayer3:
+			options = g_ServiceAppOptionsServiceExt3;
 			break;
-                case eServiceFactoryApp::idServiceGstPlayer:
-			options = &g_ServiceAppOptionsServiceGst;
+		case eServiceFactoryApp::idServiceGstPlayer:
+			options = g_ServiceAppOptionsServiceGst;
 			break;
 		default:
 			break;
 	}
 	if(g_useUserSettings)
 	{
-		options = &g_ServiceAppOptionsUser;
+		options = g_ServiceAppOptionsUser;
 	}
 	return new eServiceAppOptions(*options);
 }
@@ -182,6 +208,9 @@ eServiceApp::eServiceApp(eServiceReference ref):
 	m_subservices_checked(false),
 	player(0),
 	extplayer(0),
+	m_resolver(0),
+	m_resolve_uri("resolve://"),
+	m_event_started(false),
 	m_paused(false),
 	m_framerate(-1),
 	m_width(-1),
@@ -195,7 +224,7 @@ eServiceApp::eServiceApp(eServiceReference ref):
 	m_decoder_time_valid_state(0)
 {
 	options = createOptions(ref);
-	extplayer = createPlayer(ref);
+	extplayer = createPlayer(ref, getHeaders(ref.path));
 	player = new PlayerBackend(extplayer);
 
 	m_subtitle_widget = 0;
@@ -216,6 +245,7 @@ eServiceApp::~eServiceApp()
 	delete options;
 	delete player;
 	delete extplayer;
+	delete m_resolver;
 
 	if (m_subtitle_widget) m_subtitle_widget->destroy();
 	m_subtitle_widget = 0;
@@ -232,9 +262,9 @@ void eServiceApp::fillSubservices()
 	m_subservice_vec.clear();
 	m_subserviceref_vec.clear();
 
-        if (isM3U8Url(m_ref.path))
+	if (isM3U8Url(m_ref.path))
 	{
-		M3U8VariantsExplorer ve(m_ref.path, getHeaders(m_ref.path));
+		M3U8VariantsExplorer ve(m_ref.path, getHttpHeaders(m_ref.path));
 		m_subservice_vec = ve.getStreams();
 		if (m_subservice_vec.empty())
 		{
@@ -544,7 +574,20 @@ exit:
 void eServiceApp::signalEventUpdatedInfo()
 {
 	eDebug("eServiceApp::signalEventUpdatedInfo");
-	m_event(this, evUpdatedInfo);
+    m_event(this, evUpdatedInfo);
+}
+
+void eServiceApp::urlResolved(int success)
+{
+	eDebug("eServiceApp::urlResolved: %s", success ? "success": "error");
+	if (success)
+	{
+		m_ref.path = m_resolver->getUrl();
+		eDebug("eServiceApp::urlResolved: %s", m_ref.path.c_str());
+		start();
+	}
+	else
+		stop();
 }
 
 void eServiceApp::gotExtPlayerMessage(int message)
@@ -553,8 +596,6 @@ void eServiceApp::gotExtPlayerMessage(int message)
 	{
 		case PlayerMessage::start:
 			eDebug("eServiceApp::gotExtPlayerMessage - start");
-			m_event(this, evUpdatedEventInfo);
-			m_event(this, evStart);
 			m_event_updated_info_timer->start(1000, true);
 #ifdef HAVE_EPG
 			updateEpgCacheNowNext();
@@ -629,7 +670,11 @@ void eServiceApp::gotExtPlayerMessage(int message)
 
 
 // __iPlayableService
+#if SIGCXX_MAJOR_VERSION == 2
 RESULT eServiceApp::connectEvent(const sigc::slot2< void, iPlayableService*, int >& event, ePtr< eConnection >& connection)
+#else
+RESULT eServiceApp::connectEvent(const Slot2< void, iPlayableService*, int >& event, ePtr< eConnection >& connection)
+#endif
 {
 	connection = new eConnection((iPlayableService*)this, m_event.connect(event));
 	return 0;
@@ -637,13 +682,28 @@ RESULT eServiceApp::connectEvent(const sigc::slot2< void, iPlayableService*, int
 
 RESULT eServiceApp::start()
 {
+	if (!m_event_started)
+	{
+		m_event(this, evUpdatedEventInfo);
+		m_event(this, evStart);
+		m_event_started = true;
+	}
 	std::string path_str(m_ref.path);
-	HeaderMap headers = getHeaders(m_ref.path);
+
+	if (path_str.find(m_resolve_uri) == 0)
+	{
+		m_resolver = new ResolveUrl(m_ref.path.substr(m_resolve_uri.size()));
+		CONNECT(m_resolver->urlResolved, eServiceApp::urlResolved);
+		m_resolver->start();
+		return 0;
+	}
+	HeaderMap headers = getHttpHeaders(m_ref.path);
 	if (options->HLSExplorer && options->autoSelectStream)
 	{
 		if (!m_subservices_checked)
 		{
 			fillSubservices();
+			m_event(this, evUpdatedEventInfo);
 			m_subservices_checked = true;
 		}
 		size_t subservice_num = m_subservice_vec.size();
@@ -704,6 +764,7 @@ RESULT eServiceApp::start()
 RESULT eServiceApp::stop()
 {
 	eDebug("eServiceApp::stop");
+	if (m_resolver) m_resolver->stop();
 	player->stop();
 	return 0;
 }
@@ -1060,7 +1121,8 @@ RESULT eServiceApp::getSubtitleList(std::vector<struct SubtitleTrack> &subtitlel
 // __iSubservices
 int eServiceApp::getNumberOfSubservices()
 {
-	if (options->HLSExplorer && !m_subservices_checked)
+	std::string path_str(m_ref.path);
+	if (options->HLSExplorer && path_str.find(m_resolve_uri) && !m_subservices_checked)
 	{
 		fillSubservices();
 		m_subservices_checked = true;
@@ -1423,15 +1485,15 @@ gstplayer_set_setting(PyObject *self, PyObject *args)
 	switch (settingId)
 	{
 		case OPTIONS_SERVICEGSTPLAYER:
-			options = &g_GstPlayerOptionsServiceGst;
+			options = g_GstPlayerOptionsServiceGst;
 			eDebug("[gstplayer_set_setting] setting servicegstplayer options");
 			break;
 		case OPTIONS_SERVICEMP3:
-			options = &g_GstPlayerOptionsServiceMP3;
+			options = g_GstPlayerOptionsServiceMP3;
 			eDebug("[gstplayer_set_setting] setting servicemp3 options");
 			break;
 		case OPTIONS_USER:
-			options = &g_GstPlayerOptionsUser;
+			options = g_GstPlayerOptionsUser;
 			eDebug("[gstplayer_set_setting] setting user options");
 			break;
 		default:
@@ -1441,11 +1503,11 @@ gstplayer_set_setting(PyObject *self, PyObject *args)
 	}
 	if (options != NULL)
 	{
-		options->videoSink = videoSink;
-		options->audioSink = audioSink;
-		options->subtitleEnabled = subtitlesEnable;
-		options->bufferSize = bufferSize;
-		options->bufferDuration = bufferDuration;
+		options->GetSettingMap()[GST_VIDEO_SINK].setValue(videoSink);
+		options->GetSettingMap()[GST_AUDIO_SINK].setValue(audioSink);
+		options->GetSettingMap()[GST_SUBTITLE_ENABLED].setValue(subtitlesEnable);
+		options->GetSettingMap()[GST_BUFFER_SIZE].setValue(bufferSize);
+		options->GetSettingMap()[GST_BUFFER_DURATION].setValue(bufferDuration);
 	}
 	return Py_BuildValue("b", ret);
 }
@@ -1457,27 +1519,41 @@ exteplayer3_set_setting(PyObject *self, PyObject *args)
 
 	int settingId;
 	bool aacSwDecoding;
+	bool ac3SwDecoding;
+	bool eac3SwDecoding;
 	bool dtsSwDecoding;
+	bool mp3SwDecoding;
 	bool wmaSwDecoding;
 	bool downmix;
 	bool lpcmInjection;
+	int rtmpProtocol;
 
-	if (!PyArg_ParseTuple(args, "ibbbbb", &settingId, &aacSwDecoding, &dtsSwDecoding, &wmaSwDecoding, &lpcmInjection, &downmix))
+	if (!PyArg_ParseTuple(args, "ibbbbbbbbi",
+				&settingId,
+				&aacSwDecoding,
+				&dtsSwDecoding,
+				&wmaSwDecoding,
+				&lpcmInjection,
+				&downmix,
+				&ac3SwDecoding,
+				&eac3SwDecoding,
+				&mp3SwDecoding,
+				&rtmpProtocol))
 		return NULL;
 
 	ExtEplayer3Options *options = NULL;
 	switch (settingId)
 	{
 		case OPTIONS_SERVICEEXTEPLAYER3:
-			options = &g_ExtEplayer3OptionsServiceExt3;
+			options = g_ExtEplayer3OptionsServiceExt3;
 			eDebug("[exteplayer3_set_setting] setting serviceextplayer3 options");
 			break;
 		case OPTIONS_SERVICEMP3:
-			options = &g_ExtEplayer3OptionsServiceMP3;
+			options = g_ExtEplayer3OptionsServiceMP3;
 			eDebug("[exteplayer3_set_setting] setting servicemp3 options");
 			break;
 		case OPTIONS_USER:
-			options = &g_ExtEplayer3OptionsUser;
+			options = g_ExtEplayer3OptionsUser;
 			eDebug("[exteplayer3_set_setting] setting user options");
 			break;
 		default:
@@ -1487,11 +1563,15 @@ exteplayer3_set_setting(PyObject *self, PyObject *args)
 	}
 	if (options != NULL)
 	{
-		options->aacSwDecoding = aacSwDecoding;
-		options->dtsSwDecoding = dtsSwDecoding;
-		options->wmaSwDecoding = wmaSwDecoding;
-		options->lpcmInjection = lpcmInjection;
-		options->downmix = downmix;
+		options->GetSettingMap()[EXT3_SW_DECODING_AAC].setValue(aacSwDecoding);
+		options->GetSettingMap()[EXT3_SW_DECODING_AC3].setValue(ac3SwDecoding);
+		options->GetSettingMap()[EXT3_SW_DECODING_EAC3].setValue(eac3SwDecoding);
+		options->GetSettingMap()[EXT3_SW_DECODING_DTS].setValue(dtsSwDecoding);
+		options->GetSettingMap()[EXT3_SW_DECODING_WMA].setValue(wmaSwDecoding);
+		options->GetSettingMap()[EXT3_SW_DECODING_MP3].setValue(mp3SwDecoding);
+		options->GetSettingMap()[EXT3_LPCM_INJECTION].setValue(lpcmInjection);
+		options->GetSettingMap()[EXT3_RTMP_PROTOCOL].setValue(rtmpProtocol);
+		options->GetSettingMap()[EXT3_DOWNMIX].setValue(downmix);
 	}
 	return Py_BuildValue("b", ret);
 }
@@ -1514,19 +1594,19 @@ serviceapp_set_setting(PyObject *self, PyObject *args)
 	switch (settingId)
 	{
 		case OPTIONS_SERVICEEXTEPLAYER3:
-			options = &g_ServiceAppOptionsServiceExt3;
+			options = g_ServiceAppOptionsServiceExt3;
 			eDebug("[serviceapp_set_setting] setting serviceexteplayer3 options");
 			break;
 		case OPTIONS_SERVICEGSTPLAYER:
-			options = &g_ServiceAppOptionsServiceGst;
+			options = g_ServiceAppOptionsServiceGst;
 			eDebug("[serviceapp_set_setting] setting servicegstplayer options");
 			break;
 		case OPTIONS_SERVICEMP3:
-			options = &g_ServiceAppOptionsServiceMP3;
+			options = g_ServiceAppOptionsServiceMP3;
 			eDebug("[serviceapp_set_setting] setting servicemp3 options");
 			break;
 		case OPTIONS_USER:
-			options = &g_ServiceAppOptionsUser;
+			options = g_ServiceAppOptionsUser;
 			eDebug("[serviceapp_set_setting] setting user options");
 			break;
 		default:
@@ -1563,13 +1643,17 @@ static PyMethodDef serviceappMethods[] = {
 	 " bufferDuration - in seconds\n"
 	},
 	{"exteplayer3_set_setting", exteplayer3_set_setting, METH_VARARGS,
-	 "set exteplayer3 settings (setting_id, aacSwDecoding, dtsSwDecoding, wmaSwDecoding, lpcmInjection, downmix\n\n"
+	 "set exteplayer3 settings (setting_id, aacSwDecoding, dtsSwDecoding, wmaSwDecoding, lpcmInjection, downmix, ac3SwDecoding, eac3SwDecoding, mp3SwDecoding, rtmpProtocol)\n\n"
 	 " setting_id - (0 - servicemp3, 1 - servicegst, 2 - serviceextep3, 3 - user)\n"
 	 " aacSwDecoding - (True, False)\n"
 	 " dtsSwDecoding - (True, False)\n"
 	 " wmaSwDecoding - (True, False)\n"
 	 " lpcmInjection - (True, False)\n"
 	 " downmix - (True, False)\n"
+	 " ac3SwDecoding - (True, False)\n"
+	 " eac3SwDecoding - (True, False)\n"
+	 " mp3SwDecoding - (True, False)\n"
+	 " rtmpProtocol - (0|1|2)\n"
 	},
 	{"serviceapp_set_setting", serviceapp_set_setting, METH_VARARGS,
 	 "set serviceapp settings (setting_id, HLSExplorer, autoSelectStream, connectionSpeedInKb, autoTurnOnSubtitles\n\n"
@@ -1586,6 +1670,18 @@ PyMODINIT_FUNC
 initserviceapp(void)
 {
 	Py_InitModule("serviceapp", serviceappMethods);
+	g_GstPlayerOptionsServiceMP3 = new GstPlayerOptions();
+	g_GstPlayerOptionsServiceGst = new GstPlayerOptions();
+	g_GstPlayerOptionsUser = new GstPlayerOptions();
+
+	g_ExtEplayer3OptionsServiceMP3 = new ExtEplayer3Options();
+	g_ExtEplayer3OptionsServiceExt3 = new ExtEplayer3Options();
+	g_ExtEplayer3OptionsUser = new ExtEplayer3Options();
+
+	g_ServiceAppOptionsServiceMP3 = new eServiceAppOptions();
+	g_ServiceAppOptionsServiceExt3 = new eServiceAppOptions();
+	g_ServiceAppOptionsServiceGst = new eServiceAppOptions();
+	g_ServiceAppOptionsUser = new eServiceAppOptions();
 
 	SSL_load_error_strings();
 	SSL_library_init();

@@ -84,7 +84,7 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
 {
     if (redirect > redirectLimit)
     {
-        fprintf(stderr, "[%s] - reached maximum number of %d - redirects", __func__, redirectLimit);
+        fprintf(stderr, "[%s] - reached maximum number of %d - redirects\n", __func__, redirectLimit);
         return -1;
     }
     Url purl(url);
@@ -143,7 +143,12 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
         path += "?" + query;
     std::string request = "GET ";
     request.append(path).append(" HTTP/1.1\r\n");
-    request.append("Host: ").append(purl.host()).append("\r\n");
+    request.append("Host: ").append(purl.host());
+    if (purl.port() > 0)
+    {
+        request.append(":").append(std::to_string(purl.port()));
+    }
+    request.append("\r\n");
     request.append("User-Agent: ").append(userAgent).append("\r\n");
     request.append("Accept: */*\r\n");
     for (HeaderMap::const_iterator it(headers.begin()); it != headers.end(); it++)
@@ -190,7 +195,7 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
     int result = readLine(ssl, sd, &lineBuffer, &bufferSize);
     fprintf(stderr, "[%s] Response[%d](size=%d): %s\n", __func__, lines++, result, lineBuffer);
     result = sscanf(lineBuffer, "%99s %d %99s", protocol, &statusCode, statusMessage);
-    if (result != 3 || (statusCode != 200 && statusCode != 302))
+    if (result != 3 || (statusCode != 200 && statusCode != 301 && statusCode != 302))
     {
             fprintf(stderr, "[%s] - wrong http response code: %d\n", __func__, statusCode);
             free(lineBuffer);
@@ -203,6 +208,7 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
             return -1;
     }
     int ret = -1;
+    std::string redirectUrl;
     while(1)
     {
         result = readLine(ssl, sd, &lineBuffer, &bufferSize);
@@ -233,26 +239,35 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
                             || !strncasecmp(contenttype, "audio/mpegurl", 13)
                             || !strncasecmp(contenttype, "application/m3u", 15)))
                     {
-                        fprintf(stderr, "[%s] - not supported contenttype detected: %s!\n", __func__, contenttype);
-                        break;
+                        if (statusCode == 200)
+                        {
+                            fprintf(stderr, "[%s] - not supported contenttype detected: %s!\n", __func__, contenttype);
+                            break;
+                        }
                     }
                 }
             }
-            if (statusCode == 302 && strncasecmp(lineBuffer, "location: ", 10) == 0)
+            if ((statusCode == 301 || statusCode == 302) && strncasecmp(lineBuffer, "location: ", 10) == 0)
             {
-                std::string newurl = &lineBuffer[10];
-                fprintf(stderr, "[%s] - redirecting to: %s\n", __func__, newurl.c_str());
-                ret = getVariantsFromMasterUrl(newurl, headers, ++redirect);
-                break;
+                redirectUrl = &lineBuffer[10];
             }
             if (!strncmp(lineBuffer, "Set-Cookie: ", 12))
             {
-                headers["Cookie"] = &lineBuffer[12];
+                if (headers.find("Cookie") == headers.end())
+                    headers["Cookie"] = &lineBuffer[12];
+                else
+                    headers["Cookie"].append(";").append(&lineBuffer[12]);
             }
             if (!result)
             {
                 contentStarted = true;
                 fprintf(stderr, "[%s] - content part started\n", __func__);
+                if (!redirectUrl.empty())
+                {
+                    fprintf(stderr, "[%s] - redirecting to: %s\n", __func__, redirectUrl.c_str());
+                    ret = getVariantsFromMasterUrl(redirectUrl, headers, ++redirect);
+                    break;
+                }
             }
         }
         else
@@ -298,13 +313,10 @@ int M3U8VariantsExplorer::getVariantsFromMasterUrl(const std::string& url, Heade
                 }
                 else
                 {
-                   if ((lineBuffer[0] == '/') && url.find("//")) {
-                        m3u8StreamInfo.url = url.substr(0, url.find("/", url.find("//") + 2)) + lineBuffer;
-                    }
+                    if (strlen(lineBuffer) > 0 && lineBuffer[0] == '/')
+                        m3u8StreamInfo.url = purl.proto().append("://").append(purl.host()).append(lineBuffer);
                     else
-                    {
                         m3u8StreamInfo.url = url.substr(0, url.rfind('/') + 1) + lineBuffer;
-                    }
                 }
                 m3u8StreamInfo.headers = headers;
                 streams.push_back(m3u8StreamInfo);

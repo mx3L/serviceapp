@@ -10,6 +10,7 @@
 
 #include "common.h"
 #include "extplayer.h"
+#include "scriptrun.h"
 #include "m3u8.h"
 
 struct eServiceAppOptions
@@ -28,7 +29,11 @@ struct eServiceAppOptions
 	{};
 };
 
+#if SIGCXX_MAJOR_VERSION == 2
 class eServiceApp: public sigc::trackable, public iPlayableService, public iPauseableService, public iSeekableService,
+#else
+class eServiceApp: public Object, public iPlayableService, public iPauseableService, public iSeekableService,
+#endif
 	public iAudioChannelSelection, public iAudioTrackSelection,  public iSubtitleOutput, public iSubserviceList, public iServiceInformation
 {
 	DECLARE_REF(eServiceApp);
@@ -40,12 +45,19 @@ class eServiceApp: public sigc::trackable, public iPlayableService, public iPaus
 	bool m_subservices_checked;
 	void fillSubservices();
 
+#if SIGCXX_MAJOR_VERSION == 2
 	sigc::signal2<void,iPlayableService*,int> m_event;
+#else
+	Signal2<void,iPlayableService*,int> m_event;
+#endif
 	eServiceAppOptions *options;
 	PlayerBackend *player;
 	BasePlayer *extplayer;
+	ResolveUrl *m_resolver;
 	std::string cmd;
+	std::string m_resolve_uri;
 
+	bool m_event_started;
 	bool m_paused;
 	int m_framerate, m_width, m_height, m_progressive;
 
@@ -77,6 +89,7 @@ class eServiceApp: public sigc::trackable, public iPlayableService, public iPaus
 	void pullSubtitles();
 	void pushSubtitles();
 	void signalEventUpdatedInfo();
+	void urlResolved(int success);
 
 #ifdef HAVE_EPG
 	ePtr<eTimer> m_nownext_timer;
@@ -90,7 +103,11 @@ public:
 	~eServiceApp();
 
 	// iPlayableService
+#if SIGCXX_MAJOR_VERSION == 2
 	RESULT connectEvent(const sigc::slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection);
+#else
+	RESULT connectEvent(const Slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection);
+#endif
 	RESULT start();
 	RESULT stop();
 #if OPENPLI_ISERVICE_VERSION > 1

@@ -1,17 +1,29 @@
 #ifndef __gstplayer_h
 #define __gstplayer_h
+#include <cstdlib>
 #include <lib/base/eerror.h>
 #include "extplayer.h"
+#include "common.h"
 
+extern const std::string GST_DOWNLOAD_BUFFER_PATH;
+extern const std::string GST_RING_BUFFER_MAXSIZE;
+extern const std::string GST_BUFFER_SIZE;
+extern const std::string GST_BUFFER_DURATION;
+extern const std::string GST_VIDEO_SINK;
+extern const std::string GST_AUDIO_SINK;
+extern const std::string GST_AUDIO_TRACK_IDX;
+extern const std::string GST_SUBTITLE_ENABLED;
 
-struct GstPlayerOptions
+class GstPlayerOptions : public IOption
 {
-	int bufferSize; // in kB
-	int bufferDuration; // in ms
-	std::string videoSink; // custom sink name
-	std::string audioSink; // custom sink name
-	bool subtitleEnabled;
-	GstPlayerOptions(): bufferSize(8*1024), bufferDuration(0), subtitleEnabled(true){};
+public:
+	GstPlayerOptions();
+	SettingMap &GetSettingMap();
+
+	int update(const std::string &, const std::string &);
+	void print() const;
+private:
+	SettingMap settingMap;
 };
 
 class GstPlayer: public PlayerApp, public BasePlayer
@@ -21,13 +33,7 @@ class GstPlayer: public PlayerApp, public BasePlayer
 	void handleProcessStopped(int retval);
 	std::vector<std::string> buildCommand();
 public:
-	GstPlayer(GstPlayerOptions& options): PlayerApp(STD_ERROR) 
-	{
-		mPlayerOptions = options;
-	}
-	~GstPlayer()
-	{
-	}
+	GstPlayer(GstPlayerOptions& options);
 	int start(eMainloop *context);
 	int sendStop();
 	int sendForceStop();

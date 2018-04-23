@@ -3,6 +3,134 @@
 #include <lib/base/eerror.h>
 #include "exteplayer3.h"
 
+const std::string  EXT3_SW_DECODING_AAC            = "aac_swdec";
+const std::string  EXT3_SW_DECODING_AC3            = "ac3_swdec";
+const std::string  EXT3_SW_DECODING_EAC3           = "eac3_swdec";
+const std::string  EXT3_SW_DECODING_DTS            = "dts_swdec";
+const std::string  EXT3_SW_DECODING_MP3            = "mp3_swdec";
+const std::string  EXT3_SW_DECODING_WMA            = "wma_swdec";
+const std::string  EXT3_DOWNMIX                    = "downmix";
+const std::string  EXT3_LPCM_INJECTION             = "lpcm_injection";
+const std::string  EXT3_NO_PCM_RESAMPLING          = "no_pcm_resampling";
+const std::string  EXT3_FLV2MPEG4_CONVERTER        = "flv2mpeg4";
+const std::string  EXT3_PLAYBACK_PROGRESSIVE       = "progressive";
+const std::string  EXT3_PLAYBACK_INIFITY_LOOP      = "loop";
+const std::string  EXT3_PLAYBACK_LIVETS            = "live_ts";
+const std::string  EXT3_PLAYBACK_AUDIO_TRACK_ID    = "audio_id";
+const std::string  EXT3_PLAYBACK_SUBTITLE_TRACK_ID = "subtitle_id";
+const std::string  EXT3_PLAYBACK_AUDIO_URI         = "audio_uri";
+const std::string  EXT3_PLAYBACK_DASH_VIDEO_ID     = "dash_video_id";
+const std::string  EXT3_PLAYBACK_DASH_AUDIO_ID     = "dash_audio_id";
+const std::string  EXT3_PLAYBACK_MPEGTS_PROGRAM    = "mpegts_program_id";
+const std::string  EXT3_RTMP_PROTOCOL              = "rtmpproto";
+const std::string  EXT3_NICE_VALUE                 = "nice";
+const std::string  EXT3_FFMPEG_SETTING_STRING      = "ffmpeg_option";
+
+SettingMap &ExtEplayer3Options::GetSettingMap()
+{
+	return settingMap;
+}
+
+ExtEplayer3Options::ExtEplayer3Options()
+{
+	settingMap[EXT3_SW_DECODING_AAC]            = SettingEntry ("-a", "int");
+	settingMap[EXT3_SW_DECODING_EAC3]           = SettingEntry ("-e", "bool");
+	settingMap[EXT3_SW_DECODING_AC3]            = SettingEntry ("-3", "bool");
+	settingMap[EXT3_SW_DECODING_DTS]            = SettingEntry ("-d", "bool");
+	settingMap[EXT3_SW_DECODING_MP3]            = SettingEntry ("-m", "bool");
+	settingMap[EXT3_SW_DECODING_WMA]            = SettingEntry ("-w", "bool");
+	settingMap[EXT3_LPCM_INJECTION]             = SettingEntry ("-l", "bool");
+	settingMap[EXT3_DOWNMIX]                    = SettingEntry ("-s", "bool");
+	settingMap[EXT3_NO_PCM_RESAMPLING]          = SettingEntry ("-r", "bool");
+	settingMap[EXT3_FLV2MPEG4_CONVERTER]        = SettingEntry ("-4", "bool");
+	settingMap[EXT3_PLAYBACK_INIFITY_LOOP]      = SettingEntry ("-i", "bool");
+	settingMap[EXT3_PLAYBACK_LIVETS]            = SettingEntry ("-v", "bool");
+	settingMap[EXT3_RTMP_PROTOCOL]              = SettingEntry ("-n", "int");
+	settingMap[EXT3_PLAYBACK_PROGRESSIVE]       = SettingEntry ("-o", "bool");
+	settingMap[EXT3_NICE_VALUE]                 = SettingEntry ("-p", "int");
+	settingMap[EXT3_PLAYBACK_MPEGTS_PROGRAM]    = SettingEntry ("-P", "int");
+	settingMap[EXT3_PLAYBACK_AUDIO_TRACK_ID]    = SettingEntry ("-t", "int");
+	settingMap[EXT3_PLAYBACK_SUBTITLE_TRACK_ID] = SettingEntry ("-9", "int");
+	settingMap[EXT3_PLAYBACK_AUDIO_URI]         = SettingEntry ("-x", "string");
+	settingMap[EXT3_PLAYBACK_DASH_VIDEO_ID]     = SettingEntry ("-0", "int");
+	settingMap[EXT3_PLAYBACK_DASH_AUDIO_ID]     = SettingEntry ("-1", "int");
+	settingMap[EXT3_FFMPEG_SETTING_STRING]      = SettingEntry ("-f", "string");
+}
+
+int ExtEplayer3Options::update(const std::string &key, const std::string &val)
+{
+	int ret = 0;
+	if (settingMap.find(key) != settingMap.end())
+	{
+		SettingEntry &entry = settingMap[key];
+		if (entry.getType() == "bool")
+		{
+			if (val == "1")
+				entry.setValue(1);
+			else if (val == "0")
+				entry.setValue(0);
+			else
+			{
+				eWarning("ExtEplayer3Options::update - invalid value '%s' for '%s' setting, allowed values are 0|1", key.c_str(), val.c_str());
+				ret = -2;
+			}
+		}
+		else if (entry.getType() == "int")
+		{
+			char *endptr = NULL;
+			int intval = -1;
+			intval = strtol(val.c_str(), &endptr , 10);
+			if (!*endptr && intval >= 0)
+			{
+				if (key == EXT3_SW_DECODING_AAC || key == EXT3_RTMP_PROTOCOL)
+				{
+					if (intval < 3)
+					{
+						entry.setValue(intval);
+					}
+					else
+					{
+						eWarning("ExtEplayer3Options::update - invalid value '%s' for '%s' setting, allowed values <0,2>", val.c_str(), key.c_str());
+						ret = -2;
+					}
+				}
+				else
+				{
+					entry.setValue(intval);
+				}
+			}
+			else
+			{
+				eWarning("ExtEplayer3Options::update - invalid value '%s' for '%s' setting, allowed values are >= 0", val.c_str(), key.c_str());
+				ret = -2;
+			}
+		}
+		else if (entry.getType() == "string")
+		{
+		}
+	}
+	else
+	{
+		eWarning("ExtEplayer3Options::update - not recognized setting '%s'", key.c_str());
+		ret = -1;
+	}
+	return ret;
+}
+
+void ExtEplayer3Options::print() const
+{
+	for (SettingIter it(settingMap.begin()); it != settingMap.end(); it++)
+	{
+		eDebug(" %-30s = %s", it->first.c_str(), it->second.toString().c_str());
+	}
+}
+
+ExtEplayer3::ExtEplayer3(ExtEplayer3Options& options): PlayerApp(STD_ERROR)
+{
+	mPlayerOptions = options;
+	eDebug("ExtEplayer3::ExtEplayer3 initializing with options:");
+	mPlayerOptions.print();
+}
 
 std::vector<std::string> ExtEplayer3::buildCommand()
 {
@@ -28,16 +156,25 @@ std::vector<std::string> ExtEplayer3::buildCommand()
 		args.push_back("-h");
 		args.push_back(headersStr);
 	}
-	if (mPlayerOptions.aacSwDecoding)
-		args.push_back("-a");
-	if (mPlayerOptions.dtsSwDecoding)
-		args.push_back("-d");
-	if (mPlayerOptions.wmaSwDecoding)
-		args.push_back("-w");
-	if (mPlayerOptions.lpcmInjection)
-		args.push_back("-l");
-	if (mPlayerOptions.downmix)
-		args.push_back("-s");
+	for (SettingIter i(mPlayerOptions.GetSettingMap().begin()); i != mPlayerOptions.GetSettingMap().end(); i++)
+	{
+		if (!i->second.isSet())
+		{
+			continue;
+		}
+		if (i->second.getType() == "bool" && i->second.getValueInt())
+		{
+			args.push_back(i->second.getAppArg());
+		}
+		if (i->second.getType() == "int" || i->second.getType() == "string")
+		{
+			std::stringstream ss;
+			ss << i->second.getAppArg();
+			ss << " ";
+			ss << i->second.getValue();
+			args.push_back(ss.str());
+		}
+	}
 	return args;
 }
 int ExtEplayer3::start(eMainloop *context)
