@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ServiceApp / enigma2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-26 21:19+0200\n"
+"POT-Creation-Date: 2018-07-28 11:52+0200\n"
 "PO-Revision-Date: 2018-03-26 21:50+0200\n"
 "Last-Translator: igorrrrr <igorzhugan66@gmail.com>\n"
 "Language-Team: igorrrrr <igorzhugan66@gmail.com>\n"
@@ -14,45 +14,69 @@ msgstr ""
 "X-Generator: Poedit 2.0.6\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
+#: ../plugin/plugin.py:194
 msgid "AAC software decoding"
 msgstr "Программное декодирование ААС"
 
+#: ../plugin/plugin.py:198
+#, fuzzy
+msgid "AC3 software decoding"
+msgstr "Программное декодирование ААС"
+
+#: ../plugin/plugin.py:220
 msgid "Auto select stream"
 msgstr "Автоматический выбор потока"
 
+#: ../plugin/plugin.py:216
 msgid "Auto turn on subtitles"
 msgstr "Автоматическое включение субтитров"
 
+#: ../plugin/plugin.py:217
 msgid "Automatically turn on subtitles if available."
 msgstr "Автоматически включать субтитры при доступности."
 
+#: ../plugin/plugin.py:188
 msgid "Buffer duration"
 msgstr "Длительность буфера"
 
+#: ../plugin/plugin.py:186
 msgid "Buffer size"
 msgstr "Размер буфера"
 
+#: ../plugin/plugin.py:158
 msgid "Cancel"
 msgstr "Отмена"
 
+#: ../plugin/plugin.py:222
 msgid "Connection speed"
 msgstr "Скорость соединения"
 
+#: ../plugin/plugin.py:200
 msgid "DTS software decoding"
 msgstr "Программное декодирование DTS"
 
+#: ../plugin/plugin.py:318
 msgid "Detecting exteplayer3 player ..."
 msgstr "Обнаружение плеера exteplayer3 ..."
 
+#: ../plugin/plugin.py:315
 msgid "Detecting gstreamer player ..."
 msgstr "Обнаружение плеера gstreamer ..."
 
+#: ../plugin/plugin.py:196
+#, fuzzy
+msgid "EAC3 software decoding"
+msgstr "Программное декодирование ААС"
+
+#: ../plugin/plugin.py:184
 msgid "Embedded subtitles"
 msgstr "Встроенные субтитры"
 
+#: ../plugin/plugin.py:246
 msgid "Enigma2 playback system"
 msgstr "Система воспроизведения Enigma2"
 
+#: ../plugin/plugin.py:271
 msgid ""
 "Enigma2 playback system was changed and Enigma2 should be restarted\n"
 "\n"
@@ -62,119 +86,208 @@ msgstr ""
 "\n"
 "Вы хотите перезапустить её сейчас?"
 
+#: ../plugin/plugin.py:231
 msgid "ExtEplayer3"
 msgstr "ExtEplayer3"
 
+#: ../plugin/plugin.py:237
 msgid "GstPlayer"
 msgstr "GstPlayer"
 
+#: ../plugin/plugin.py:218
 msgid "HLS Explorer"
 msgstr "HLS Проводник"
 
+#: ../plugin/plugin.py:208
 msgid "LPCM injection"
 msgstr "Вставка LPCM"
 
+#: ../plugin/plugin.py:202
+#, fuzzy
+msgid "MP3 software decoding"
+msgstr "Программное декодирование WMA"
+
+#: ../plugin/plugin.py:159
 msgid "Ok"
 msgstr "OK"
 
+#: ../plugin/plugin.py:408
 msgid "Play with ServiceExtEplayer3"
 msgstr "Проигрывать в ServiceExtEplayer3"
 
+#: ../plugin/plugin.py:410
 msgid "Play with ServiceGstPlayer"
 msgstr "Проигрывать в ServiceGstPlayer"
 
+#: ../plugin/plugin.py:249
 msgid "Player"
 msgstr "Проигрыватель"
 
+#: ../plugin/plugin.py:210
+msgid "RTMP protocol implementation"
+msgstr ""
+
+#: ../plugin/plugin.py:183
 msgid "Select sink which you want to use."
 msgstr "Выберите устройство вывода."
 
+#: ../plugin/plugin.py:247
 msgid "Select the player which will be used for Enigma2 playback."
 msgstr "Выберите плеер который будет использоваться системой для воспроизведения."
 
+#: ../plugin/plugin.py:250
 msgid "Select the player which will be used in serviceapp for Enigma2 playback."
 msgstr "Выберите плеер который будет использоваться ServiceApp для воспроизведения системой."
 
+#: ../plugin/plugin.py:155 ../plugin/plugin.py:390 ../plugin/plugin.py:406
+#: ../plugin/plugin.py:408 ../plugin/plugin.py:410
 msgid "ServiceApp"
 msgstr "ServiceApp"
 
+#: ../plugin/plugin.py:263
+#, python-format
 msgid "ServiceExtEplayer3 (%s)"
 msgstr "ServiceExtEplayer3 (%s)"
 
+#: ../plugin/plugin.py:260
+#, python-format
 msgid "ServiceGstPlayer (%s)"
 msgstr "ServiceGstPlayer (%s)"
 
+#: ../plugin/plugin.py:252
+#, python-format
 msgid "ServiceMp3 (%s)"
 msgstr "ServiceMp3 (%s)"
 
+#: ../plugin/plugin.py:189
 msgid "Set buffer duration in seconds."
 msgstr "Установите длительность буферизации в секундах."
 
+#: ../plugin/plugin.py:187
 msgid "Set buffer size in kilobytes."
 msgstr "Установите размер буферизации в килобайтах."
 
+#: ../plugin/plugin.py:223
 msgid "Set connection speed in kb/s, according to which you want to have streams auto-selected"
 msgstr "Установите скорость соединения в кб/с, в соответствии с которой Вы хотите, чтобы потоки автоматически выбирались"
 
+#: ../plugin/plugin.py:211
+msgid "Set which RTMP protocol implementation will be used for playback of RTMP streams"
+msgstr ""
+
+#: ../plugin/plugin.py:182
 msgid "Sink"
 msgstr "Приёмник"
 
+#: ../plugin/plugin.py:209
 msgid "Software decoder use LPCM for injection (otherwise wav PCM will be used)"
 msgstr "Использовать LPCM в программном декодере (в иных случаях wav PCM)"
 
+#: ../plugin/plugin.py:206
 msgid "Stereo downmix"
 msgstr "Микшировать в стерео"
 
+#: ../plugin/plugin.py:295
 msgid "Stop playing this movie?"
 msgstr "Прекратить воспроизведение фильма?"
 
+#: ../plugin/plugin.py:68
+msgid "To AAC ADTS"
+msgstr ""
+
+#: ../plugin/plugin.py:68
+msgid "To AAC LATM"
+msgstr ""
+
+#: ../plugin/plugin.py:195
 msgid "Turn on AAC software decoding."
 msgstr "Включает программное декодирование AAC."
 
+#: ../plugin/plugin.py:199
+#, fuzzy
+msgid "Turn on AC3 software decoding."
+msgstr "Включает программное декодирование AAC."
+
+#: ../plugin/plugin.py:201
 msgid "Turn on DTS software decoding."
 msgstr "Включает программное декодирование DTS."
 
+#: ../plugin/plugin.py:197
+#, fuzzy
+msgid "Turn on EAC3 software decoding."
+msgstr "Включает программное декодирование AAC."
+
+#: ../plugin/plugin.py:203
+#, fuzzy
+msgid "Turn on MP3 software decoding."
+msgstr "Включает программное декодирование AAC."
+
+#: ../plugin/plugin.py:205
 msgid "Turn on WMA1, WMA2, WMA/PRO software decoding."
 msgstr "Включает программное декодирование WMA1, WMA2, WMA/PRO."
 
+#: ../plugin/plugin.py:221
 msgid "Turn on auto-selection of streams according to set Connection speed."
 msgstr "Включает автоматический выбор потоков в соответствии с установленной скоростью соединения."
 
+#: ../plugin/plugin.py:207
 msgid "Turn on downmix to stereo, when software decoding is in use"
 msgstr "Включает понижающее микширование в стерео, когда используется программное декодирование"
 
+#: ../plugin/plugin.py:219
 msgid "Turn on explorer to retrieve different quality streams from HLS variant playlist and select them via subservices."
 msgstr "Включает проводник, для извлечения потоков различного качества из плейлиста вариантов HLS и их выбора через субсервисы."
 
+#: ../plugin/plugin.py:185
 msgid "Turn on the embedded subtitles support."
 msgstr "Включает поддержку встроенных субтитров."
 
+#: ../plugin/plugin.py:204
 msgid "WMA software decoding"
 msgstr "Программное декодирование WMA"
 
+#: ../plugin/plugin.py:31
 msgid "experimental"
 msgstr "экспериментальный"
 
+#: ../plugin/plugin.py:33
 msgid "exteplayer3"
 msgstr "exteplayer3"
 
+#: ../plugin/plugin.py:50 ../plugin/plugin.py:51 ../plugin/plugin.py:53
+#: ../plugin/plugin.py:62 ../plugin/plugin.py:69 ../plugin/plugin.py:70
+#: ../plugin/plugin.py:71 ../plugin/plugin.py:72 ../plugin/plugin.py:73
+#: ../plugin/plugin.py:74 ../plugin/plugin.py:75
 msgid "false"
 msgstr "Нет"
 
+#: ../plugin/plugin.py:33
 msgid "gstplayer"
 msgstr "gstplayer"
 
+#: ../plugin/plugin.py:232 ../plugin/plugin.py:238
 msgid "not installed"
 msgstr "не установлен"
 
+#: ../plugin/plugin.py:68
+msgid "off"
+msgstr ""
+
+#: ../plugin/plugin.py:28 ../plugin/plugin.py:41
 msgid "original"
 msgstr "оригинальный"
 
+#: ../plugin/plugin.py:41
 msgid "serviceapp"
 msgstr "serviceapp"
 
+#: ../plugin/plugin.py:406
 msgid "setup player framework"
 msgstr "настройка фреймворк плеера"
 
+#: ../plugin/plugin.py:50 ../plugin/plugin.py:51 ../plugin/plugin.py:53
+#: ../plugin/plugin.py:62 ../plugin/plugin.py:69 ../plugin/plugin.py:70
+#: ../plugin/plugin.py:71 ../plugin/plugin.py:72 ../plugin/plugin.py:73
+#: ../plugin/plugin.py:74 ../plugin/plugin.py:75
 msgid "true"
 msgstr "Да"
