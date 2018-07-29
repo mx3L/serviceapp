@@ -871,7 +871,8 @@ RESULT eServiceApp::setTrickmode(int trick)
 RESULT eServiceApp::isCurrentlySeekable()
 {
 	eDebug("eServiceApp::isCurrentlySeekable");
-	return -1;
+	/* just assume that seeking and fast/slow winding are possible */
+	return 3;
 }
 
 
