@@ -1253,7 +1253,7 @@ int eServiceApp::getInfo(int w)
 		videoStream v;
 		if (!player->videoGetTrackInfo(v,0))
 		{
-			// map to stream type
+			// map exteplayer to stream type
 			if (v.description == "V_MPEG2") return 0;
 			else if (v.description == "V_MPEG4/ISO/AVC") return 1;
 			else if (v.description.find("V_MPEG4") != std::string::npos) return 4;
@@ -1261,7 +1261,18 @@ int eServiceApp::getInfo(int w)
 			else if (v.description == "V_MPEGH/ISO/HEVC") return 7;
 			else if (v.description == "V_VP8") return 8;
 			else if (v.description == "V_VP9") return 9;
-			else return resNA;
+
+			// map gstplayer to stream type (mpeg might be mpeg1 or mpeg2, but can't tell from description ony)
+			if (v.description == "video/mpeg" || v.description == "video/x-3ivx" || v.description == "video/x-msmpeg") return 4;
+			else if (v.description == "video/x-h263") return 2;
+			else if (v.description == "video/x-h264") return 1;
+			else if (v.description == "video/x-h265") return 7;
+			else if (v.description == "video/x-xvid") return 10;
+			else if (v.description == "video/x-wmv") return 3;
+			else if (v.description == "video/x-vp6" || v.description == "video/x-vp6-flash") return 18;
+			else if (v.description == "video/x-vp8") return 8;
+			else if (v.description == "video/x-vp9") return 9;
+			else if (v.description == "video/x-flash-video") return 21;
 		}
 		return resNA;
 	}
