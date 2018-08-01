@@ -1247,6 +1247,7 @@ int eServiceApp::getInfo(int w)
 	case sTagEncoderVersion:
 	case sTagCRC:
 	case sBuffer:
+		return resNA;
 	case sVideoType:
 	{
 		videoStream v;
@@ -1260,9 +1261,9 @@ int eServiceApp::getInfo(int w)
 			else if (v.description == "V_MPEGH/ISO/HEVC") return 7;
 			else if (v.description == "V_VP8") return 8;
 			else if (v.description == "V_VP9") return 9;
-			else return -1;
+			else return resNA;
 		}
-		return -1;
+		return resNA;
 	}
 	default:
 		return resNA;
