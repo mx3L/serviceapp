@@ -1247,6 +1247,23 @@ int eServiceApp::getInfo(int w)
 	case sTagEncoderVersion:
 	case sTagCRC:
 	case sBuffer:
+	case sVideoType:
+	{
+		videoStream v;
+		if (!player->videoGetTrackInfo(v,0))
+		{
+			// map to stream type
+			if (v.description == "V_MPEG2") return 0;
+			else if (v.description == "V_MPEG4/ISO/AVC") return 1;
+			else if (v.description.find("V_MPEG4") != std::string::npos) return 4;
+			else if (v.description == "V_MPEG1") return 6;
+			else if (v.description == "V_MPEGH/ISO/HEVC") return 7;
+			else if (v.description == "V_VP8") return 8;
+			else if (v.description == "V_VP9") return 9;
+			else return -1;
+		}
+		return -1;
+	}
 	default:
 		return resNA;
 	}
