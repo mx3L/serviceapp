@@ -30,10 +30,11 @@ struct eServiceAppOptions
 };
 
 #if SIGCXX_MAJOR_VERSION == 2
-class eServiceApp: public sigc::trackable, public iPlayableService, public iPauseableService, public iSeekableService,
+class eServiceApp: public sigc::trackable,
 #else
-class eServiceApp: public Object, public iPlayableService, public iPauseableService, public iSeekableService,
+class eServiceApp: public Object,
 #endif
+	public iPlayableService, public iPauseableService, public iSeekableService, public iStreamedService,
 	public iAudioChannelSelection, public iAudioTrackSelection,  public iSubtitleOutput, public iSubserviceList, public iServiceInformation
 {
 	DECLARE_REF(eServiceApp);
@@ -128,7 +129,7 @@ public:
 	RESULT audioDelay(ePtr<iAudioDelay> &ptr){ ptr=0; return -1;};
 	RESULT rdsDecoder(ePtr<iRdsDecoder> &ptr){ ptr=0; return -1;};
 	RESULT stream(ePtr<iStreamableService> &ptr){ ptr=0; return -1;};
-	RESULT streamed(ePtr<iStreamedService> &ptr){ ptr=0; return -1;};
+	RESULT streamed(ePtr<iStreamedService> &ptr){ ptr=this; return 0;};
 	RESULT keys(ePtr<iServiceKeys> &ptr){ ptr=0; return -1;};
 	void setQpipMode(bool value, bool audio){};
 
@@ -145,6 +146,10 @@ public:
 	RESULT getPlayPosition(pts_t &SWIG_OUTPUT);
 	RESULT setTrickmode(int trick);
 	RESULT isCurrentlySeekable();
+
+	// iStreamedService
+	ePtr<iStreamBufferInfo> getBufferCharge(){ return 0; };
+	int setBufferSize(int size){ (void)size; }
 
 	// iAudioTrackSelection
 	int getNumberOfTracks();
