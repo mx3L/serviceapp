@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ServiceApp / enigma2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-25 21:19+0200\n"
+"POT-Creation-Date: 2018-08-08 18:15+0300\n"
 "PO-Revision-Date: 2016-12-02 21:50+0200\n"
 "Last-Translator: Tapat <taapat@gmail.com>\n"
 "Language-Team: Taapat <taapat@gmail.com>\n"
@@ -16,6 +16,9 @@ msgstr ""
 
 msgid "AAC software decoding"
 msgstr "AAC dekodēšana"
+
+msgid "AC3 software decoding"
+msgstr "AC3 dekodēšana"
 
 msgid "Auto select stream"
 msgstr "Izvēlēties straumi automātiski"
@@ -47,6 +50,9 @@ msgstr "Nosaka exteplayer3 atskaņotāju ..."
 msgid "Detecting gstreamer player ..."
 msgstr "Nosaka gstreamer atskaņotāju ..."
 
+msgid "EAC3 software decoding"
+msgstr "EAC3 dekodēšana"
+
 msgid "Embedded subtitles"
 msgstr "Iebūvētie subtitri"
 
@@ -74,6 +80,9 @@ msgstr "HLS subservisi"
 msgid "LPCM injection"
 msgstr "LPCM izmantošana"
 
+msgid "MP3 software decoding"
+msgstr "MP3 dekodēšana"
+
 msgid "Ok"
 msgstr "Ok"
 
@@ -85,6 +94,9 @@ msgstr "Atskaņot ar ServiceGstPlayer"
 
 msgid "Player"
 msgstr "Atskaņotājs"
+
+msgid "RTMP protocol implementation"
+msgstr "RTMP atskaņošana"
 
 msgid "Select sink which you want to use."
 msgstr "Izvēlieties veidu kuru vēlaties izmantot."
@@ -119,6 +131,9 @@ msgstr "Iestatiet bufera izmēru kilobaitos."
 msgid "Set connection speed in kb/s, according to which you want to have streams auto-selected"
 msgstr "Iestatiet pieslēguma ātrumu kb/s, kuru vēlaties izmantot straumju automātiskai izvēlei"
 
+msgid "Set which RTMP protocol implementation will be used for playback of RTMP streams"
+msgstr "Iestatiet kādu RTMP protokola atskaņošanas bibliotēku lietot atskaņojot RTMP straumes"
+
 msgid "Sink"
 msgstr "Veids"
 
@@ -131,26 +146,41 @@ msgstr "Stereo dekodēšana"
 msgid "Stop playing this movie?"
 msgstr "Apturēt filmas atskaņošanu?"
 
+msgid "To AAC ADTS"
+msgstr "uz AAC ADTS"
+
+msgid "To AAC LATM"
+msgstr "uz AAC LATM"
+
 msgid "Turn on AAC software decoding."
-msgstr "Izslēgt AAC dekodēšanu."
+msgstr "Lietot AAC dekodēšanu."
+
+msgid "Turn on AC3 software decoding."
+msgstr "Lietot AC3 dekodēšanu."
 
 msgid "Turn on DTS software decoding."
-msgstr "Izslēgt DTS dekodēšanu."
+msgstr "Lietot DTS dekodēšanu."
+
+msgid "Turn on EAC3 software decoding."
+msgstr "Lietot EAC3 dekodēšanu."
+
+msgid "Turn on MP3 software decoding."
+msgstr "Lietot MP3 dekodēšanu."
 
 msgid "Turn on WMA1, WMA2, WMA/PRO software decoding."
-msgstr "Izslēgt WMA1, WMA2, WMA/PRO dekodēšanu."
+msgstr "Lietot WMA1, WMA2, WMA/PRO dekodēšanu."
 
 msgid "Turn on auto-selection of streams according to set Connection speed."
-msgstr "Izslēgt straumju automātisku izvēlni pēc pieslēguma ātruma."
+msgstr "Lietot straumju automātisku izvēlni pēc pieslēguma ātruma."
 
 msgid "Turn on downmix to stereo, when software decoding is in use"
-msgstr "Izslēgt dekodēšanu uz stereo, kad tiek izmantota programmatūras dekodēšana."
+msgstr "Lietot dekodēšanu uz stereo, kad tiek izmantota programmatūras dekodēšana."
 
 msgid "Turn on explorer to retrieve different quality streams from HLS variant playlist and select them via subservices."
-msgstr "Izslēgt dažādas kvalitātes straumju atlasīšanu no HLS atskaņošanas sarakstiem lai piedāvātu tos kā subservisus."
+msgstr "Lietot dažādas kvalitātes straumju atlasīšanu no HLS atskaņošanas sarakstiem lai piedāvātu tos kā subservisus."
 
 msgid "Turn on the embedded subtitles support."
-msgstr "Izslēgt iebūvētos subtitrus."
+msgstr "Lietot iebūvētos subtitrus."
 
 msgid "WMA software decoding"
 msgstr "WMA dekodēšana"
@@ -169,6 +199,9 @@ msgstr "gstplayerr"
 
 msgid "not installed"
 msgstr "nav uzstādīts"
+
+msgid "off"
+msgstr "nelietot"
 
 msgid "original"
 msgstr "oriģinālais"
