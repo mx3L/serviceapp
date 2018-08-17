@@ -1276,6 +1276,7 @@ int eServiceApp::getInfo(int w)
 		}
 		return resNA;
 	}
+	case sSID: return m_ref.getData(1);
 	default:
 		return resNA;
 	}
