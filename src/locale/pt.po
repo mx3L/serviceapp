@@ -26,7 +26,7 @@ msgstr "Descodificação AAC"
 #: ../plugin/plugin.py:198
 #, fuzzy
 msgid "AC3 software decoding"
-msgstr "Descodificação AAC"
+msgstr "Descodificação AC3"
 
 #: ../plugin/plugin.py:220
 msgid "Auto select stream"
@@ -71,7 +71,7 @@ msgstr "A detetar Leitor gstreamer ..."
 #: ../plugin/plugin.py:196
 #, fuzzy
 msgid "EAC3 software decoding"
-msgstr "Descodificação AAC"
+msgstr "Descodificação EAC3"
 
 #: ../plugin/plugin.py:184
 msgid "Embedded subtitles"
@@ -107,7 +107,7 @@ msgstr "Injeção LPCM"
 #: ../plugin/plugin.py:202
 #, fuzzy
 msgid "MP3 software decoding"
-msgstr "Decodificação do software WMA"
+msgstr "Decodificação do software MP3"
 
 #: ../plugin/plugin.py:159
 msgid "Ok"
@@ -171,11 +171,11 @@ msgstr "Defina o tamanho do buffer em kilobytes."
 
 #: ../plugin/plugin.py:223
 msgid "Set connection speed in kb/s, according to which you want to have streams auto-selected"
-msgstr "Defina a velocidade de conexão em kb / s, de acordo com a qual deseja que os fluxos sejam selecionados automaticamente"
+msgstr "Defina a velocidade de conexão em kb/s, de acordo como deseja que os fluxos sejam selecionados automaticamente"
 
 #: ../plugin/plugin.py:211
 msgid "Set which RTMP protocol implementation will be used for playback of RTMP streams"
-msgstr ""
+msgstr "Defina qual implementação do protocolo RTMP será usada para a reprodução de fluxos RTMP"
 
 #: ../plugin/plugin.py:182
 msgid "Sink"
@@ -195,11 +195,11 @@ msgstr "Parar a reprodução deste filme?"
 
 #: ../plugin/plugin.py:68
 msgid "To AAC ADTS"
-msgstr ""
+msgstr "Para AAC ADTS"
 
 #: ../plugin/plugin.py:68
 msgid "To AAC LATM"
-msgstr ""
+msgstr "Para AAC LATM"
 
 #: ../plugin/plugin.py:195
 msgid "Turn on AAC software decoding."
@@ -273,7 +273,7 @@ msgstr "não instalado"
 
 #: ../plugin/plugin.py:68
 msgid "off"
-msgstr ""
+msgstr "inativo"
 
 #: ../plugin/plugin.py:28 ../plugin/plugin.py:41
 msgid "original"
