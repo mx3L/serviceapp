@@ -1,0 +1,311 @@
+# ServiceApp Italian translation for enigma2
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR: insanity & alexwilmac @vuplus-community.net ( 01-2019 )
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ServiceApp Italian translation for enigma2\n"
+"POT-Creation-Date: 2019-01-20 16:36+0100\n"
+"PO-Revision-Date: 2019-01-24 21:18+0000\n"
+"Last-Translator: insanity-alexwilmac\n"
+"Language-Team: insanity & alexwilmac @vuplus-community.net\n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.1\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: C:/Service APP\n"
+
+#: C:\Service APP/plugin.py:22 APP/plugin.py:31
+msgid "original"
+msgstr "predefinita"
+
+#: C:\Service APP/plugin.py:24
+msgid "experimental"
+msgstr "sperimentale"
+
+#: C:\Service APP/plugin.py:25
+msgid "gstplayer"
+msgstr "player gst"
+
+#: C:\Service APP/plugin.py:25
+msgid "exteplayer3"
+msgstr "exteplayer3"
+
+#: C:\Service APP/plugin.py:32
+msgid "serviceapp"
+msgstr "app gestione servizi"
+
+#: C:\Service APP/plugin.py:40 APP/plugin.py:42 APP/plugin.py:45
+#: APP/plugin.py:55 APP/plugin.py:63 APP/plugin.py:65 APP/plugin.py:67
+#: APP/plugin.py:69 APP/plugin.py:71 APP/plugin.py:73 APP/plugin.py:75
+msgid "false"
+msgstr "falso"
+
+#: C:\Service APP/plugin.py:41 APP/plugin.py:43 APP/plugin.py:46
+#: APP/plugin.py:56 APP/plugin.py:64 APP/plugin.py:66 APP/plugin.py:68
+#: APP/plugin.py:70 APP/plugin.py:72 APP/plugin.py:74 APP/plugin.py:76
+msgid "true"
+msgstr "vero"
+
+#: C:\Service APP/plugin.py:62
+msgid "off"
+msgstr "spento"
+
+#: C:\Service APP/plugin.py:62
+msgid "To AAC ADTS"
+msgstr "In AAC ADTS"
+
+#: C:\Service APP/plugin.py:62
+msgid "To AAC LATM"
+msgstr "In AAC LATM"
+
+#: C:\Service APP/plugin.py:134 APP/plugin.py:341 APP/plugin.py:360
+msgid "ServiceApp"
+msgstr "Gestione player gst / exteplayer3 / mp3"
+
+#: C:\Service APP/plugin.py:137
+msgid "Cancel"
+msgstr "Annulla"
+
+#: C:\Service APP/plugin.py:138
+msgid "Ok"
+msgstr "Ok"
+
+#: C:\Service APP/plugin.py:156
+msgid "Sink"
+msgstr "Recipiente"
+
+#: C:\Service APP/plugin.py:156
+msgid "Select sink which you want to use."
+msgstr "Seleziona il recipiente che desideri utilizzare"
+
+#: C:\Service APP/plugin.py:157
+msgid "Embedded subtitles"
+msgstr "Sottotitoli incorporati"
+
+#: C:\Service APP/plugin.py:157
+msgid "Turn on the embedded subtitles support."
+msgstr "Attiva il supporto per i sottotitoli incorporati"
+
+#: C:\Service APP/plugin.py:158
+msgid "Buffer size"
+msgstr "Dimensione buffer"
+
+#: C:\Service APP/plugin.py:158
+msgid "Set buffer size in kilobytes."
+msgstr "Imposta la dimensione del buffer in kilobyte"
+
+#: C:\Service APP/plugin.py:159
+msgid "Buffer duration"
+msgstr "Durata del buffer"
+
+#: C:\Service APP/plugin.py:159
+msgid "Set buffer duration in seconds."
+msgstr "Imposta la durata del buffer in secondi"
+
+#: C:\Service APP/plugin.py:164
+msgid "AAC software decoding"
+msgstr "Decodifica AAC via software"
+
+#: C:\Service APP/plugin.py:164
+msgid "Turn on AAC software decoding."
+msgstr "Attiva la decodifica AAC via software"
+
+#: C:\Service APP/plugin.py:165
+msgid "EAC3 software decoding"
+msgstr "Decodifica EAC3 via software"
+
+#: C:\Service APP/plugin.py:165
+msgid "Turn on EAC3 software decoding."
+msgstr "Attiva la decodifica EAC3 via software"
+
+#: C:\Service APP/plugin.py:166
+msgid "AC3 software decoding"
+msgstr "Decodifica AC3 via software"
+
+#: C:\Service APP/plugin.py:166
+msgid "Turn on AC3 software decoding."
+msgstr "Attiva la decodifica AC3 via software"
+
+#: C:\Service APP/plugin.py:167
+msgid "DTS software decoding"
+msgstr "Decodifica DTS via software"
+
+#: C:\Service APP/plugin.py:167
+msgid "Turn on DTS software decoding."
+msgstr "Attiva la decodifica DTS via software"
+
+#: C:\Service APP/plugin.py:168
+msgid "MP3 software decoding"
+msgstr "Decodifica MP3 via software"
+
+#: C:\Service APP/plugin.py:168
+msgid "Turn on MP3 software decoding."
+msgstr "Attiva la decodifica MP3 via software"
+
+#: C:\Service APP/plugin.py:169
+msgid "WMA software decoding"
+msgstr "Decodifica WMA via software"
+
+#: C:\Service APP/plugin.py:169
+msgid "Turn on WMA1, WMA2, WMA/PRO software decoding."
+msgstr "Attivare la decodifica via software per WMA1, WMA2, WMA / PRO"
+
+#: C:\Service APP/plugin.py:170
+msgid "Stereo downmix"
+msgstr "Miscelazione stereo"
+
+#: C:\Service APP/plugin.py:170
+msgid "Turn on downmix to stereo, when software decoding is in use"
+msgstr ""
+"Attiva la miscelazione in stereo quando è in uso la decodifica del "
+"software"
+
+#: C:\Service APP/plugin.py:171
+msgid "LPCM injection"
+msgstr "Usa LPCM (6 Canali Surround Sound)"
+
+#: C:\Service APP/plugin.py:171
+msgid ""
+"Software decoder use LPCM for injection (otherwise wav PCM will be used)"
+msgstr "Il software del decoder userà LPCM (altrimenti sarà usata PCM)"
+
+#: C:\Service APP/plugin.py:172
+msgid "RTMP protocol implementation"
+msgstr "Implementazione del protocollo RTMP"
+
+#: C:\Service APP/plugin.py:172
+msgid ""
+"Set which RTMP protocol implementation will be used for playback of RTMP "
+"streams"
+msgstr ""
+"Impostare quale implementazione del protocollo RTMP verrà utilizzata per "
+"la riproduzione di flussi RTMP"
+
+#: C:\Service APP/plugin.py:177
+msgid "Auto turn on subtitles"
+msgstr "Attiva automaticamente i sottotitoli"
+
+#: C:\Service APP/plugin.py:177
+msgid "Automatically turn on subtitles if available."
+msgstr "Attiva automaticamente i sottotitoli, se disponibili"
+
+#: C:\Service APP/plugin.py:178
+msgid "HLS Explorer"
+msgstr "HLS Explorer"
+
+#: C:\Service APP/plugin.py:178
+msgid ""
+"Turn on explorer to retrieve different quality streams from HLS variant "
+"playlist and select them via subservices."
+msgstr ""
+"Attiva per recuperare flussi di qualità diverse dalla playlist HLS e "
+"selezionali attraverso i sottoservizi."
+
+#: C:\Service APP/plugin.py:179
+msgid "Auto select stream"
+msgstr "Selezione automatica del flusso"
+
+#: C:\Service APP/plugin.py:179
+msgid "Turn on auto-selection of streams according to set Connection speed."
+msgstr ""
+"Attiva la selezione automatica dei flussi in base alla velocità di "
+"connessione impostata."
+
+#: C:\Service APP/plugin.py:180
+msgid "Connection speed"
+msgstr "Velocità di connessione"
+
+#: C:\Service APP/plugin.py:180
+msgid ""
+"Set connection speed in kb/s, according to which you want to have streams "
+"auto-selected"
+msgstr ""
+"Imposta la velocità di connessione in Kb/s in modo che i flussi vengano "
+"selezionati automaticamente"
+
+#: C:\Service APP/plugin.py:190
+msgid "ExtEplayer3"
+msgstr "ExtEplayer3"
+
+#: C:\Service APP/plugin.py:190 APP/plugin.py:195
+msgid "not installed"
+msgstr "non installato"
+
+#: C:\Service APP/plugin.py:195
+msgid "GstPlayer"
+msgstr "Player Gst"
+
+#: C:\Service APP/plugin.py:202
+msgid "Enigma2 playback system"
+msgstr "Modalità di riproduzione"
+
+#: C:\Service APP/plugin.py:202
+msgid "Select the player which will be used for Enigma2 playback."
+msgstr "Seleziona il player da utilizzare per la riproduzione."
+
+#: C:\Service APP/plugin.py:204
+msgid "Player"
+msgstr "Player"
+
+#: C:\Service APP/plugin.py:204
+msgid ""
+"Select the player which will be used in serviceapp for Enigma2 playback."
+msgstr ""
+"Seleziona il player che verrà utilizzato in gestione servizi per la "
+"riproduzione."
+
+#: C:\Service APP/plugin.py:206
+#, python-format
+msgid "ServiceMp3 (%s)"
+msgstr "Servizio Mp3 (%s)"
+
+#: C:\Service APP/plugin.py:214
+#, python-format
+msgid "ServiceGstPlayer (%s)"
+msgstr "Servizio GstPlayer (%s)"
+
+#: C:\Service APP/plugin.py:217
+#, python-format
+msgid "ServiceExtEplayer3 (%s)"
+msgstr "Servizio ExtEplayer3 (%s)"
+
+#: C:\Service APP/plugin.py:224
+msgid ""
+"Enigma2 playback system was changed and Enigma2 should be restarted\n"
+"\n"
+"Do you want to restart it now?"
+msgstr ""
+"La modalità di riproduzione è stata cambiata e il sistema deve essere "
+"riavviato\n"
+"\n"
+"Vuoi farlo ora?"
+
+#: C:\Service APP/plugin.py:247
+msgid "Stop playing this movie?"
+msgstr "Arrestare la riproduzione?"
+
+#: C:\Service APP/plugin.py:262
+msgid "Detecting gstreamer player ..."
+msgstr "Rilevamento del player gstreamer ..."
+
+#: C:\Service APP/plugin.py:262
+msgid "Detecting exteplayer3 player ..."
+msgstr "Rilevamento del player exteplayer3 ..."
+
+#: C:\Service APP/plugin.py:360
+msgid "setup player framework"
+msgstr "imposta la struttura del player"
+
+#: C:\Service APP/plugin.py:360
+msgid "Play with ServiceExtEplayer3"
+msgstr "Riproduci con Servizio ExtEplayer3"
+
+#: C:\Service APP/plugin.py:360
+msgid "Play with ServiceGstPlayer"
+msgstr "Riproduci con Servizio Player gst"
