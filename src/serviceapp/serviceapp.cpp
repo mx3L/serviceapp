@@ -1285,18 +1285,16 @@ int eServiceApp::getInfo(int w)
 
 std::string eServiceApp::getInfoString(int w)
 {
-	if ( strstr(m_ref.path.c_str(), "://") )
+	switch (w)
 	{
-		switch (w)
-		{
-		case sProvider:
-			return "IPTV";
-		case sServiceref:
-			return m_ref.toString();
-		default:
-			break;
-		}
+	case sProvider:
+		return m_ref.path.find("://") != std::string::npos ? "IPTV" : "FILE";
+	case sServiceref:
+		return m_ref.toString();
+	default:
+		break;
 	}
+
 	if (w < sUser && w > 26 )
 		return "";
 	switch(w)
