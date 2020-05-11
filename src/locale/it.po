@@ -52,7 +52,7 @@ msgid "To AAC LATM"
 msgstr "In AAC LATM"
 
 msgid "ServiceApp"
-msgstr "Gestione player gst / exteplayer3 / mp3"
+msgstr "ServiceApp: gestione dei player"
 
 msgid "Cancel"
 msgstr "Annulla"
