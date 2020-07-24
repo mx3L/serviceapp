@@ -57,6 +57,7 @@ AC_LINK_IFELSE(
     SWIG_VOID(RESULT) subServices(ePtr<iSubserviceList> &SWIG_OUTPUT){};
     SWIG_VOID(RESULT) frontendInfo(ePtr<iFrontendInformation> &SWIG_OUTPUT){};
     SWIG_VOID(RESULT) timeshift(ePtr<iTimeshiftService> &SWIG_OUTPUT){};
+    SWIG_VOID(RESULT) tap(ePtr<iTapService> &ptr) { ptr = nullptr; return -1; };
     SWIG_VOID(RESULT) cueSheet(ePtr<iCueSheet> &SWIG_OUTPUT){};
     SWIG_VOID(RESULT) subtitle(ePtr<iSubtitleOutput> &SWIG_OUTPUT){};
     SWIG_VOID(RESULT) audioDelay(ePtr<iAudioDelay> &SWIG_OUTPUT){};
