@@ -180,7 +180,7 @@ class ServiceAppSettings(ConfigListScreen, Screen):
 
     def gstplayer_options(self, gstplayer_options_cfg):
         config_list = []
-        config_list.append(getConfigListEntry("  " + _("Sink"), 
+        config_list.append(getConfigListEntry("  " + _("Sink"),
             gstplayer_options_cfg.sink, _("Select sink which you want to use.")))
         config_list.append(getConfigListEntry("  " + _("Embedded subtitles"),
             gstplayer_options_cfg.subtitle_enabled, _("Turn on the embedded subtitles support.")))
@@ -235,7 +235,7 @@ class ServiceAppSettings(ConfigListScreen, Screen):
                 config_list += self.exteplayer3_options(player_cfg)
                 config_list += self.serviceapp_options(serviceapp_cfg)
         if player_type == "gstplayer":
-            config_list.append(getConfigListEntry("  " + _("GstPlayer"), 
+            config_list.append(getConfigListEntry("  " + _("GstPlayer"),
                 ConfigSelection([GSTPLAYER_VERSION or "not installed"], GSTPLAYER_VERSION or _("not installed"))))
             if GSTPLAYER_VERSION:
                 config_list += self.gstplayer_options(player_cfg)
@@ -243,10 +243,10 @@ class ServiceAppSettings(ConfigListScreen, Screen):
         return config_list
 
     def build_configlist(self):
-        config_list = [getConfigListEntry(_("Enigma2 playback system"), 
+        config_list = [getConfigListEntry(_("Enigma2 playback system"),
             config_serviceapp.servicemp3.replace, _("Select the player which will be used for Enigma2 playback."))]
         if config_serviceapp.servicemp3.replace.value:
-            config_list.append(getConfigListEntry(_("Player"), 
+            config_list.append(getConfigListEntry(_("Player"),
                 config_serviceapp.servicemp3.player, _("Select the player which will be used in serviceapp for Enigma2 playback.")))
             configlist_servicemp3 = [getConfigListEntry("", ConfigNothing())]
             configlist_servicemp3.append(getConfigListEntry(_("ServiceMp3 (%s)" % str(serviceapp_client.ID_SERVICEMP3)), ConfigNothing()))
@@ -267,7 +267,7 @@ class ServiceAppSettings(ConfigListScreen, Screen):
 
     def keyOk(self):
         if config_serviceapp.servicemp3.replace.isChanged():
-            self.session.openWithCallback(self.save_settings_and_close, 
+            self.session.openWithCallback(self.save_settings_and_close,
                     MessageBox, _("Enigma2 playback system was changed and Enigma2 should be restarted\n\nDo you want to restart it now?"),
                     type=MessageBox.TYPE_YESNO)
         else:
@@ -312,10 +312,10 @@ class ServiceAppDetectPlayers(Screen):
         Screen.__init__(self, session)
         self["text"] = Label()
         self.players_iter = iter(
-                [("gstplayer_gst-1.0", 
+                [("gstplayer_gst-1.0",
                     _("Detecting gstreamer player ..."),
                     self.detect_gstplayer),
-                 ("exteplayer3", 
+                 ("exteplayer3",
                      _("Detecting exteplayer3 player ..."),
                      self.detect_exteplayer3)
                  ])
