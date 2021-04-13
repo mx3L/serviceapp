@@ -144,6 +144,7 @@ def init_serviceapp_settings():
     elif config_serviceapp.servicemp3.player.value == "exteplayer3":
         serviceapp_client.setServiceMP3ExtEplayer3()
 
+
 init_serviceapp_settings()
 
 
@@ -241,7 +242,6 @@ class ServiceAppSettings(ConfigListScreen, Screen):
                 config_list += self.serviceapp_options(serviceapp_cfg)
         return config_list
 
-
     def build_configlist(self):
         config_list = [getConfigListEntry(_("Enigma2 playback system"), 
             config_serviceapp.servicemp3.replace, _("Select the player which will be used for Enigma2 playback."))]
@@ -307,6 +307,7 @@ class ServiceAppDetectPlayers(Screen):
             <widget name="text" position="10,10" size="490,325" font="Regular;28" halign="center" valign="center" />
         </screen>
                 """
+
     def __init__(self, session):
         Screen.__init__(self, session)
         self["text"] = Label()
