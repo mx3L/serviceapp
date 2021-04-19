@@ -73,7 +73,7 @@ for key in config_serviceapp.exteplayer3.keys():
     config_serviceapp.exteplayer3[key].wma_swdecoding = ConfigBoolean(default=False, descriptions={False: _("false"), True: _("true")})
     config_serviceapp.exteplayer3[key].lpcm_injecion = ConfigBoolean(default=False, descriptions={False: _("false"), True: _("true")})
     config_serviceapp.exteplayer3[key].downmix = ConfigBoolean(default=False, descriptions={False: _("false"), True: _("true")})
-    config_serviceapp.exteplayer3[key].rtmp_protocol = ConfigSelection(default="auto", choices=["auto","ffmpeg","librtmp"])
+    config_serviceapp.exteplayer3[key].rtmp_protocol = ConfigSelection(default="auto", choices=["auto", "ffmpeg", "librtmp"])
 
 
 def key_to_setting_id(key):
@@ -251,9 +251,9 @@ class ServiceAppSettings(ConfigListScreen, Screen):
             configlist_servicemp3 = [getConfigListEntry("", ConfigNothing())]
             configlist_servicemp3.append(getConfigListEntry(_("ServiceMp3 (%s)" % str(serviceapp_client.ID_SERVICEMP3)), ConfigNothing()))
             if config_serviceapp.servicemp3.player.value == "gstplayer":
-                config_list += configlist_servicemp3 + self.player_options("gstplayer","servicemp3")
+                config_list += configlist_servicemp3 + self.player_options("gstplayer", "servicemp3")
             elif config_serviceapp.servicemp3.player.value == "exteplayer3":
-                config_list += configlist_servicemp3 + self.player_options("exteplayer3","servicemp3")
+                config_list += configlist_servicemp3 + self.player_options("exteplayer3", "servicemp3")
             else:
                 config_list += configlist_servicemp3
         config_list.append(getConfigListEntry("", ConfigNothing()))
