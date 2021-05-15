@@ -7,7 +7,7 @@ from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 
 def localeInit():
 	environ["LANGUAGE"] = language.getLanguage()[:2]
-	bindtextdomain("ServiceApp", resolveFilename(SCOPE_PLUGINS, \
+	bindtextdomain("ServiceApp", resolveFilename(SCOPE_PLUGINS,
 		"SystemPlugins/ServiceApp/locale"))
 
 
@@ -16,6 +16,7 @@ def _(txt):
 	if t == txt:
 		t = gettext(txt)
 	return t
+
 
 localeInit()
 language.addCallback(localeInit)
