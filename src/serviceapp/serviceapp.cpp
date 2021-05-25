@@ -903,6 +903,7 @@ RESULT eServiceApp::getTrackInfo(iAudioTrackInfo& trackInfo, unsigned int n)
 	}
 	trackInfo.m_description = track.description;
 	trackInfo.m_language = track.language_code;
+	trackInfo.m_pid = track.id;
 	return 0;
 }
 
