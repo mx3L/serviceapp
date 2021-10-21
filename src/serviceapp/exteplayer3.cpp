@@ -137,7 +137,17 @@ std::vector<std::string> ExtEplayer3::buildCommand()
 	// TODO add all options
 	std::vector<std::string> args;
 	args.push_back("exteplayer3");
-	args.push_back(mPath);
+	size_t pos = mPath.find("&suburi=");
+	if (pos != std::string::npos)
+	{
+		args.push_back(mPath.substr(0, pos));
+		args.push_back("-x");
+		args.push_back(mPath.substr(pos + 8));
+	}
+	else
+	{
+		args.push_back(mPath);
+	}
 	std::map<std::string,std::string>::const_iterator i(mHeaders.find("User-Agent"));
 	if (i != mHeaders.end())
 	{
