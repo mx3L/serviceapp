@@ -2,7 +2,7 @@ import os
 
 from enigma import eEnv
 
-import serviceapp
+from . import serviceapp
 
 
 ID_SERVICEMP3 = 4097
