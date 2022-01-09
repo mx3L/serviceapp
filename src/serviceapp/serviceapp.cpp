@@ -1707,7 +1707,11 @@ static struct PyModuleDef moduledef = {
 #endif
 
 PyMODINIT_FUNC
+#if PY_MAJOR_VERSION >= 3
+PyInit_serviceapp(void)
+#else
 initserviceapp(void)
+#endif
 {
 	g_GstPlayerOptionsServiceMP3 = new GstPlayerOptions();
 	g_GstPlayerOptionsServiceGst = new GstPlayerOptions();
