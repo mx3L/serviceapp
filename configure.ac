@@ -41,7 +41,9 @@ AC_LINK_IFELSE(
     void AddRef(){}
     void Release(){}
 
-#if SIGCXX_MAJOR_VERSION == 2
+#if SIGCXX_MAJOR_VERSION == 3
+    RESULT connectEvent(const sigc::slot<void(iPlayableService*,int)> &event, ePtr<eConnection> &connection){return -1;}
+#elif SIGCXX_MAJOR_VERSION == 2
     RESULT connectEvent(const sigc::slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection){return -1;}
 #else
     RESULT connectEvent(const Slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection){return -1;}
