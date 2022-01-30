@@ -29,7 +29,7 @@ struct eServiceAppOptions
 	{};
 };
 
-#if SIGCXX_MAJOR_VERSION == 2
+#if SIGCXX_MAJOR_VERSION >= 2
 class eServiceApp: public sigc::trackable,
 #else
 class eServiceApp: public Object,
@@ -46,7 +46,9 @@ class eServiceApp: public Object,
 	bool m_subservices_checked;
 	void fillSubservices();
 
-#if SIGCXX_MAJOR_VERSION == 2
+#if SIGCXX_MAJOR_VERSION == 3
+	sigc::signal<void(iPlayableService*,int)> m_event;
+#elif SIGCXX_MAJOR_VERSION == 2
 	sigc::signal2<void,iPlayableService*,int> m_event;
 #else
 	Signal2<void,iPlayableService*,int> m_event;
@@ -104,7 +106,9 @@ public:
 	~eServiceApp();
 
 	// iPlayableService
-#if SIGCXX_MAJOR_VERSION == 2
+#if SIGCXX_MAJOR_VERSION == 3
+	RESULT connectEvent(const sigc::slot<void(iPlayableService*,int)> &event, ePtr<eConnection> &connection);
+#elif SIGCXX_MAJOR_VERSION == 2
 	RESULT connectEvent(const sigc::slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection);
 #else
 	RESULT connectEvent(const Slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection);
